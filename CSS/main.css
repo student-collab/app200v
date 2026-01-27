@@ -1,0 +1,71 @@
+/*
+
+* * * * * * * * * * *
+*                   *
+*      main CSS     *
+*                   *
+* * * * * * * * * * *
+
+
+## main css setter opp:
+
+Skriftstørrelser
+Farger for felels elementer
+Header - Overskrift med menyer
+NAV - menyer for navigering
+Footer - Side avslutning med nyttige lenker
+
+*/
+
+
+/* * * * * * * * * * *
+** Skriftstørrelser  *
+** * * * * * * * * * */
+
+
+/* * * * * * * * * * *
+**      Farger       *
+** * * * * * * * * * */
+body{background-color: #faebd7;}
+
+/* * * * * * * * * * *
+**      Header       *
+** * * * * * * * * * */
+
+/* * * * * * * * * * *
+**      NAV          *
+** * * * * * * * * * */
+nav{
+    border-bottom: 2px solid #777;
+    display: flex;
+ }
+ nav>figure img{
+    width:200px;
+ }
+
+#navUL{ 
+    align-self:center;
+    display: flex;
+    justify-content: flex-start;
+    list-style: none;
+
+    
+}
+#navUL li a{
+    padding: 1rem 2rem 1rem 2rem;
+    text-decoration: none;
+    
+    /* background-color: aqua;*/
+}
+#navUL li a:hover{
+    /*background-color:#bbae9d;*/
+    text-decoration: underline;
+}
+
+#navUL li a,#navUL li a:visited{
+    color: coral;
+}
+ 
+/* * * * * * * * * * *
+**      Footer       *
+** * * * * * * * * * */

@@ -1,0 +1,22 @@
+* * * * * * * * * * *
+*                   *
+*      main CSS     *
+*                   *
+* * * * * * * * * * *
+
+Gjelder for alle sidene. For å skape en helhet, 
+slik at brukeren har inntrykk av å være på samme sted
+selv om det vises forskjellige sider.
+
+Endringer i main skal gjelde for alle sidene.
+Hver enkelt side kan ha tillegg men bør ikke overstyre
+main.css.
+
+## main css setter opp:
+
+
+Skriftstørrelser
+Farger for felels elementer
+Header - Overskrift med menyer
+NAV - menyer for navigering
+Footer - Side avslutning med nyttige lenker

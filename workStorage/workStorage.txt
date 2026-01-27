@@ -1,0 +1,7 @@
+WorkStorage er ment som midlertidig lagringsplass.
+Filer som kan være kjekke å ha underveis, men som ikke skal leveres.
+
+Mappen kan bli slettet før innlevering. 
+Lagre lokalt om det er noe du ikke vil miste.
+
+Ellers må du kanskje gå cherrypicking i GIT-historien.
