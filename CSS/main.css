@@ -15,18 +15,41 @@ Header - Overskrift med menyer
 NAV - menyer for navigering
 Footer - Side avslutning med nyttige lenker
 
+@media (max-width: 768px) {
+  /* Styles for mobile devices /
+  
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* Styles for tablets /
+  
+}
+
+@media (min-width: 1024px) {
+  /* Styles for desktops /
+  
+}
+
+
 */
 
 
 /* * * * * * * * * * *
 ** Skriftstørrelser  *
 ** * * * * * * * * * */
+:root{
+    font-size: 16px; /* 1rem = 16px */
+    --nav-mnu-link-color:coral;
+    --bg-color: #faebd7;
+    --border-color: #777;
+    
 
+}
 
 /* * * * * * * * * * *
 **      Farger       *
 ** * * * * * * * * * */
-body{background-color: #faebd7;}
+body{background-color: var(--bg-color);}
 
 /* * * * * * * * * * *
 **      Header       *
@@ -36,23 +59,48 @@ body{background-color: #faebd7;}
 **      NAV          *
 ** * * * * * * * * * */
 nav{
-    border-bottom: 2px solid #777;
+    border-bottom: 2px solid var(--border-color);
     display: flex;
+    position: relative;
+    
+ }
+ nav>figure{
+    justify-self: flex-start;
+    margin:0.5em;
+
  }
  nav>figure img{
     width:200px;
  }
+ #navUL button{
+    right:0;
+    height:2em;
+    position: absolute;
+ }
+    /*                                  *
+    *  Burgermeny for mindre skjermer   *
+    *   mobile first                    *
+    */
 
 #navUL{ 
-    align-self:center;
-    display: flex;
-    justify-content: flex-start;
     list-style: none;
-
-    
+    position:absolute;
+    background-color: #ddd;
+    height: 95vh ;
+    /* Om det er 5 linjer i menyen: 
+        Hver linje -> 1em + 4em ( 2em padding over og under) = 5em per linje
+        5*5 = 25em gir samme resulat som når height ikke er satt
+        Legger til luft  
+    */
+    right:0;
+    padding:0;
 }
+
+#navUL li{
+    line-height: 5em;
+}    
 #navUL li a{
-    padding: 1rem 2rem 1rem 2rem;
+    padding: 2em 5em 2em 5em;
     text-decoration: none;
     
     /* background-color: aqua;*/
@@ -62,8 +110,46 @@ nav{
     text-decoration: underline;
 }
 
+/*                                  
+*   Vertikal meny for mellomstore   *
+*    og store skjermer              *
+*/
+
+@media (min-width: 768px) {
+    
+    #navUL{ 
+        background:none;
+        position:relative; 
+        display: flex;
+        align-self:center;
+        justify-content: flex-start;
+        height:auto;
+    }
+    
+    #navUL li{
+        line-height: 1em;
+    }
+    
+    #navUL li a{
+    padding: 2em ;
+    text-decoration: none;
+    }
+    
+    #navUL button{
+    right:0;
+    position: absolute;
+    }
+    #navUL button{
+    display:none;
+    }
+  
+}
+
+    
+
+
 #navUL li a,#navUL li a:visited{
-    color: coral;
+    color: var(--nav-mnu-link-color);
 }
  
 /* * * * * * * * * * *
