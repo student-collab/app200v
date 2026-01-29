@@ -1,0 +1,11 @@
+main_JS er javascript som blir lastet inn for alle sidene
+
+Dersom noe Javascript ikke trenger å kjøres på alle sider
+skal det ikke skrives i main.JS.
+
+Opprett heller en ny js-fil og lenk den inn med 
+ <script src="./JS/mittScript.js" defer></script>
+
+Nøkkelordet defer brukes for at alt annet lastes først så 
+brukerne har noe å se på imens javascriptet gjør sine forberedelser. 
+
