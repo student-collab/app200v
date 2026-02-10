@@ -9,7 +9,6 @@
             });
     }
  
-    const auth = firebase.auth();
-    auth.signInAnonymously();
+
 
    writeUserData( "008", "Mehmet Askercik", "mehmet.a@microsoft.ltd", "myFetchedTimeAndDate", "myFetchedgroup");
