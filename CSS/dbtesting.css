@@ -1,0 +1,24 @@
+#test_form{
+    display:flex;
+    flex-direction: column;
+}
+#test_form .frame{
+    display: flex;
+    flex-direction: column;
+    
+    
+    padding: 1em 2em;
+    box-shadow: inset 2px 3px 5px rgba(0,0,0,.5) ;
+    
+}
+.form_button{
+    justify-self: center;
+    width:20%;
+}
+
+#test_form .frame, 
+.form_button{
+    
+    margin:  1em 2em;
+
+}

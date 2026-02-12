@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <title>TeamWork</title>
+
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <meta name="description" content="" />
+  <link rel="stylesheet" href="../CSS/main.css">
+  <link rel="stylesheet" href="../CSS/dbtesting.css">
+  <link rel="icon" href="../img/favicon.png">
+  <script src="../JS/main.js" defer> </script>
+  
+</head>
+
+<body>
+  <nav>
+    <figure>
+      <a href="../index.html">
+        <img src="../img/teamWork.png" alt="logo">
+      </a>
+    </figure>
+      
+    <button id = "burger_button">
+      <img id="burger_stripes" style = "max-width:100px; " src="../img/burgerStripes.png" alt="logo">
+      <img id="burger_close" class = "hidden" style = "max-width:100px; " src="../img/burgerClose.png" alt="logo">
+    </button>
+    
+    <ul id="navUL">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="dbtesting.html">DB test</a></li>
+      <li><a href="">empty</a></li>
+      <li><a href="">empty</a></li>
+      <li><a href="">empty</a></li>
+    </ul>
+    
+  </nav>
+  <section>
+
+    <h1>Skriver og leser litt</h1>
+    <p> ...</p>
+    
+    <form  id = "test_form" action="" >
+      <div class="frame">
+        <p><strong>Lagrer til og leser fra destinasjonen: /test </strong></p>
+        <label for="bNavn">Brukernavn</label>
+        <input type="text" id = "bNavn" value ="" placeholder ="-  Brunogblid" >
+        <label for="psudoE-post">E-post</label>
+        <input type="text" id ="psudoE-post" value ="" placeholder ="-  abc@hotstuff.com" >
+      </div>
+      <button class ="form_button" id = "form_save_btn">Save to db</button>
+      <div class="frame">
+<label for="brukerId">BrukerId</label>
+<input type="text" id="brukerId">
+<label for="brukerNavn">Brukernavn</label>
+<input type="text" id="brukerNavn">
+<label for="brukerE-post">E-post</label>
+<input type="text" id="brukerE-post">
+<label for="brukerTime">Stempel</label>
+<input type="text" id="brukerTime">
+<label for="brukerRole">Rolle</label>
+<input type="text" id="brukerRole">
+
+      </div>
+      <button class ="form_button" id = "form_read_btn">Read from db</button>
+      
+    </form>
+  </section>
+
+
+  <!-- Eksterne script som gjør det mulig å kommunisere med Realtime Database fra Google Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  
+  <!-- Intern script som inneholder det som må til for å etablere forbindelsen -->
+  <script type="module" src="../JS/modules/module.js" defer></script> 
+  
+  
+  <!-- Internt skript for å skrive ting til databasen mest for å ha et eksempel å se på -->
+  <script src="../JS/writeRTdb.js" defer></script> 
+  <script src="../JS/dbtesting.js" defer> </script>
+
+ 
+
+  
+  
+  
+</body>
+
+</html>
+
