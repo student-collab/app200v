@@ -1,4 +1,38 @@
- // Skriver til databasen - legger til brukere
+/**
+ * Importerer funksjoner fra konfigurasjonsfilen
+ */
+
+import {  FIREBASECONFIG_DATABASEURL,
+          tokenCache,
+          hasValidToken,
+          fetchToken
+        } from './dbConfig.js';
+
+/**
+ * 
+ *  Finner ut om web-applikasjonen kjører eller på server
+ *  Kjøring lokalt bruker anonym autentisering -- auth.signInAnonymously();
+ *  Kjøring fra server bruker service-token for autentisering
+ * 
+ */
+
+let runtimeEnvironment = false;
+if (  window.location.hostname === 'localhost' || 
+      window.location.hostname === '127.0.0.1' || 
+      window.location.hostname === '[::1]') {
+      runtimeEnvironment = true;
+      console.log('Running on localhost');
+  } 
+const runningLocal = runtimeEnvironment;
+
+/** ** ** ** 
+ * 
+ * Funksjoner som skriver til databasen
+ * 
+ ** ** ** ** ** ** ** */
+
+
+// kjører lokalt - anonym autentisering 
     function writeUserData( brukerId, navn, psudoMail,timestamp,group){    
             firebase.database().ref('brukere/' + brukerId).set({ 
               brukernavn : navn,
@@ -8,95 +42,15 @@
             
             });
     }
- 
+ //writeUserData( "008", "Mehmet Askercik", "mehmet.a@microsoft.ltd", "myFetchedTimeAndDate", "myFetchedgroup");
 
 
-   //writeUserData( "008", "Mehmet Askercik", "mehmet.a@microsoft.ltd", "myFetchedTimeAndDate", "myFetchedgroup");
-
-
-
-const tokenCache = {
-  /** The raw OAuth token string will be stored here*/
-  accessToken: null,
-  expiresAt: 0
-};
-
-   async function fetchToken() {
-    try {
-    
-        const response = await fetch('/get-token.php', {
-            method: 'GET',
-            credentials: 'same-origin'   // send cookies if you need auth later
-        });
-        
-        if (!response.ok) {
-            throw new Error(`Server responded ${response.status} (${response.statusText})`);
-        }
-
-        // ----- Parse JSON (will throw if body is not JSON) -----
-        const data = await response.json();
-
-        // ----- Payload‑level check (our contract) -----
-        if (!data.success) {
-            throw new Error(`Backend error: ${data.error || 'unknown'}`);
-        }
-
-        tokenCache.accessToken = data.access_token;
-        tokenCache.expiresAt = data.expires_in;
-
-    } catch (err) {
-        // Handles:
-        //   • Network failures
-        //   • Non‑2xx HTTP responses
-        //   • Invalid JSON
-        //   • Backend‑reported errors
-        console.log(err.message);
-        
-    }
-}
-
-
-function hasValidToken(bufferSec = 10) {
-  const now = Date.now();                 // ms since epoch
-  const minValid = now + bufferSec * 1000; // ms
-  return tokenCache.accessToken && tokenCache.expiresAt > minValid;
-}
-
-async function readRTdb (ref = 'brukere/'){
-  if (!hasValidToken(10)){await fetchToken();}
-
-  const dbPath       = ref; // the node you want to read
-  const url = `https://${FIREBASECONFIG_DATABASEURL}/${dbPath}.json`;
-  //                   "https://app200v-team11-default-rtdb.europe-west1.firebasedatabase.app" 
-console.log(url);
-  const dbResp = await fetch(url, {
-      method: 'GET',
-      headers: {  'Accept': 'application/json',
-                  'Authorization': `Bearer ${tokenCache.accessToken}`
-               }
-  });
-
-  if (!dbResp.ok) {
-      throw new Error(`Firebase returned ${dbResp.status} (${dbResp.statusText})`);
-  }
-
-  const dbData = await dbResp.json();
-  //log('Data from Firebase:\n' + JSON.stringify(dbData, null, 2));
-  return dbData;
-
-}
-const FIREBASECONFIG_DATABASEURL =  "app200v-team11-default-rtdb.europe-west1.firebasedatabase.app"
-
-
-  
-  //  firebaseConfig.databaseURL: "https://app200v-team11-default-rtdb.europe-west1.firebasedatabase.app",
-  
-  //const FIREBASE_HOST = 'app200v-team11-default-rtdb.europe-west1.firebasedatabase.app';
-
-
-
+// kjører på server - bruk token
 async function writeRTdb(ref = 'forgottenREF/', payload, method = 'set', timeStamp = true) {
-  
+  if (runningLocal){
+    writeUserData(ref, payload, method, timeStamp);
+    return;
+  }
   if (!hasValidToken(10)){await fetchToken();}
       // Choose HTTP verb based on the desired operation
       let httpMethod;
@@ -141,6 +95,7 @@ async function writeRTdb(ref = 'forgottenREF/', payload, method = 'set', timeSta
         const errBody = await resp.text();
         throw new Error(
           `Firebase write error ${resp.status} (${resp.statusText}): ${errBody}`
+          // Vennligst kontakt systemansvarlig
         );
       }
 
@@ -150,3 +105,35 @@ async function writeRTdb(ref = 'forgottenREF/', payload, method = 'set', timeSta
 
   
   
+/** ** ** ** 
+ * 
+ * Funksjoner som leser databasen
+ * 
+ ** ** ** ** ** ** ** */
+
+async function readRTdb (ref = 'brukere/'){
+  if (runningLocal){
+  // videresend forespørsel til writeUserData - som ikke burde hete det
+    return;
+  }
+
+  if (!hasValidToken(10)){await fetchToken();}
+
+  const dbPath = ref; 
+  const url = `https://${FIREBASECONFIG_DATABASEURL}/${dbPath}.json`;
+  const dbResp = await fetch(url, {
+      method: 'GET',
+      headers: {  'Accept': 'application/json',
+                  'Authorization': `Bearer ${tokenCache.accessToken}`
+               }
+  });
+
+  if (!dbResp.ok) {
+      throw new Error(`Firebase returned ${dbResp.status} (${dbResp.statusText})`);
+  }
+
+  const dbData = await dbResp.json();
+  //console.log('Data from Firebase:\n' + JSON.stringify(dbData, null, 2));
+  return dbData;
+
+}
