@@ -1,11 +1,13 @@
-main_JS er javascript som blir lastet inn for alle sidene
+Ye ye 
 
-Dersom noe Javascript ikke trenger å kjøres på alle sider
-skal det ikke skrives i main.JS.
+Med <script type = "module" src = "..."> </script> bruker vi
+moduler. En inngangs.java linkes inn på hvert HTML dokument 
+-- i tillegg til de tre som hører til database SDK -- 
+Videre importerer vi funksjoner, og konstanter inn i den filen.
 
-Opprett heller en ny js-fil og lenk den inn med 
- <script src="./JS/mittScript.js" defer></script>
+https://hacks.mozilla.org/2015/08/es6-in-depth-modules/
+https://2ality.com/2014/09/es6-modules-final.html
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
 
-Nøkkelordet defer brukes for at alt annet lastes først så 
-brukerne har noe å se på imens javascriptet gjør sine forberedelser. 
+
 

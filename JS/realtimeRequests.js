@@ -6,7 +6,7 @@ import {  FIREBASECONFIG_DATABASEURL,
           tokenCache,
           hasValidToken,
           fetchToken
-        } from './dbConfig.js';
+        } from './modules/dbConfig.js';
 
 /**
  * 
@@ -34,8 +34,8 @@ const runningLocal = runtimeEnvironment;
  * 
  ** ** ** ** ** ** ** */
 
- function writeUserData( brukerId, navn, psudoMail,group){    
-            firebase.database().ref('brukere/' + brukerId).push({ 
+export function writeUserData( brukerId, navn, psudoMail,group){    
+            firebase.database().ref('brukere/' + brukerId).set({ 
               brukernavn : navn,
               psudoMail : psudoMail,
               createdTimestamp : new Date().toISOString(),
@@ -44,15 +44,15 @@ const runningLocal = runtimeEnvironment;
     }
  //writeUserData( "008", "Mehmet Askercik", "mehmet.a@microsoft.ltd", "myFetchedgroup"); // test
 
- function dbWrite (ref = 'forgottenREF/', payload, method = 'push', timeStamp = true){
+ export function dbWrite (ref = 'forgottenREF/', payload, method = 'push', timeStamp = true){
   // Legger til tidstempel 
   if (timeStamp){payload.time = new Date().toISOString();}
   // SDK kall for skriving til database - om dette kallet brukes direkte blir det en mer arbeidsom overgang til 
-  firebase.database().ref(ref, payload)[method]({ payload});
+  firebase.database().ref(ref)[method]( payload); 
 }
 
 // kjører på server - bruk token
-async function writeRTdb(ref = 'forgottenREF/', payload, method = 'push', timeStamp = true) {
+export async function writeRTdb(ref = 'forgottenREF/', payload, method = 'push', timeStamp = true) {
     // Web-appen bruker SDK syntaks når den kjøres lokalt
   if (runningLocal){return dbWrite(ref, payload, method, timeStamp);}
     // Sjekker om service-token er gyldig i minst 10 sekunder til 
@@ -118,14 +118,14 @@ async function writeRTdb(ref = 'forgottenREF/', payload, method = 'push', timeSt
  * 
  ** ** ** ** ** ** ** */
 
-async function readUserData(ref = 'forgottenREF/') { //om ref utelates lagres innholdet på noden forgottenREF 
+export async function readUserData(ref = 'forgottenREF/') { //om ref utelates lagres innholdet på noden forgottenREF 
   const dbRef = firebase.database().ref(ref); // SDK magic - tre linjer isedet for 30 
   const snapshot = await dbRef.once('value');
   return snapshot.val();   // null hvis noden ikke finnes
   
 }
 
-async function readRTdb(ref = 'forgottenREF/') {
+export async function readRTdb(ref = 'forgottenREF/') {
     // Web-appen bruker SDK syntaks når den kjøres lokalt
   if (runningLocal) {return readUserData(ref);} 
     // Sjekker om service-token er gyldig i minst 10 sekunder til 
@@ -159,3 +159,12 @@ async function readRTdb(ref = 'forgottenREF/') {
   //console.log('Data from Firebase:\n' + JSON.stringify(dbData, null, 2));
   return dbData;
 }
+
+/**
+ * 
+ * Kodeeksempler for realtimedatabase SDK
+ * https://firebase.google.com/docs/database/web/read-and-write#web_3
+ * 
+ * Føl deg fri til å eksperimentere 
+ * 
+ * * * * * * * * * * * * */
