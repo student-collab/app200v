@@ -75,7 +75,7 @@ export async function writeRTdb(ref = 'forgottenREF/', payload, method = 'push',
       }
 
       // Bygger URL med obligatorisk .json suffix)
-      const url = `https://${FIREBASECONFIG_DATABASEURL}/${ref}.json`;
+      const url = `${FIREBASECONFIG_DATABASEURL}/${ref}.json`;
       // Legger til tidstempel
       if (timeStamp){ payload.time = new Date().toISOString();}
       // Utfører spørringen

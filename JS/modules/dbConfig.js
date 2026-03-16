@@ -43,6 +43,7 @@ export const FIREBASECONFIG_DATABASEURL = firebaseConfig.databaseURL;
  */
 const app = firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
+const db = firebase.firestore();       // Firestore
 const auth = firebase.auth();
 
 /**
@@ -103,13 +104,25 @@ export function hasValidToken(bufferSec = 10) {
  *  lokalt på serveren. Kjøres på samme maskin som nøkkelfilen er lagret. 
  * 
  */
+//Her brukes path - bør defineres heller enn å skrives direkte:
+// Nå brukes get-token fra root
+// Rikitg path: 
+/*
+$rawTPath = __DIR__ . '/../../../webroots/r1434796/FireBaseRTdb_JSON_key';
+$TokP = realpath($rawTPath);
+define('TOKEN_CACHE_FILE', $TokP . '/token_cache.json');
+*/
+// Jeg vil ha den path-en fra php ... 
 
+// Endringer :
+// Bruker mm.php heller enn direkte kall
    export async function fetchToken() {
     try {
     
-        const response = await fetch('/get-token.php', {
+        const response = await fetch('/mm.php', {
             method: 'GET',
-            credentials: 'same-origin'   // send cookies if you need auth later
+           // credentials: 'same-origin',   // same-origin er default-verdi. omit sender ikke auth/cookies include sender til 'alle'
+            headers: {'X-Internal-Secret': 'www-w3schools-com-jsref-prop_doc_cookie-asp'}
         });
         
         if (!response.ok) {
@@ -125,7 +138,7 @@ export function hasValidToken(bufferSec = 10) {
         }
 
         tokenCache.accessToken = data.access_token;
-        tokenCache.expiresAt = data.expires_in;
+        tokenCache.expiresAt = data.expiresAt;
 
     } catch (err) {
         // Handles:

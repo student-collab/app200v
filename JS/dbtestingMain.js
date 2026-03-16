@@ -7,7 +7,13 @@ import {    dbWrite,
             readUserData,
             readRTdb
         } from './realtimeRequests.js';
-
+/*         
+            writeUserData  - for registrering av brukere - avhengig av bakdør                              -> kjører lokalt
+            dbWrite hjelpefunksjon for å gjøre overgang til writeRTdb lettere -avhengig av bakdør          -> kjører lokalt
+            writeRTdb - den eneste funksjonen med skrivetilgang uten bakdør: auth.signInAnonymously();     -> kjører på web
+            readUserData - avhenger av bakdør 
+            readRTdb brukes på server - videresender til SDK-versjon ved lokal kjøring 
+*/
 
 import {
     showResp
@@ -30,14 +36,14 @@ console.log ("Brukernavn: " + payload.bname
 let ref = "brukere/"
 let method = 'push' // kan være: push / update / set 
 
-//writeRTdb(ref, payload, method).then(wrote => { // endringsvennlig
-//   console.info(wrote);
-//});
-let id = "008";
-let navn = "James Bond";
-let psudomail = "J@bond";
-let gruppe = "arbeider";
-writeUserData(id,navn,psudomail,gruppe);
+writeRTdb(ref, payload, method).then(wrote => { // endringsvennlig
+   console.info(wrote);
+});
+//let id = "008";
+//let navn = "James Bond";
+//let psudomail = "J@bond";
+//let gruppe = "arbeider";
+//writeUserData(id,navn,psudomail,gruppe);
 
 
 });
