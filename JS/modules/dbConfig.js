@@ -45,6 +45,7 @@ const app = firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 const db = firebase.firestore();       // Firestore
 const auth = firebase.auth();
+export {db};
 
 /**
  *  Denne metoden er en bakdør - den tillater anonym innlogging. 

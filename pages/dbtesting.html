@@ -46,61 +46,102 @@
     <h1>Skriver og leser litt</h1>
     <p> ...</p>
     
-    <form  id = "test_form" action="" >
-      <div id = "send_frame" class="frame">
-        <p><strong>Lagrer til og leser fra destinasjonen: /brukere </strong></p>
-        <label for="bNavn">Brukernavn</label>
-        <input type="text" id = "bNavn" value ="" placeholder ="-  Brunogblid" >
-        <label for="psudoE-post">E-post</label>
-        <input type="text" id ="psudoE-post" value ="" placeholder ="-  abc@hotstuff.com" >
-      </div>
-      <button class ="form_button" id = "form_save_btn">Save to db</button>
+    <div id = "send_frame" class="frame">
+      <form  id = "test_form" action="" >
+        <p><strong>Innsamling av informasjon </strong></p>
+        
+        <label for="t_title">Tittel</label>
+        <input type="text" id = "t_title" value ="" placeholder ="-  eks. Hagestell" required>
+        <label for="t_descript">Enkel beskrivelse av oppdraget</label>
+        <textarea id ="t_descript" value ="" placeholder ="-  max 1000 tegn (?)" required></textarea>
+        <label for="requisites1">Krever førerkort klasse B
+        <input type="checkbox" name="førerkort" value ="Krever førerkort kl B" id="requisites1"></label>
+        
+        <label for="requisites2">Krever bruk av egen bil
+        <input type="checkbox" name="bil" value ="Krever bruk av egen bil" id="requisites2"></label>
+        <button type = "button" class ="form_button" id = "form_save_btn">Save to db</button>
+
+      
+      
+      
+      </form>
+    </div>
       <button class ="form_button" id = "form_read_btn">Read from db</button>
       <div id = "show_frame" class="frame">
+        <h1>Firestore database struktur</h1>
+        
         <ul id="read" class="all_nodes"> 
-          <p>Alle</p>
-          <li><p>(første node) Brukere</p>
-            <ul id="lvl1">
-              <li><p>Bruker1</p>
-                <ul id="lvl2node1" class="lvl2node">
-                  <li></li>
-                  <li></li>
-                  <li></li>
-                  <li></li>
-                </ul>
-              </li>
-              <li><p>Bruker2</p>
-                <ul id="lvl2node2" class="lvl2node">
-                  <li></li>
-                  <li></li>
-                  <li></li>
-                  <li></li>
-                </ul>
-              </li>
-              <li><p>Bruker3</p>
-                <ul id="lvl2node3" class="lvl2node">
-                  <li></li>
-                  <li></li>
-                  <li></li>
-                  <li></li>
-                </ul>
-              </li>
-              <li><p>Bruker4</p>
-                <ul id="lvl2node4" class="lvl2node">
-                  <li></li>
-                  <li></li>
-                  <li></li>
-                  <li></li>
-                </ul>
-              </li>
-            </ul>
+          <li><h2>Øverste nivå er samlinger - collections </h2>
+            <p>Samlinger er beholdere - containers, som en katalog/mappe</p>
           </li>
+            
+            
+            
+            <li><h3>tasks (minCollection1)</h3></li>
+            <ul id="lvl1">
+              <li><h4>task1 (mittDokument1)</h4> Hvert dokument er JSON tree <br> 
+                <div id = "json_frame" class="frame">
+<pre>
+task1 = {    
+        title: "Hjelp til bortkjøring av søppel",
+        status: "open",
+        meta: {
+            created: Date.now(),
+            tags: ['krever førerkort', 'bil']
+        },
+        assignee: {
+            uid: 'abc123',
+            name: 'Rooney'
+        }
+        location: { "conty":  "Vestfold",
+                              "mucipality"    : "Horten",
+                              "longditude"    : 59.414410, 
+                              "latitude"      : 10.472876
+        },
+        description: string
+}
+</pre>
+              </div>
+              </li>
+              <ul id="lvl2node1" class="lvl2node">
+                    <ul id="lvl3node1" class="lvl3node">
+                      <li>title: "Hjelp til bortkjøring av søppel"</li>
+                      <li>status: "open"</li>
+                      <li> meta: {created: Date.now(),tags: ['krever førerkort', 'bil']}</li>
+                      <li>assignee: {uid: 'abc123',name: 'Rooney'}</li>
+                      <li>"location" : { "conty"         : "Vestfold","mucipality"    : "Horten","longditude"    : 59.414410, "latitude"      : 10.472876}</li>
+                      <li>description: string (Field)</li>
+                      <li>assignee: {uid: 'abc123',name: 'Rooney'} (Field)</li>
+                    </ul>
+                    
+              </ul>
+              
+              <li>
+                  <p>Dokumenter kan ha mange field og et field kan ha objekter <br> 
+                    eller array. Dokumenter får en unik id i datbasen  </p>
+              </li>
+              
+              
+            </ul>
+            <li><h3>brukerprofiler (minCollection2)</h3></li>
+            
+                <ul id="lvl2node2" class="lvl2node">
+                  <li><h4>Brukere (mittDokument2)</h4></li>
+                  <ul id="lvl3node1" class="lvl3node">
+                    <li>brukerID: "007"</li>
+                    <li>lokasjon: "brukerens posisjon på kartet"</li>
+                    <li>hva-som-helst: {minNøkkel: "På flere nivå om nødvendig"}</li>
+
+                  </ul>
+
+                </ul>
+              
         </ul>
 
 
       </div>
       
-    </form>
+    
   </section>
 
 
@@ -108,6 +149,9 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!-- firebase-firestore-compat.js lagt til i forbindelse med overgang fra RTdb til FSdb 
+ firebase-database-compat.js er overflødig når overgangen er fullstendig -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   
   <!-- Intern script som inneholder det som må til for å etablere forbindelsen -->
   <script type="module" src="../JS/modules/dbConfig.js"></script> 

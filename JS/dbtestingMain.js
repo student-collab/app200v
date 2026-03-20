@@ -1,50 +1,92 @@
 
 import { initMenu } from './modules/initMenu.js';
 initMenu(); // Loads menu
-import {    dbWrite,
-            writeRTdb,
-            writeUserData,
-            readUserData,
-            readRTdb
-        } from './realtimeRequests.js';
-/*         
-            writeUserData  - for registrering av brukere - avhengig av bakdør                              -> kjører lokalt
-            dbWrite hjelpefunksjon for å gjøre overgang til writeRTdb lettere -avhengig av bakdør          -> kjører lokalt
-            writeRTdb - den eneste funksjonen med skrivetilgang uten bakdør: auth.signInAnonymously();     -> kjører på web
-            readUserData - avhenger av bakdør 
-            readRTdb brukes på server - videresender til SDK-versjon ved lokal kjøring 
-*/
 
 import {
-    showResp
+    //showResp Made for RTDB not yet modified to work with new FSdb
 } from './modules/showRead.js';
 
+import { getTasks,
+        getTask,
+        setTask,
+        updateTask,
+        deleteTask,
+        clearField,
+        readFSdb        
+} from './modules/FS_Requests.js'; 
+
+function myfunction(){
+    if (1){
+        getTask();
+        getTasks();
+        setTask();
+        updateTask();
+        deleteTask();
+        clearField();
+        readFSdb();
+    }
+}
+const FORM = document.getElementById("test_form");
 const WRITE_DB_BTN = document.getElementById("form_save_btn");
 const READ_DB_BTN = document.getElementById("form_read_btn");
-const INPUT_B_NAME = document.getElementById("bNavn");
-const INPUT_E_MAIL = document.getElementById("psudoE-post");
+const INPUT_TASK_TITLE = document.getElementById("t_title");
+const INPUT_TASK_DESCRIPTION = document.getElementById("t_descript");
+const INPUT_REQUISITE_1 = document.getElementById("requisites1");
+const INPUT_REQUISITE_2 = document.getElementById("requisites2");
 
-WRITE_DB_BTN.addEventListener('click', (e) => {
-e.preventDefault();
-console.log("Save button");
-let payload = {  "bname" :INPUT_B_NAME.value, 
-                "email" :INPUT_E_MAIL.value
-            };
-console.log ("Brukernavn: " + payload.bname
-            + "\nE-post: " + payload.email);
 
-let ref = "brukere/"
-let method = 'push' // kan være: push / update / set 
+let tag1 = (INPUT_REQUISITE_1.checked) ?  INPUT_REQUISITE_1.value : "";
+let tag2 = (INPUT_REQUISITE_2.checked) ?  INPUT_REQUISITE_2.value : "";
+/* Se etter og ikke tillat innsending av tomt skjema ...  */
 
-writeRTdb(ref, payload, method).then(wrote => { // endringsvennlig
-   console.info(wrote);
-});
-//let id = "008";
-//let navn = "James Bond";
-//let psudomail = "J@bond";
-//let gruppe = "arbeider";
-//writeUserData(id,navn,psudomail,gruppe);
+WRITE_DB_BTN.addEventListener('click', async (e) => {
+ if (!FORM.checkValidity()) {
+    FORM.reportValidity(); 
+    return; // Stop execution
+  }
+console.log("Save button clicked - gathering payload");
+let payload = { 
+    description     :INPUT_TASK_DESCRIPTION.value,
+    title           :INPUT_TASK_TITLE.value,
+    status          : "open",
+meta                : {     created: Date.now(),
+                            tags: [tag1, tag2]
+                        },
+assignee           : {  uid: 'abc123',
+                        name: 'Rooney' },
+location            : { "conty"         : "Vestfold",
+                                        "mucipality"    : "Horten",
+                                        "longditude"    : 59.414410, 
+                                        "latitude"      : 10.472876
+                    }
+    };
 
+console.info (payload);
+
+let docID = await setTask(0,payload);
+console.info ("Sent");
+console.info ("ID: " + docID);
+/*
+  myTask = {    
+        title: "Hjelp til bortkjøring av søppel",
+        status: "open",
+        meta: {
+            created: Date.now(),
+            tags: ['krever førerkort', 'bil']
+        },
+        assignee: {
+            uid: 'abc123',
+            name: 'Rooney'
+        }
+        "location" : { "conty"         : "Vestfold",
+                                        "mucipality"    : "Horten",
+                                        "longditude"    : 59.414410, 
+                                        "latitude"      : 10.472876
+        }
+}
+  
+  
+*/
 
 });
 

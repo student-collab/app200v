@@ -1,3 +1,24 @@
+@media (max-width: 767px){
+
+    section{
+        font-size: 10px;
+     
+        
+    }
+    
+}
+@media (min-width: 1400px){
+
+    section{
+        max-width: 1000px;
+        transform: translateX(50%);
+    }
+    
+}
+    
+section ul {
+    padding:1em;
+}
 #test_form{
     display:flex;
     flex-direction: column;
@@ -9,7 +30,12 @@
     
     padding: 1em 2em;
     box-shadow: inset 2px 3px 5px rgba(0,0,0,.5) ;
-    
+    overflow-x: auto;
+}
+#t_descript{
+    resize: vertical;
+    height: 6em;
+    max-height: 12em;
 }
 .form_button{
     justify-self: center;
