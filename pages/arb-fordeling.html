@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TeamWork – Arbeidsfordeling</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="../CSS/main.css">
+  <link rel="icon" href="../img/favicon.png">
+
+  <style>
+    /* ── Dropdown nav ── */
+    .dropdown { position: relative; }
+
+    .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      list-style: none;
+      margin: 4px 0 0;
+      padding: 4px 0;
+      min-width: 170px;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,.12);
+    }
+
+    .dropdown:hover .dropdown-menu,
+    .dropdown:focus-within .dropdown-menu { display: block; }
+
+    .dropdown-menu li a {
+      display: block;
+      padding: 8px 16px;
+      color: #222;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .dropdown-menu li a:hover { background: #f5f5f5; }
+
+    /* ── Page layout ── */
+    main { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
+
+    h1 { font-size: 1.4rem; margin: 2rem 0 0.4rem; }
+    .subtitle { margin: 0 0 1.2rem; color: #555; font-size: 0.95rem; }
+
+    /* ── Image grid ── */
+    .wireframe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .wireframe-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: box-shadow .2s, transform .2s;
+      background: #fafafa;
+    }
+
+    .wireframe-card:hover {
+      box-shadow: 0 6px 20px rgba(0,0,0,.13);
+      transform: translateY(-3px);
+    }
+
+    .wireframe-card a { display: block; }
+
+    .wireframe-card img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .card-label {
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #333;
+      text-align: center;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <figure>
+      <a href="../index.html">
+        <img src="../img/teamWork.png" alt="logo">
+      </a>
+    </figure>
+
+    <button id="burger_button">
+      <img id="burger_stripes" style="max-width:100px;" src="../img/burgerStripes.png" alt="menu">
+      <img id="burger_close" class="hidden" style="max-width:100px;" src="../img/burgerClose.png" alt="close">
+    </button>
+
+    <ul id="navUL">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="dbtesting.html">DB test</a></li>
+      <li><a href="arb-fordeling.html">Arb fordeling</a></li>
+
+      <!-- Dropdown -->
+      <li class="dropdown">
+        <a href="#">Pages ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="messages.html">Messages</a></li>
+          <li><a href="postTask.html">Post Task</a></li>
+          <li><a href="search.html">Search</a></li>
+          <li><a href="taskFeed.html">Task Feed</a></li>
+          <li><a href="userPostedTasks.html">My Posted Tasks</a></li>
+          <li><a href="userProfile.html">User Profile</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main>
+<p>Hei luna</p>
+    <!-- ── Light mode ── -->
+    <h1>Wireframes – Light mode – 08.04.2026</h1>
+    <p class="subtitle">Klikk på et bilde for å gå til siden det viser.</p>
+
+    <div class="wireframe-grid">
+
+      <div class="wireframe-card">
+        <a href="messages.html">
+          <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-messages.png?alt=media&token=2098bab3-5449-4361-b867-3af4e4a7e597" alt="Messages">
+          <div class="card-label">Messages</div>
+        </a>
+      </div>
+
+      <div class="wireframe-card">
+        <a href="postTask.html">
+          <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-postTask.png?alt=media&token=a302d77f-76a4-4915-80cb-a3ca856e4de5" alt="Post Task">
+          <div class="card-label">Post Task</div>
+        </a>
+      </div>
+
+      <div class="wireframe-card">
+        <a href="postTask.html">
+          <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-postTask2.png?alt=media&token=36973212-e7b0-4235-a612-0cb33aac50a1" alt="Post Task (step 2)">
+          <div class="card-label">Post Task (step 2)</div>
+        </a>
+      </div>
+
+      <div class="wireframe-card">
+        <a href="search.html">
+          <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-search.png?alt=media&token=bacc97f6-7aca-4fdb-b5bb-9de1edc5d8a5" alt="Search">
+          <div class="card-label">Search</div>
+        </a>
+      </div>
+
+      <div class="wireframe-card">
+        <a href="taskFeed.html">
+          <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-taskFeed.png?alt=media&token=83f96899-c370-4bf1-9cc1-f441996d783d" alt="Task Feed">
+          <div class="card-label">Task Feed</div>
+        </a>
+      </div>
+
+      <div class="wireframe-card">
+        <a href="userPostedTasks.html">
+          <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-userPostedTasks.png?alt=media&token=deb7c375-9f46-40b5-97c5-1f689681a1cb" alt="My Posted Tasks">
+          <div class="card-label">My Posted Tasks</div>
+        </a>
+      </div>
+
+      <div class="wireframe-card">
+        <a href="userProfile.html">
+          <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-userProfile.png?alt=media&token=e4aada9b-2650-4027-b7d6-c32bdb8e42c0" alt="User Profile">
+          <div class="card-label">User Profile</div>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- ── Dark mode (placeholder) ── -->
+    <h1>Wireframes – Dark mode – 08.04.2026</h1>
+    <p class="subtitle">Bilder ikke lastet opp ennå.</p>
+
+  </main>
+</body>
+</html>
