@@ -15,32 +15,13 @@
   <link rel="stylesheet" href="../CSS/main.css">
   <link rel="stylesheet" href="../CSS/dbtesting.css">
   <link rel="icon" href="../img/favicon.png">
+  <script type = "module" src="../JS/main.js" defer> </script>
   <script type = "module" src="../JS/dbtestingMain.js" defer> </script>
   
 </head>
 
 <body>
-  <nav>
-    <figure>
-      <a href="../index.html">
-        <img src="../img/teamWork.png" alt="logo">
-      </a>
-    </figure>
-      
-    <button id = "burger_button">
-      <img id="burger_stripes" style = "max-width:100px; " src="../img/burgerStripes.png" alt="logo">
-      <img id="burger_close" class = "hidden" style = "max-width:100px; " src="../img/burgerClose.png" alt="logo">
-    </button>
-    
-    <ul id="navUL">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="dbtestingMain.html">DB test</a></li>
-      <li><a href="">empty</a></li>
-      <li><a href="">empty</a></li>
-      <li><a href="">empty</a></li>
-    </ul>
-    
-  </nav>
+ <nav id="replaceNav"></nav>
   <section>
 
     <h1>Skriver og leser litt</h1>
@@ -148,9 +129,6 @@ task1 = {
   <!-- Eksterne script som gjør det mulig å kommunisere med Realtime Database fra Google Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<!-- firebase-firestore-compat.js lagt til i forbindelse med overgang fra RTdb til FSdb 
- firebase-database-compat.js er overflødig når overgangen er fullstendig -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   
   <!-- Intern script som inneholder det som må til for å etablere forbindelsen -->
@@ -158,7 +136,6 @@ task1 = {
   
   
   <!-- Internt skript for å skrive ting til databasen mest for å ha et eksempel å se på -->
-  <script type = "module" src="../JS/realtimeRequests.js"></script> 
   <script type = "module" src="../JS/dbtestingMain.js"> </script>
 
  

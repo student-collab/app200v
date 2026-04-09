@@ -24,44 +24,118 @@
  *  kommunisere med Google (Firebase Realtime database)
  * 
  */
-
 const firebaseConfig = {
   apiKey: "AIzaSyB6gctvGImGYdx3inuoCnO2AloPUq7UTkc",
   authDomain: "app200v-team11.firebaseapp.com",
-  databaseURL: "https://app200v-team11-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "app200v-team11",
   storageBucket: "app200v-team11.firebasestorage.app",
   messagingSenderId: "968082910252",
   appId: "1:968082910252:web:2d9b6149c77b2781f0f589"
 };
-export const FIREBASECONFIG_DATABASEURL = firebaseConfig.databaseURL;
+
+
+
+
+
+
+
 /**
  *  Her opprettes instanser av forskjellige moduler, deler av Googles Firebase SDK 
  *  De gir tilgang til forskjellige instanser som har metoder vi trenger
  *  Her: basis, database og tilgangskontroll
  * 
  */
-const app = firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();       // Firestore
 const auth = firebase.auth();
-export {db};
+export {db,auth};
 
-/**
- *  Denne metoden er en bakdør - den tillater anonym innlogging. 
- *  Hvem som helst i den store verden som kopierer konfigurasjonen ovenfor 
- *  kan logge inn slik vi selv gjør og få de samme tilgangene vi har bevilget oss selv.
- *  - under utviklingen av webapplikasjonen er det en helt grei løsning,
- *  Da finnes det ikke viktige data i databasen, og vi kan gjenskape struktur fra backup.
- * 
- *  Denne bakdøren er aktivert og kan deaktiveres på Google konsollen - databasens GUI
- *  Spør Rooney om tilgang ved behov
- * 
- */
-auth.signInAnonymously();
+const provider = new firebase.auth.GoogleAuthProvider();
 
+export async function loginWithGoogle() {
+  const result = await auth.signInWithPopup(provider);
+  return result.user;
+}
+export async function loginAnonymously() {
+  const result = auth.signInAnonymously();;
+  return result.user;
+}
+
+export async function registerWithEmail(email, password) {
+  const result = await auth.createUserWithEmailAndPassword(email, password);
+  await result.user.sendEmailVerification();
+  return result.user;
+}
+export async function signOut() {
+   try {
+    await auth.signOut();
+    console.log("User signed out successfully");
+    return true
+  } catch (error) {
+    console.log("Error: " + error.message);
+    console.error("User sign-out failed:", error);
+  }
+  return false
+}
+export async function signIn(email, password) {
+auth.signInWithEmailAndPassword(email, password)
+}
+
+  /*
+    function resendVerification() {
+         auth.currentUser.sendEmailVerification();
+    }
+  */
+
+/* ----------------------------- linken til syntaks for mange nyttige funksjoner vi kan bruke -------------------------
+
+
+
+https://firebase.google.com/docs/auth/web/manage-users
+
+----- AI oppsummering av siden lenken går til ---------
+
+Create a user
+Via createUserWithEmailAndPassword, federated providers (Google, Facebook), Firebase Console, or Admin SDK.
+
+Get the currently signed-in user
+Use onAuthStateChanged observer or currentUser property.
+
+Get a user’s profile
+Access user properties like displayName, email, photoURL.
+
+Get provider-specific profile info
+Use providerData to retrieve info from linked sign-in providers.
+
+Update a user’s profile
+Modify display name or photo URL with updateProfile.
+
+Set a user’s email address
+Use updateEmail.
+
+Send a verification email
+Trigger with sendEmailVerification; customize via Firebase Console or add continueURL/localization.
+
+Set a user’s password
+Update with updatePassword.
+
+Send a password reset email
+Use sendPasswordResetEmail; customizable templates, continueURL, and localization supported.
+
+Delete a user
+Call delete() or remove via Firebase Console.
+
+Re-authenticate a user
+Required for sensitive actions; use reauthenticateWithCredential.
+
+
+
+*/
+
+
+/* ------------------------------------ Ikke så relevant lenger SDK håndterer alt ----------------------------------- */
 /**
- *  Servicetoken er den rikitge måten å autetisere oss på
+ *  Servicetoken er den rikitge måten å autetisere oss på -- Tja riktig for server til server
  * 
  *  tokenCache er oppbevaringsplass for (service-)token.
  *  Nettversjonen av web-applikasjonen vi lager bruker token for hver HTTP forespørsel

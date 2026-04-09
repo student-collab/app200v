@@ -11,3 +11,8 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
 
 
 
+Sikkert lurere å lagre de tre som hører til database i en egen 
+fragment-fil og bruke fetch der de trengs..
+
+Siden vi bruker fetch på hovedmenyen tenger vi sikkert en main.JS 
+som inkluderes på alle sider

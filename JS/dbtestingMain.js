@@ -1,9 +1,9 @@
 
-import { initMenu } from './modules/initMenu.js';
-initMenu(); // Loads menu
+
+
 
 import {
-    //showResp Made for RTDB not yet modified to work with new FSdb
+    showResp
 } from './modules/showRead.js';
 
 import { getTasks,
@@ -90,12 +90,15 @@ console.info ("ID: " + docID);
 
 });
 
-READ_DB_BTN.addEventListener('click', (e) => {
-    e.preventDefault();
-    console.log("Read button - testmodus, leser ikke");
-    let db = readRTdb ("brukere/");
-    db.then(db =>{showResp(db)});
+READ_DB_BTN.addEventListener('click', async (e) => {
+    console.log("Read button ");
+    let myData = await getTask();
+    console.info(myData);
+    showResp(myData);
+    
 /*
+let db = readRTdb ("brukere/");
+    db.then(db =>{showResp(db)});
  let db = {
     "brukere": {    "008" : {   "navn" : "James Bond",
                                 "psudomail" : "J@bond",

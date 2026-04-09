@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8" name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>maps API</title>
+    <link rel="stylesheet" href="../CSS/main.css">
+    <link rel="stylesheet" href="../CSS/mapsTesting.css">
+    <link rel="icon" href="../img/favicon.png">
+</head>
+<body>
+        <!-- replaceNav blir funnet og erstattet med HTML fra navbar.html -->
+<nav id="replaceNav"></nav> 
+
+
+
+<div id="tabs-wrap"> <p>Krever innlogging</p>
+    <div id="tab-buttons">
+
+
+        <button button data-tab="browse-task">browse-task</button>
+        <button button data-tab="createTask" >createTask</button>
+      
+
+    </div>
+    <div id="browse-task" class ="tabs">
+            <div class="display">Valgt kommune:
+                <span id="kommune-display">- Klikk på fylke og velg kommuner </span>
+                <ul id="kommune-liste">
+                    <li>her</li>
+                </ul>
+            </div>     
+                <button id="last-oppgaver">Hent oppgaver</button>
+            <div id="kommuneliste-task-feed-side-by-side">
+                <div id="fylkeListe">counties list</div>
+                <div id="feed">
+                
+                </div>
+
+            </div>
+            
+            
+    </div>
+    <div id="createTask" class ="tabs hidden2">
+                <h1>Denne skal kun være mulig å bruke logget inn</h1>
+                <div class="display">Valgt kommune:
+                    <span id="location-display">- Klikk på kartet for å velge kommune</span>
+                </div>
+                
+                <div id="map-input-sidebyside">
+                    <div id="maps-wrap">
+                        <div id="googleMap" style="width:250px;height:650px;"></div>
+                    </div>
+                    <form id="register-task">
+                        <h3> Logg inn for å teste</h3>
+                        
+                    </form>
+                </div>
+
+    </div>
+
+       
+    </div>
+</div>
+
+
+
+
+  
+        
+        <!-- Google-script som laster Google maps API -->
+        
+        <script>/*
+        <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-CC4QtLrD-HD9_63IQFhNroyE8pnOOQY&loading=async&callback=initMap">
+              /*
+            var MY_API_KEY = "AIzaSyB-CC4QtLrD-HD9_63IQFhNroyE8pnOOQY";
+            Kan lage scriptet dynamisk:
+
+                const APILoader = document.createElement("script");
+                APILoader.src = "https://maps.googleapis.com/maps/api/js?key=" + MY_API_KEY + "&callback=initMap";
+                document.head.appendChild(script);
+
+            Google kaller scriptet: Load the Maps JavaScript API : https://developers.google.com/maps/documentation/javascript/load-maps-js-api
+            
+            */
+        </script>
+
+
+<script type = "module" src="../JS/main.js" > </script>
+<script type="module" src="../JS/mapsTestingMain.js" ></script> 
+<script type="module" src="../JS/kommunevelger.js" ></script> 
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  
+</body>
+</html>

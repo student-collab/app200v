@@ -53,8 +53,34 @@ import-syntaks:
 
 */
 
-async function getTasks() {
-    await db.collection('tasks').get();
+/* Kartlegger oppdrag per kommune */
+
+export async function getOppdragKommune (){
+  const snap = await db.collection('tasks').get();
+  const countPerKommune = {};
+  snap.docs.forEach(d => {
+                            const k = d.data().location.kommune;
+                            if (k) countPerKommune[k] = (countPerKommune[k] || 0) + 1;
+                  });
+return countPerKommune;
+}
+async function getTasks(kommuner) {
+  const antKommuner = kommuner.length;
+  if(antKommuner > 30){
+    const chunks = [];
+    for (let i = 0; i < antKommuner; i += 30)
+      chunks.push(kommuner.slice(i, i + 30));
+
+    const snaps = await Promise.all(
+      chunks.map(chunk => db.collection('tasks').where('location.kommune', 'in', chunk).get())
+    );
+
+    return snaps.flatMap(s => s.docs.map(d => ({ id: d.id, ...d.data() })));
+
+  }
+ const snap = (kommuner.length === 0)
+  ? await db.collection('tasks').get() 
+  : await db.collection('tasks').where('location.kommune', 'in', kommuner).get();
 
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
@@ -73,10 +99,23 @@ async function getTasks() {
 
 
 
-async function getTask(taskId) {
-    const snap = await db.collection('tasks').doc(taskId).get();
-    if (!snap.exists) return null;
-    return { id: snap.id, ...snap.data() };
+async function getTask(taskId = "") {
+    if(taskId == ""){
+        console.log("getTask without taskId");
+        const querySnapshot = await db.collection('tasks').get();
+        
+        return querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+    }
+    else{
+      console.log("taskId = " + taskId);
+
+          const snap = await db.collection('tasks').doc(taskId).get();
+          if (!snap.exists) return null;
+          return { id: snap.id, ...snap.data() };
+        }
   }
 
   async function setTask(taskId, data) { // ref method payload --- 
