@@ -1,5 +1,6 @@
 import { initMenu } from './modules/initMenu.js';
 import { auth} from './modules/dbConfig.js';
+import { setUser } from './modules/FS_Requests.js';
 
 document.addEventListener('readystatechange', (e) => {
     console.log("Readystate: " + document.readyState);
@@ -31,6 +32,7 @@ document.addEventListener('readystatechange', (e) => {
                       } else {
                         showApp(user);          
                         console.log('Signed in as', user.displayName, user.email);
+                        
                       }
                     });
               });
@@ -44,10 +46,21 @@ export function showLoginUI() {
   logInScreen.classList.remove("hidden");
 }
 
-function showApp(user) {
+//gjort om til async for å kunne kjøre wait
+async function showApp(user) {
   document.getElementById('login-screen').classList.add("hidden");
 
+   await setUser(user.uid, {
+    name: user.displayName,
+    email: user.email,
+    phone: "",
+    location: "",
+    gender: ""
+  });
+
 }
+
+
 
 /*
   
