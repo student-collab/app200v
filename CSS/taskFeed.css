@@ -1,0 +1,144 @@
+body{ background-color: aliceblue;}
+:root{font-size: 13px;} /*Defineres i main CSS ikke her */
+
+/* * * * * * * * * *
+ *  mobile-header  *
+ * * * * * * * * * */
+header{
+    display:flex;
+    justify-content: space-between;
+}
+header div#logo-header{
+    display:flex;
+}
+header > div#logo-header > img{
+    align-self: center;
+    margin: 0 .5rem 0 1rem;
+    
+    
+}
+header > #moon-symbol-background{
+    background-color: #ddd;
+    text-align: center;
+    font-size:25px;
+    width: 1.5em;
+    height: 1.5em;
+    align-self: center;
+    border-radius: 100%;
+}
+
+/* * * * * * * * * * * * * * * * *
+ *   Søkefeltmed filterknapper   *
+ * * * * * * * * * * * * * * * * */
+ #search-field-and-info{
+    position: relative;
+    font-size: 1rem;
+ }
+ #search-field-and-info > button{
+    font-size:1.5em;
+    border-radius: 1em;
+    padding: .2em 1em;
+    margin: 1em 1em 1em 0;
+    border:2px solid #777;
+
+ }
+ #search-field-and-info > button:active{
+    border:2px solid #999;
+ }
+#searchbar-mag-symbol{
+    position: absolute;
+    left:.2em;
+    top:.5em;
+    
+}
+
+#search-field-and-info > input{
+font-size: 1.5em;
+padding-left:1.5em;
+border-radius: 2em;
+line-height: 2em;
+}
+
+
+/* * * * * * * * * *
+ *  task element   *
+ * * * * * * * * * */
+ 
+
+
+
+
+
+
+ 
+.task{
+     padding:0 2em 0 2em;
+     display: flex;
+     justify-content: space-between;
+     background-color: white;
+     border-radius: 10px;
+    }
+    
+.task__title {
+    margin-bottom:0;
+}
+.task__info{
+    display: flex;
+
+}
+.task__info span{
+    padding-right: 1em;
+    display: flex;
+    color:#777;
+    
+}
+.task__info svg{
+    align-self: center;
+    margin-right:.5em;
+}
+
+.task__location {
+    
+}
+.task__rating { 
+    
+}
+.task__price { 
+    
+    font-weight: bold;
+}
+
+.task__btn { 
+    border-radius: 1em;
+    background-color: black;
+    color:white;
+}
+
+.task__img { 
+    align-self:center;
+}
+
+/* * * * * * * * * * * * *
+ *  mobile-footer menu   *
+ * * * * * * * * * * * * */
+#footer-menu{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid #e0e0e0;
+}
+
+.nav-item {
+  font-size: 1.5rem; /*symbolene har width og height 2em som vil si 2 x verdien som velges her*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  color: #333;
+}
+.nav-item span {
+
+    font-size: 1rem;
+}
