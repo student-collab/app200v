@@ -1,4 +1,4 @@
-body{ background-color: aliceblue;}
+
 :root{font-size: 13px;} /*Defineres i main CSS ikke her */
 
 header, 
@@ -38,8 +38,9 @@ header > #moon-symbol-background{
  #search-field-and-info{
     position: relative;
     font-size: 1rem;
- }
- #search-field-and-info > button{
+}
+#search-field-and-info > button{
+    color:var(--font-color-main, green);
     font-size:1.5em;
     border-radius: 1em;
     padding: .2em 1em;
@@ -63,6 +64,7 @@ font-size: 1.5em;
 padding-left:1.5em;
 border-radius: 2em;
 line-height: 2em;
+border: 2px solid var(--border-color);
 }
 
 
@@ -143,4 +145,9 @@ line-height: 2em;
 .nav-item span {
 
     font-size: 1rem;
+}
+
+.nav-item svg{
+    color:var(--font-color-menu-icons);
+    
 }

@@ -1,0 +1,151 @@
+
+header, 
+#page-grid,
+#search-field-and-info {max-width: 1600px;
+  margin: 0 auto;}
+
+/* * * * * * * * * *
+ *  mobile-header  *
+ * * * * * * * * * */
+header{
+    display:flex;
+    justify-content: space-between;
+}
+header div#logo-header{
+    display:flex;
+}
+header > div#logo-header > img{
+    align-self: center;
+    margin: 0 .5rem 0 1rem;
+    
+    
+}
+header > #moon-symbol-background{
+    background-color: #ddd;
+    text-align: center;
+    font-size:25px;
+    width: 1.5em;
+    height: 1.5em;
+    align-self: center;
+    border-radius: 100%;
+}
+
+#caption{
+ display: flex;
+ justify-content: center;   
+}
+#caption > h2{ 
+    margin-left:2em;
+}
+#caption__left-arrow{
+    font-size: 2em;
+    align-self: center;
+    
+}
+
+/* * * * * * * * * * * * * * * *
+ *  Toggle button for urgent   *
+ * * * * * * * * * * * * * * * */
+    #urg-toggle-btn {
+    display: none; /* Hide the checkbox */
+    }
+
+    #urgent-toggle {
+    display: inline-block;
+    margin:5px 30px 5px 0 ;
+    width: 50px;
+    height: 25px;
+    background-color: #ccc;
+    border-radius: 25px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    }
+
+    #urgent-toggle::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 19px;
+    height: 19px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+    }
+
+    #urg-toggle-btn:checked + #urgent-toggle {
+    background-color: #2196F3;
+    }
+
+    #urg-toggle-btn:checked + #urgent-toggle::before {
+    transform: translateX(25px);
+    }   
+    #urg-btn-container{
+        display: flex;
+        justify-content: space-between;
+        background-color: white;
+
+    }
+    #urg-btn-container > span{ 
+        align-self: center;
+        margin-left: 2em;
+    }
+/* * * * * * * * *
+ *  user input   *
+ * * * * * * * * */
+#form__post-task{
+    display: flex;
+    flex-direction: column;
+    gap:.2em;
+    color:var( --font-color-main);
+}
+#form__post-task label{
+
+    margin-top:1em;
+}
+#form__post-task input,
+#form__post-task textarea,
+#form__post-task select{
+    color:var(----font-color-forms);
+    background-color:  var(--backgroundcolor-form-fields);
+    border:1px solid var(--bordercolor-form-fields);
+    border-radius: 10px;
+    
+}
+#form__post-task :is(input, textarea, select):focus {
+    outline:var(--font-color-forms);
+    box-shadow: 0 2px 4px 1px var(--font-color-forms);
+}
+#form__post-task textarea{
+    height: 5em;
+}
+/* * * * * * * * * * * * *
+ *  mobile-footer menu   *
+ * * * * * * * * * * * * */
+#footer-menu{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid #e0e0e0;
+}
+
+.nav-item {
+  font-size: 1.5rem; /*symbolene har width og height 2em som vil si 2 x verdien som velges her*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  color: #333;
+}
+.nav-item span {
+
+    font-size: 1rem;
+}
+
+.nav-item svg{
+    color:var(--font-color-menu-icons);
+    
+}

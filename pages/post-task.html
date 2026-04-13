@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <title>TeamWork</title>
+
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <meta name="description" content="" />
+  <link rel="stylesheet" href="../CSS/postTask.css">
+  <link rel="stylesheet" href="../CSS/main.css">
+
+  <link rel="stylesheet" href="../CSS/postTaskDesktop.css" media="(min-width: 900px) ">
+
+
+
+  <link rel="icon" href="./img/favicon.png">
+
+  
+
+</head>
+
+<body>
+  <header>
+    <div id = "logo-header">
+      
+    <img style = "width:25px; height:25px;" src="../img/testSize/SQ.png" alt="Logo: SQ" >
+    <h1>SideQuest</h1>
+    
+    </div>
+    <div id="moon-symbol-background">
+      <span>&#9789;</span>
+    </div>
+</header>
+
+<div id="caption"><span id="caption__left-arrow">&#x1F860;</span><h2>Post a task</h2></div>
+
+   <div id="page-grid">
+    <form id ="form__post-task" action="">
+        <label for="task-title">Oppgave tittel</label>
+        <input id = "task-title" type="text">
+        <label for="beskrivelse">Beskrivelse</label>
+        <textarea id = "beskrivelse" style ="resize: none;" name="" id=""></textarea>
+        <label for="lokasjon">Lokasjon</label>
+        <input id="lokasjon" type="text">
+        <label for="categories">Velg passsende kategori for ditt oppdrag</label>
+        <select name="chosenCategory" id="categories">
+            <option value="">--Velg kategori--</option>
+            <option value="Husarbeid">Husarbeid</option>
+            <option value="Hagearbeid">Hagearbeid</option>
+            <option value="Hundepass">Hundepass</option>
+            <option value="Vedlikehold">Vedlikehold</option>
+        </select>
+        <label for="pris">Budsjett Pris</label>
+        <input id="pris" type="text">
+        <label for="urg-toggle-btn">Haster</label>
+        <div id="urg-btn-container">
+            <span>Velg om dette oppdraget haster</span>
+            <input type="checkbox" id="urg-toggle-btn" />
+            <label id = "urgent-toggle" for="urg-toggle-btn"></label>   
+            </div>
+    </form>
+    <nav id="footer-menu">
+        <div class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" style="width: 2em; height:2em;" " stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12L12 3l9 9"/>
+            <path d="M9 21V12h6v9"/>
+            <path d="M3 12v9h18V12"/>
+            </svg>
+            <span>Feed</span>
+        </div>
+
+    <div class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" style="width: 2em; height:2em;" " stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="7"/>
+        <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+        </svg>
+        <span>Search</span>
+    </div>
+
+    <div class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" style="width: 2em; height:2em;" " stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/>
+        <line x1="12" y1="8" x2="12" y2="16"/>
+        <line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        <span>Post</span>
+    </div>
+
+    <div class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" style="width: 2em; height:2em;" " stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span>Messages</span>
+    </div>
+
+    <div class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" style="width: 2em; height:2em;" " stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+        <span>Profile</span>
+    </div>
+
+    </nav>
+
+    </div>
+  
+</body>
+
+</html>
+
