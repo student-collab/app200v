@@ -1,0 +1,67 @@
+.container {
+    text-align: center;
+    background: rgb(247, 247, 247);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 420px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.profile-photo {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 1rem auto;
+    border: 3px solid #777;
+    background-color: #f4f4f4;
+}
+
+.editProfileBtn {
+    background-color: rgb(220, 220, 220);
+    padding: 10px 25px;
+    border: none; /* no black border line */
+    border-radius: 12px; /* rounded corners */
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer; /* hand cursor when hovering */
+    
+}
+.editProfileBtn:hover {
+    background-color: rgb(200, 200, 200); /* slightly darker on hover */
+
+}
+
+/* For tablets and larger */
+@media (min-width: 768px) {
+    .container {
+        padding: 30px;
+        margin: 40px auto;
+        
+    }
+
+    .profile-photo {
+        width: 140px;
+        height: 140px;
+    }
+}
+
+  /* For desktop */
+@media (min-width: 1024px) {
+     .container {
+        max-width: 720px;
+        padding: 40px;
+        margin: 50px auto;
+    }
+
+    .profile-photo {
+        width: 100px;
+        height: 100px;
+    }
+
+}
+
+
+
