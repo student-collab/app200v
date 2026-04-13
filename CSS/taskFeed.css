@@ -1,6 +1,11 @@
 body{ background-color: aliceblue;}
 :root{font-size: 13px;} /*Defineres i main CSS ikke her */
 
+header, 
+#page-grid,
+#search-field-and-info {max-width: 1600px;
+  margin: 0 auto;}
+
 /* * * * * * * * * *
  *  mobile-header  *
  * * * * * * * * * */
@@ -53,6 +58,7 @@ header > #moon-symbol-background{
 }
 
 #search-field-and-info > input{
+    width:90%;
 font-size: 1.5em;
 padding-left:1.5em;
 border-radius: 2em;
@@ -65,11 +71,6 @@ line-height: 2em;
  * * * * * * * * * */
  
 
-
-
-
-
-
  
 .task{
      padding:0 2em 0 2em;
@@ -77,11 +78,13 @@ line-height: 2em;
      justify-content: space-between;
      background-color: white;
      border-radius: 10px;
+     margin-bottom: 1em;
     }
     
 .task__title {
     margin-bottom:0;
 }
+.task__beskrivelse{display:none;}
 .task__info{
     display: flex;
 
@@ -89,19 +92,18 @@ line-height: 2em;
 .task__info span{
     padding-right: 1em;
     display: flex;
-    color:#777;
-    
 }
 .task__info svg{
     align-self: center;
     margin-right:.5em;
 }
+.task__rating svg {color:#F2DA7C;}
 
 .task__location {
-    
+ color:#777;   
 }
 .task__rating { 
-    
+    color:#777;
 }
 .task__price { 
     
