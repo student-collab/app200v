@@ -1,3 +1,36 @@
+header, 
+#page-grid,
+#search-field-and-info {max-width: 1600px;
+  margin: 0 auto;}
+
+/* * * * * * * * * *
+ *  mobile-header  *
+ * * * * * * * * * */
+header{
+    display:flex;
+    justify-content: space-between;
+}
+header div#logo-header{
+    display:flex;
+}
+header > div#logo-header > img{
+    align-self: center;
+    margin: 0 .5rem 0 1rem;
+    
+    
+}
+header > #moon-symbol-background{
+    background-color: #ddd;
+    text-align: center;
+    font-size:25px;
+    width: 1.5em;
+    height: 1.5em;
+    align-self: center;
+    border-radius: 100%;
+}
+
+
+
 .container {
     text-align: center;
     background: rgb(247, 247, 247);
@@ -6,6 +39,28 @@
     margin: 20px auto;
     max-width: 420px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgb(247, 247, 247);
+    padding: 10px 20px;
+    margin: 1px auto;
+    max-width: 420px;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.profile-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.gear-icon {
+    font-size: 20px;
+    cursor: pointer;
 }
 
 .profile-photo {
@@ -34,6 +89,26 @@
 
 }
 
+.profileNavigationBtn {
+    display: flex; /* to align text and arrow properly */
+    justify-content: space-between; /* space between text and arrow */
+    align-items: center;
+     background-color: white;
+    padding: 18px 20px;
+    width: 100%; /* stretches the button to full width of the container */
+    border-width: 2px; /*border around the button */
+    border-style: solid;
+    border-color: rgb(229, 229, 229);
+    border-radius: 12px; /* rounded corners */
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer; /* hand cursor when hovering */
+
+    text-align: left;
+
+    margin-bottom: 5px; /*space between buttons */
+}
+
 /* For tablets and larger */
 @media (min-width: 768px) {
     .container {
@@ -59,6 +134,11 @@
     .profile-photo {
         width: 100px;
         height: 100px;
+    }
+
+    .profile-header {
+        max-width: 720px;
+        
     }
 
 }
