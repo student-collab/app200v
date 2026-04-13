@@ -1,9 +1,51 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Profile</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="" />
+  <link rel="stylesheet" href="../CSS/userProfile.css">
+  <link rel="icon" href="../img/favicon.png">
+</head>
 <body>
-
-    <h1>Hello world</h1>
-
+    <div class="container">
+        <h1>My Profile</h1>
+        <img id="profile-photo" class="profile-photo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHBhdGggZD0iTTYwIDBjMzMuMTQ4IDAgNjAgMjYuODUyIDYwIDYwUzE5My4xNDggMTIwIDE2MCAxMjBIMTBjLTMzLjE0OCAwLTYwLTI2Ljg1Mi02MC02MFMxNi44NTIgMCA2MCAweiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik02MCAxMGMtMTUuNzcxIDAtMjkgMTMuMjI5LTI5IDI5czEzLjIyOSAyOSAyOSAyOSAyOS0xMy4yMjkgMjktMjktMTMuMjI5LTI5LTI5LTI5em0wIDUyYy0xMS4wNCAwLTIwLjEyLTYuMDQyLTI0LjU5LTE1LjA5Qzg1LjU3NyA4MC4zMDYgNTguMDg5IDg5IDYwIDg5YzEuOTEgMCAyOC4zNDMtOC42OTQgMzQuNTkgMjAuOTEgLTQuNDcgOS4wOS0xMy41OSA1LjA5LTE2LjU5IDUuMDl6IiBmaWxsPSIjZGRkZGRkIi8+PC9zdmc+" alt="Profile photo">
+        <h3 id="loadUsername">Loading name...</h3>
+        <h3>Rating 4.8</h3>
+        <h3><button class="editProfileBtn">Edit Profile</button></h3>
+    </div>
     
+    <!-- Firebase scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Internal script for Firebase config and auth -->
+    <script type="module">
+        import { auth } from '../JS/modules/dbConfig.js';
+
+        //Loads the logged in user's name and profile picture
+        
+        auth.onAuthStateChanged((user) => {
+            const welcomeElement = document.getElementById('loadUsername');
+            const profilePhoto = document.getElementById('profile-photo');
+
+            if (user) {
+                welcomeElement.textContent = `${user.displayName || 'User'}`;
+
+                if (user.photoURL) {
+                    profilePhoto.src = user.photoURL;
+                } else {
+                    profilePhoto.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHBhdGggZD0iTTYwIDBjMzMuMTQ4IDAgNjAgMjYuODUyIDYwIDYwUzE5My4xNDggMTIwIDE2MCAxMjBIMTBjLTMzLjE0OCAwLTYwLTI2Ljg1Mi02MC02MFMxNi44NTIgMCA2MCAweiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iNTAiIHI9IjE4IiBmaWxsPSIjZGRkZGRkIi8+PGNpcmNsZSBjeD0iNjAiIGN5PSI4MCIgcj0iMjAiIGZpbGw9IiNkZGQiLz48L3N2Zz4=';
+                }
+            } else {
+                welcomeElement.textContent = 'Please log in to see your profile.';
+                profilePhoto.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHBhdGggZD0iTTYwIDBjMzMuMTQ4IDAgNjAgMjYuODUyIDYwIDYwUzE5My4xNDggMTIwIDE2MCAxMjBIMTBjLTMzLjE0OCAwLTYwLTI2Ljg1Mi02MC02MFMxNi44NTIgMCA2MCAweiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iNTAiIHI9IjE4IiBmaWxsPSIjZGRkZGRkIi8+PGNpcmNsZSBjeD0iNjAiIGN5PSI4MCIgcj0iMjAiIGZpbGw9IiNkZGQiLz48L3N2Zz4=';
+            }
+        });
+    </script>
 </body>
 </html>
+
