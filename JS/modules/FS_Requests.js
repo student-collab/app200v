@@ -164,6 +164,13 @@ export async function readFSdb(path = 'collection/document') {
 
 export { getTasks, getTask, setTask, updateTask, deleteTask, clearField};
 
+//Oppretter eller oppdaterer en bruker i 'users' collection i Firestore
+export async function setUser(userId, data) { //userId= Firebase Authenticator ID
+                                              //data = objektet med ting man vil lagre
+
+  await db.collection('users').doc(userId).set(data, { merge: true }); //merge gjør at vi ikke sletter eksisterende data. //set skriver data til firestore
+}
+
 /**
  * 
  *          Senere - query 
