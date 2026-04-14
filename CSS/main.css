@@ -53,6 +53,7 @@ Footer - Side avslutning med nyttige lenker
     --backgroundcolor-form-fields: #EBECF0;
     --bordercolor-form-fields: #E2E5EB;
     --font-color-menu-icons:#727888;
+    --background-color-dark:#88898E;
     
 
 }
@@ -79,129 +80,93 @@ header{
   
 }
 
-/* * * * * * * * * * *
-**      NAV          *
-** * * * * * * * * * */
-nav{
-    border-bottom: 2px solid var(--border-color);
-    display: flex;
+/* * * * * * * * * * * * * * *
+ *      Login screen         *
+ * * * * * * * * * * * * * * */
+.hidden{visibility: hidden; position: absolute;}
+#login-screen > #auth-form{
+    margin: 2em ;
+    display:flex;
+    flex-direction: column;
+    gap:1em;
+    
+}
+header > #login-clickable{
     position: relative;
-    margin-bottom:1em;
-    
- }
- nav>figure{
-    justify-self: flex-start;
-    margin:0.5em;
-
- }
- nav>figure img{
-    width:200px;
- }
-
-   /*                                  *
-    *  Burgermeny for mindre skjermer   *
-    *   mobile first                    *
-    */
-
- nav>button{
-    right:100px;
-    padding:5px 2px 0 2px ;
-    position: absolute;
-    align-self: center;
-    z-index: 2;
-    background:none;
-    
- }
- nav>button img{
-    width: 2em;
-    
-    
-
-}  
- .hidden{ 
-    visibility: hidden;
-    position: absolute;
+    display:flex;
+    border-radius: 15px;
 }
-
-#navUL li a,#navUL li a:visited{
-    color: var(--nav-mnu-link-color);
-}
- 
-  
-
-#navUL{ 
-    list-style: none;
-    position:absolute;
+#login-screen{
+    position: absolute;
+    transform: translate(-220px, 50px);
+    
+    width:300px;
     background-color:var(--bg-color);
-    right:0;
-    padding:2em 10em;
-    margin:0;
-    transition:transform 300ms ease-in;
-    transform:translateX(500px);
-
-
+    border:2px solid #c2c3c7;
+    border-radius: 10px;
+    transition: all 150ms ease-in ;
 }
-#navUL.slide_in{
-transform:translateX(0);
+#login-screen button{
+    border-radius: 20px;
+    border: 1px solid var(--bordercolor-form-fields);
+    background-color: var(--backgroundcolor-form-fields);
 }
-  
-#navUL li{
-    line-height: 5em;
-}    
-#navUL li a{
-    padding: 2em 5em 2em 5em;
-    text-decoration: none;
+#login-screen input{
+    border: 2px solid var(--bordercolor-form-fields);
 }
-#navUL li a:hover,#navUL li a:active{
-    background-color:var(--menu-highlight);
+#login-screen.hidden{
+transform: translateY(-250px);
 }
-
-#login-screen-old.hidden{
-    visibility: hidden;
-}
-
-/*                                  
-*   Vertikal meny for mellomstore   *
-*    og store skjermer              *
-*/
-
-@media (min-width: 768px) {
+header  #login-symbol-background{
+    font-size:13px;
+    background-color: var(--backgroundcolor-form-fields);
+    text-align: center;
+    width: 2em;
+    height: 2em;
+    border-radius: 100%;
+    align-self: center;
     
-    #navUL{ 
-        background:none;
-        position:relative; 
-        display: flex;
-        align-self:center;
-        justify-content: flex-start;
-        padding:0;
-        margin:0;
-        visibility: visible;
-
-    transform:translateX(0);
-        
-    }
-
-    nav>button{
-    display:none;
-    }
-    #navUL li{
-        line-height: 1em;
-    }
     
-    #navUL li a{
-    padding: 2em ;
-    text-decoration: none;
-    }
-    
-    #navUL li a:hover,#navUL li a:active{
-    background:none;
-    text-decoration: underline;
-    }
-
 }
-
+#login-symbol-background > svg{
+    width:1.5em;
+    transform:translateY(0.25em);
     
+}
+#login-clickable > span{
+    align-self: center
+}
+#toggle-password{ 
+    width:1.5em;
+    color: var(--background-color-dark);
+    align-self: end;
+}
+#toggle-password .eye-open{ visibility: hidden;
 
-/* * * * * * * * * * *
-**      Footer       *
-** * * * * * * * * * */
+} 
+#inlog-info{
+    display:flex;
+    flex-direction: column;
+    gap:1em;
+    padding:3em;
+}
+#usr-inf2{
+overflow-x: auto;
+}
+#inlog-info button{ color: brown}
+
+/* * * * * * * * * * * * * * * * * *
+**      Login screen stor skjerm   *
+** * * * * * * * * * * * * * * * * */
+
+@media (min-width: 900px) {
+        header > #login-clickable:hover {
+            cursor:pointer;
+            text-decoration: underline;
+            background-color: #ddd;
+        }
+#inlog-info :hover{cursor:pointer;}
+        header > #login-clickable {
+            padding:2em;
+        }
+}

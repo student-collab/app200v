@@ -1,0 +1,49 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" hidden style = "height:0;">
+  <defs>
+    <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12L12 3l9 9"/>
+      <path d="M9 21V12h6v9"/>
+      <path d="M3 12v9h18V12"/>
+    </symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/>
+      <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+    </symbol>
+    <symbol id="icon-post" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/>
+      <line x1="12" y1="8" x2="12" y2="16"/>
+      <line x1="8" y1="12" x2="16" y2="12"/>
+    </symbol>
+    <symbol id="icon-messages" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </symbol>
+    <symbol id="icon-profile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </symbol>
+  </defs>
+</svg>
+<!-- Sjekk om live server klarer å la den i fred om vi endrer strukturen -->
+<nav id="footer-menu" aria-label="Main navigation">
+  <a class="nav-item" href="/pages/index.html">
+    <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-home"/></svg>
+    <span>Feed</span>
+  </a>
+  <a class="nav-item" href="search.html">
+    <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-search"/></svg>
+    <span>Search</span>
+  </a>
+  <a class="nav-item" href="/pages/post-task.html">
+    <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-post"/></svg>
+    <span>Post</span>
+  </a>
+  <a class="nav-item" href="messages.html">
+    <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-messages"/></svg>
+    <span>Messages</span>
+  </a>
+  <a class="nav-item" href="profile.html" aria-current="page">
+    <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-profile"/></svg>
+    <span>Profile</span>
+  </a>
+</nav>

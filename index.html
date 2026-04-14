@@ -12,54 +12,242 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
   <meta name="description" content="" />
-  <link rel="stylesheet" href="./CSS/main.css">
-  <link rel="icon" href="./img/favicon.png">
-  <script type = "module" src="./JS/indexMain.js"> </script>
+  <link rel="stylesheet" href="CSS/index.css">
+  <link rel="stylesheet" href="CSS/main.css">
+
+  <link rel="stylesheet" href="CSS/indexDesktop.css" media="(min-width: 900px) ">
+<script src="JS/indexMain.js" type = "module" defer></script>
+<script src="JS/main.js" type = "module" defer></script>
+
+
+  <link rel="icon" href="img/favicon.png">
+
   
 
 </head>
 
 <body>
-  <nav>
-    <figure>
-      <a href="./index.html">
-        <img src="./img/teamWork.png" alt="logo">
-      </a>
-    </figure>
+  <header>
+    <div id = "logo-header">
       
-    <button id = "burger_button">
-      <img id="burger_stripes" style = "max-width:100px; " src="./img/burgerStripes.png" alt="logo">
-      <img id="burger_close" class = "hidden" style = "max-width:100px; " src="./img/burgerClose.png" alt="logo">
-    </button>
+    <img style = "width:25px; height:25px;" src="../img/testSize/SQ.png" alt="Logo: SQ" >
+    <h1>SideQuest</h1>
     
-    <ul id="navUL">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="pages/dbtesting.html">DB test</a></li>
-      <li><a href="pages/arb-fordeling.html">arb fordeling</a></li>
-      <li><a href="">empty</a></li>
-      <li><a href="">empty</a></li>
-    </ul>
-    
-  </nav>
+    </div>
+    <div id="login-symbol-background">
+      <span>&#9789;</span>
+    </div>
 
-  <h1>Hello, world!</h1>
-  <p>still under c o n s t r u c t i o n ...</p>
+    </header>
   
 
-  <!-- Eksterne script som gjør det mulig å kommunisere med Realtime Database fra Google Firebase -->
+  <div id="search-field-and-info"> 
+    
+    <svg id = "searchbar-mag-symbol" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" style="width: 2em; height:2em;" " stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/>
+      <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+    </svg>
+    <input type="text" placeholder="Search tasks near you">
+    <button id ="distance-btn">distance</button>
+    <button id = "rating-btn">rating</button>
+    <button id ="urgent-btn">urgent</button>
+    <p>6 tasks nearby</p>
+  </div> 
+
+  
+     
+<div id="page-grid">
+  <div id="task-grid">
+    <div id="task-1" class="task">
+      <div class="task__background">
+        <div class="task__main">
+            <h2 class="task__title">1 Overskrift</h2>
+            <span class="task__beskrivelse">Kort beskrivelse på begrenset mengde ord som kan vises her </span>
+            <div class="task__info">
+              <span class="task__location">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="1em" height="1em">
+                  <path d="M12 2C8.7 2 6 4.7 6 8c0 5 6 14 6 14s6-9 6-14c0-3.3-2.7-6-6-6z"/>
+                  <circle cx="12" cy="8" r="2"/>
+                </svg>
+                location
+              </span>
+              <span class="task__rating">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="1em" height="1em">
+                  <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                </svg>
+                rating
+              </span>
+              <span class="task__price">
+                20 kr
+              </span>
+              
+            </div>
+            <button class="task__btn">Se mer ></button>
+          </div>
+        </div>
+        <img src="../img/testSize/deer54x54.png" alt="54x54" class="task__img">
+    </div>
+
+    <div id="task-2" class="task">
+      <div class="task__background">
+        <div class="task__main">
+            <h2 class="task__title">1 Overskrift</h2>
+            <span class="task__beskrivelse">Kort beskrivelse på begrenset mengde ord som kan vises her </span>
+            <div class="task__info">
+              <span class="task__location">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="1em" height="1em">
+                  <path d="M12 2C8.7 2 6 4.7 6 8c0 5 6 14 6 14s6-9 6-14c0-3.3-2.7-6-6-6z"/>
+                  <circle cx="12" cy="8" r="2"/>
+                </svg>
+                location
+              </span>
+              <span class="task__rating">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="1em" height="1em">
+                  <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                </svg>
+                rating
+              </span>
+              <span class="task__price">
+                20 kr
+              </span>
+              
+            </div>
+            <button class="task__btn">Se mer ></button>
+          </div>
+        </div>
+        <img src="../img/testSize/ekorn54x54.png" alt="54x54" class="task__img">
+    </div>
+
+    <div id="task-3" class="task">
+      <div class="task__background">
+        <div class="task__main">
+            <h2 class="task__title">1 Overskrift</h2>
+            <span class="task__beskrivelse">Kort beskrivelse på begrenset mengde ord som kan vises her </span>
+            <div class="task__info">
+              <span class="task__location">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="1em" height="1em">
+                  <path d="M12 2C8.7 2 6 4.7 6 8c0 5 6 14 6 14s6-9 6-14c0-3.3-2.7-6-6-6z"/>
+                  <circle cx="12" cy="8" r="2"/>
+                </svg>
+                location
+              </span>
+              <span class="task__rating">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="1em" height="1em">
+                  <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                </svg>
+                rating
+              </span>
+              <span class="task__price">
+                20 kr
+              </span>
+              
+            </div>
+            <button class="task__btn">Se mer ></button>
+          </div>
+        </div>
+        <img src="../img/testSize/deer54x54.png" alt="54x54" class="task__img">
+    </div>
+
+    <div id="task-4" class="task">
+      <div class="task__background">
+        <div class="task__main">
+            <h2 class="task__title">1 Overskrift</h2>
+            <span class="task__beskrivelse">Kort beskrivelse på begrenset mengde ord som kan vises her </span>
+            <div class="task__info">
+              <span class="task__location">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="1em" height="1em">
+                  <path d="M12 2C8.7 2 6 4.7 6 8c0 5 6 14 6 14s6-9 6-14c0-3.3-2.7-6-6-6z"/>
+                  <circle cx="12" cy="8" r="2"/>
+                </svg>
+                location
+              </span>
+              <span class="task__rating">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="1em" height="1em">
+                  <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                </svg>
+                rating
+              </span>
+              <span class="task__price">
+                20 kr
+              </span>
+              
+            </div>
+            <button class="task__btn">Se mer ></button>
+          </div>
+        </div>
+        <img src="../img/testSize/ekorn54x54.png" alt="54x54" class="task__img">
+    </div>
+
+    <div id="task-5" class="task">
+      <div class="task__background">
+        <div class="task__main">
+            <h2 class="task__title">1 Overskrift</h2>
+            <span class="task__beskrivelse">Kort beskrivelse på begrenset mengde ord som kan vises her </span>
+            <div class="task__info">
+              <span class="task__location">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="1em" height="1em">
+                  <path d="M12 2C8.7 2 6 4.7 6 8c0 5 6 14 6 14s6-9 6-14c0-3.3-2.7-6-6-6z"/>
+                  <circle cx="12" cy="8" r="2"/>
+                </svg>
+                location
+              </span>
+              <span class="task__rating">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="1em" height="1em">
+                  <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                </svg>
+                rating
+              </span>
+              <span class="task__price">
+                20 kr
+              </span>
+              
+            </div>
+            <button class="task__btn">Se mer ></button>
+          </div>
+        </div>
+        <img src="../img/testSize/deer54x54.png" alt="54x54" class="task__img">
+    </div>
+
+    <div id="task-6" class="task">
+      <div class="task__background">
+        <div class="task__main">
+            <h2 class="task__title">1 Overskrift</h2>
+            <span class="task__beskrivelse">Kort beskrivelse på begrenset mengde ord som kan vises her </span>
+            <div class="task__info">
+              <span class="task__location">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="1em" height="1em">
+                  <path d="M12 2C8.7 2 6 4.7 6 8c0 5 6 14 6 14s6-9 6-14c0-3.3-2.7-6-6-6z"/>
+                  <circle cx="12" cy="8" r="2"/>
+                </svg>
+                location
+              </span>
+              <span class="task__rating">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="1em" height="1em">
+                  <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                </svg>
+                rating
+              </span>
+              <span class="task__price">
+                20 kr
+              </span>
+              
+            </div>
+            <button class="task__btn">Se mer ></button>
+          </div>
+        </div>
+        <img src="../img/testSize/ekorn54x54.png" alt="54x54" class="task__img">
+    </div>
+  </div>
+
+
+            <nav id="replaceNav">
+tom 
+            </nav>
+</div>  
+  
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  
-  <!-- Intern script som inneholder det som må til for å etablere forbindelsen -->
-  <script type="module" src="../JS/modules/dbConfig.js"></script> 
-     
-  
-
- 
-
-  
-  
   
 </body>
 

@@ -11,38 +11,33 @@ import { registerWithEmail, loginWithGoogle, loginAnonymously, signOut, signIn} 
  */
 
 export function initMenu(){
-    /* ------------------------------ Burger knapp --------------------------------- */
-        const NAV_MENU = document.getElementById("navUL");
-        const BURGER_BUTTON = document.getElementById("burger_button");
-        const BURGER_CLOSE_IMG = document.getElementById("burger_close");
-        const BURGER_BUTTON_IMG = document.getElementById("burger_stripes");
+    
+        const NAV_MENU = document.getElementById("footer-menu");
         if (!NAV_MENU) {
-                                console.error('Element not found!');
+                                console.error('main navbar missing');
                                 return;
         }
-        NAV_MENU.classList.add("hidden");
-        
-        BURGER_BUTTON.onclick = (e) => {
-                                            BURGER_CLOSE_IMG.classList.toggle("hidden");
-                                            BURGER_BUTTON_IMG.classList.toggle("hidden");
-                                            NAV_MENU.classList.toggle("hidden");
-                                            NAV_MENU.classList.toggle("slide_in");
-                                            
-                                        }; 
-
+    
 /* ------------------------------ login funksjonalitet  --------------------------------- */
+ const LOGIN_SCREEN = document.getElementById("auth-form");
+        if (!LOGIN_SCREEN) {
+                                console.error('login form not found!');
+                                return;
+        }
+
 
 const signInBtn = document.getElementById("login-Btn");
 const skipLoginButton = document.getElementById("skip-login-Btn");
 const ratherGoogleSignIn = document.getElementById('btn-google');
 const signOutBtn = document.getElementById("sign-out");
 const registerBtn  = document.getElementById('btn-register');
-const toggleVisiblePassword = document.getElementById('toggle-password');
+const eyeSymbol = document.getElementById('toggle-password');
+const input = document.getElementById('password');
 ratherGoogleSignIn.addEventListener('click', () =>  loginWithGoogle());
 skipLoginButton.addEventListener('click', () => loginAnonymously());   
 
 ratherGoogleSignIn.addEventListener('click', (e) => {
-  e.preventDefault();
+  e.preventDefault(); /* redundant ?? */
   loginWithGoogle();
 });
 
@@ -59,19 +54,27 @@ signInBtn.addEventListener('click', async ()=>{
     
 });
 
-toggleVisiblePassword.addEventListener('click', () => {
-  const input = document.getElementById('password');
-  const btn = document.getElementById('toggle-password');
+
+
+eyeSymbol.addEventListener('mousedown', toggleVisibility);
+eyeSymbol.addEventListener('mouseup', toggleVisibility);
+const eyeStroke = document.getElementById('eye-stroke');
+function toggleVisibility () {
+  
   if (input.type === 'password') {
     input.type = 'text';
-    btn.textContent = 'hide';
+    eyeStroke.classList.add('eye-open');
   } else {
     input.type = 'password';
-    btn.textContent = 'show';
+    eyeStroke.classList.remove('eye-open');
   }
-});
 
-signOutBtn.addEventListener('click', async()=> await signOut());
+
+}
+if (signOutBtn) {
+  
+  signOutBtn.addEventListener('click', async()=> await signOut());
+}
 
 
 registerBtn.addEventListener('click', async () => {

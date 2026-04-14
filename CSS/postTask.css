@@ -20,15 +20,6 @@ header > div#logo-header > img{
     
     
 }
-header > #moon-symbol-background{
-    background-color: #ddd;
-    text-align: center;
-    font-size:25px;
-    width: 1.5em;
-    height: 1.5em;
-    align-self: center;
-    border-radius: 100%;
-}
 
 #caption{
  display: flex;
@@ -120,6 +111,31 @@ header > #moon-symbol-background{
 #form__post-task textarea{
     height: 5em;
 }
+#btn-lokasjon{color:var(--font-color-forms);}
+#pris-slider{width:40%;}
+
+#file-drop{
+    height: 10em;
+    border:2px solid var(--bordercolor-form-fields);
+    border-radius: 10px;
+
+}
+#file-drop svg{
+    margin-left: 50%;
+    transform: translateY(80px);
+    color: var(--font-color-menu-icons);
+    
+}
+#btn-post-task{
+    background-color: var(--background-color-dark);
+    border: 2px solid var(--bordercolor-form-fields);
+    width:100%;
+    height: 3em;
+    color:white;
+    border-radius: 10px;
+}
+
+
 /* * * * * * * * * * * * *
  *  mobile-footer menu   *
  * * * * * * * * * * * * */
