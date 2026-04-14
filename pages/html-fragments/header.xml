@@ -36,8 +36,6 @@
             </svg>
             <button type="button" id="btn-register">Register</button>
             <button type="button" id="login-Btn">Log in</button>
-            <button id ="skip-login-Btn">Skip log in</button>
-
             <p>or <a href="#" id="btn-google">sign in with Google</a></p>
 
           </form>

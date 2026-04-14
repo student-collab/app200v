@@ -27,17 +27,15 @@ export function initMenu(){
 
 
 const signInBtn = document.getElementById("login-Btn");
-//const skipLoginButton = document.getElementById("skip-login-Btn"); -- slettes
 const ratherGoogleSignIn = document.getElementById('btn-google');
 const signOutBtn = document.getElementById("sign-out");
 const registerBtn  = document.getElementById('btn-register');
 const eyeSymbol = document.getElementById('toggle-password');
 const input = document.getElementById('password');
 ratherGoogleSignIn.addEventListener('click', () =>  loginWithGoogle());
-//skipLoginButton.addEventListener('click', () => );   
 
 ratherGoogleSignIn.addEventListener('click', (e) => {
-  e.preventDefault(); /* redundant ?? */
+  e.preventDefault(); 
   loginWithGoogle();
 });
 
