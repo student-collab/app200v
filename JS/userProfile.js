@@ -1,4 +1,4 @@
-// Handles dynamic content for userProfile.html
+// Handles dynamic content for userProfile.html. Needs to be simplified and optimized, but it works for now.
 
 // DOM elements
 const myProfile = document.getElementById('myProfile');

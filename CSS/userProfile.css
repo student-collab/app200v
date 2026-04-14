@@ -3,12 +3,22 @@ header,
 #search-field-and-info {max-width: 1600px;
   margin: 0 auto;}
 
+body {
+    background-color: #F7F7F7;
+}
+
+#myProfile {
+    text-align: center;
+    padding: 20px;
+}
+
 /* * * * * * * * * *
  *  mobile-header  *
  * * * * * * * * * */
 header{
     display:flex;
     justify-content: space-between;
+    border-bottom: 2px solid #ddd;
 }
 header div#logo-header{
     display:flex;
@@ -30,6 +40,24 @@ header > #moon-symbol-background{
 }
 
 
+.subheader {
+    width: 100%;
+    
+}
+
+.subheader-content {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ddd;
+}
+
+.subheader-content h2 {
+    margin: 0 0 0 1rem;
+}
 
 .container {
     text-align: center;
@@ -41,27 +69,7 @@ header > #moon-symbol-background{
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.profile-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgb(247, 247, 247);
-    padding: 10px 20px;
-    margin: 1px auto;
-    max-width: 420px;
-    border-radius: 12px 12px 0 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
 
-.profile-header h2 {
-    margin: 0;
-    font-size: 18px;
-}
-
-.gear-icon {
-    font-size: 20px;
-    cursor: pointer;
-}
 
 .profile-photo {
     width: 90px;
@@ -111,10 +119,10 @@ header > #moon-symbol-background{
 
 /* For tablets and larger */
 @media (min-width: 768px) {
-    .container {
-        padding: 30px;
-        margin: 40px auto;
-        
+    #myProfile {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
     }
 
     .profile-photo {
@@ -123,12 +131,12 @@ header > #moon-symbol-background{
     }
 }
 
-  /* For desktop */
+/* For desktop */
 @media (min-width: 1024px) {
-     .container {
+    #myProfile {
         max-width: 720px;
-        padding: 40px;
-        margin: 50px auto;
+        margin: 0 auto;
+        padding: 30px;
     }
 
     .profile-photo {
@@ -138,9 +146,9 @@ header > #moon-symbol-background{
 
     .profile-header {
         max-width: 720px;
-        
+        margin: 0 auto;
+        padding: 0 30px;
     }
-
 }
 
 
