@@ -23,23 +23,18 @@ document.addEventListener('readystatechange', async (e) => {
               auth.onAuthStateChanged((user) => {
 
                       if (!user) {
-                        console.log("Display login button");
-                        showLoginUI();
+                        loginAnonymously();
+                        console.log("User logged in anonymously");
                       } else if (user.isAnonymous) {
-                        showLogOut(user);
-                        showApp(user);          
-                        console.log('Anonymous session');  
+                        console.log("User still logged in anonymously");
                       } else if (!user.emailVerified) {
                         showLogOut(user);
-                        showApp(user);
-                        /* showVerificationPending(user); */          
                         console.log('Signed in as', user.displayName, user.email);
-                        /* show "check your email" state */
+                        console.log("email not verified");
                       } else {
                         showLogOut(user);
                         showApp(user);          
                         console.log('Signed in as', user.displayName, user.email);
-                        
                       }
                     });
                   });
@@ -79,19 +74,6 @@ console.log("ShowLogOut");
   
 }
 
-//gjort om til async for å kunne kjøre wait
-async function showApp(user) {
-  document.getElementById('login-screen').classList.add("hidden");
-
-   await setUser(user.uid, {
-    name: user.displayName,
-    email: user.email,
-    phone: "",
-    location: "",
-    gender: ""
-  });
-
-}
 
 
 

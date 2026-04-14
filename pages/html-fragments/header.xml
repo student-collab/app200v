@@ -21,7 +21,7 @@
         </svg>
       </div>
       <span id = "usr-status">Logg inn</span>
-      <div id="login-screen" class="hidden22" data-role="login-panel">
+      <div id="login-screen" class="hidden" data-role="login-panel">
          <form id="auth-form">
             <label for="email">Email</label>
             <input type="email" id="email" required />
