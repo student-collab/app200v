@@ -99,7 +99,7 @@ header > #login-clickable{
 #login-screen{
     position: absolute;
     transform: translate(-220px, 50px);
-    
+    z-index: 2;
     width:300px;
     background-color:var(--bg-color);
     border:2px solid #c2c3c7;

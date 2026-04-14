@@ -1,3 +1,4 @@
+<!-- Dette hentes ut og injisjeres, bruker xml for å unngå at live-server injiserer kode -->
 
 <svg xmlns="http://www.w3.org/2000/svg" hidden style = "height:0;">
   <defs>
@@ -24,9 +25,8 @@
     </symbol>
   </defs>
 </svg>
-<!-- Sjekk om live server klarer å la den i fred om vi endrer strukturen -->
 <nav id="footer-menu" aria-label="Main navigation">
-  <a class="nav-item" href="/pages/index.html">
+  <a class="nav-item" href="/index.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-home"/></svg>
     <span>Feed</span>
   </a>

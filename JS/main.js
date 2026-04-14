@@ -5,14 +5,16 @@ import { setUser } from './modules/FS_Requests.js';
 document.addEventListener('readystatechange', async (e) => {
     console.log("Readystate: " + document.readyState);
     if (!document.readyState === 'complete') {return}
-            const res = await fetch('/pages/html-fragments/icon-navbar.frag');
-            const html = await res.text();
+            const res = await fetch('/pages/html-fragments/icon-navbar.xml');
+            const fetchedNav = await res.text();
             let emptyNav = document.getElementById("replaceNav");
             let newNav = document.createElement("nav");
-            newNav.innerHTML = html;
-            console.info(html);
+            newNav.innerHTML = fetchedNav;
             emptyNav.parentNode.replaceChild(newNav, emptyNav);
             
+            const xmlResponse = await fetch('/pages/html-fragments/login-screen.xml');
+            const fetchedHeader = await xmlResponse.text();
+            document.body.insertAdjacentHTML('afterbegin', fetchedHeader);
             
              initMenu();  // Loads menu  
             
