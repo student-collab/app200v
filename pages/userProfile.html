@@ -1,33 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>User Profile</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="" />
-  <link rel="stylesheet" href="../CSS/userProfile.css">
-  <link rel="icon" href="../img/favicon.png">
+    <meta charset="UTF-8" />
+    <title>User Profile</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="../CSS/userProfile.css">
+    <link rel="icon" href="../img/favicon.png">
 </head>
 <body>
-    <div class="container">
-        <h1>My Profile</h1>
-        <img id="profile-photo" class="profile-photo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHBhdGggZD0iTTYwIDBjMzMuMTQ4IDAgNjAgMjYuODUyIDYwIDYwUzE5My4xNDggMTIwIDE2MCAxMjBIMTBjLTMzLjE0OCAwLTYwLTI2Ljg1Mi02MC02MFMxNi44NTIgMCA2MCAweiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik02MCAxMGMtMTUuNzcxIDAtMjkgMTMuMjI5LTI5IDI5czEzLjIyOSAyOSAyOSAyOSAyOS0xMy4yMjkgMjktMjktMTMuMjI5LTI5LTI5LTI5em0wIDUyYy0xMS4wNCAwLTIwLjEyLTYuMDQyLTI0LjU5LTE1LjA5Qzg1LjU3NyA4MC4zMDYgNTguMDg5IDg5IDYwIDg5YzEuOTEgMCAyOC4zNDMtOC42OTQgMzQuNTkgMjAuOTEgLTQuNDcgOS4wOS0xMy41OSA1LjA5LTE2LjU5IDUuMDl6IiBmaWxsPSIjZGRkZGRkIi8+PC9zdmc+" alt="Profile photo">
+    <!-- Header med SideQuest logo og månesymbol -->
+    <header>
+        <div id="logo-header">
+            <img style="width:25px; height:25px;" src="../img/testSize/SQ.png" alt="Logo: SQ">
+            <h1>SideQuest</h1>
+        </div>
+        <div id="moon-symbol-background">
+            <span>&#9789;</span>
+        </div>
+    </header>
+
+    <div class="subheader" id="profileSubheader">
+    <div class="subheader-content">
+        <h2 id="subheaderTitle">My Profile</h2>
+        <span id="subheaderIcon">&#9881</span>
+    </div>
+</div>
+
+    <!-- <div class="container"> -->
+
+    <div id="myProfile">
+
+        <div id="userInfo">
+        <img id="profile-photo" class="profile-photo"
+             src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHBhdGggZD0iTTYwIDBjMzMuMTQ4IDAgNjAgMjYuODUyIDYwIDYwUzE5My4xNDggMTIwIDE2MCAxMjBIMTBjLTMzLjE0OCAwLTYwLTI2Ljg1Mi02MC02MFMxNi44NTIgMCA2MCAweiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik02MCAxMGMtMTUuNzcxIDAtMjkgMTMuMjI5LTI5IDI5czEzLjIyOSAyOSAyOSAyOSAyOS0xMy4yMjkgMjktMjktMTMuMjI5LTI5LTI5LTI5em0wIDUyYy0xMS4wNCAwLTIwLjEyLTYuMDQyLTI0LjU5LTE1LjA5Qzg1LjU3NyA4MC4zMDYgNTguMDg5IDg5IDYwIDg5YzEuOTEgMCAyOC4zNDMtOC42OTQgMzQuNTkgMjAuOTEgLTQuNDcgOS4wOS0xMy41OSA1LjA5LTE2LjU5IDUuMDl6IiBmaWxsPSIjZGRkZGRkIi8+PC9zdmc+"
+             alt="Profile photo">
         <h3 id="loadUsername">Loading name...</h3>
         <h3>Rating 4.8</h3>
         <h3><button class="editProfileBtn">Edit Profile</button></h3>
-    </div>
-    
+        </div>
+
+
+        <button id="myTasksBtn" class="profileNavigationBtn">
+            <span>My Tasks</span>
+            <span class="button-arrow">&gt;</span>
+        </button>
+
+        <div id="myTasks" style="display:none;">
+            <button class="backBtn profileNavigationBtn">
+                <span>Back</span>
+                <span class="button-arrow">&lt;</span>
+            </button>
+            <h2>My Tasks</h2>
+            <p>Here you can view and manage your tasks.</p>
+        </div>
+
+        <button id="myReviewsBtn" class="profileNavigationBtn">
+            <span>My Reviews</span>
+            <span class="button-arrow">&gt;</span>
+        </button>
+
+        <div id="myReviews" style="display:none;">
+            <button class="backBtn profileNavigationBtn">
+                <span>Back</span>
+                <span class="button-arrow">&lt;</span>
+            </button>
+            <h2>My Reviews</h2>
+            <p>Here you can view and manage your reviews.</p>
+        </div>
+
+        <button id="savedTasksBtn" class="profileNavigationBtn">
+            <span class="button-text">Saved Tasks</span>
+            <span class="button-arrow">&gt;</span>
+        </button>
+
+        <div id="savedTasks" style="display:none;">
+            <button class="backBtn profileNavigationBtn">
+                <span class="button-text">Back</span>
+                <span class="button-arrow">&lt;</span>
+            </button>
+            <h2>Saved Tasks</h2>
+            <p>Here you can view your saved tasks.</p>
+        </div>
+
+        <button id="messagesBtn" class="profileNavigationBtn">
+            <span class="button-text">Messages</span>
+            <span class="button-arrow">&gt;</span>
+        </button>
+
+        <div id="messages" style="display:none;">
+            <button class="backBtn profileNavigationBtn">
+                <span class="button-text">Back</span>
+                <span class="button-arrow">&lt;</span>
+            </button>
+            <h2>Messages</h2>
+            <p>Here you can view your messages.</p>
+        </div>
+
+        <button id="paymentMethodsBtn" class="profileNavigationBtn">
+            <span class="button-text">Payment Methods</span>
+            <span class="button-arrow">&gt;</span>
+        </button>
+
+        <div id="paymentMethods" style="display:none;">
+            <button class="backBtn profileNavigationBtn">
+                <span class="button-text">Back</span>
+                <span class="button-arrow">&lt;</span>
+            </button>
+            <h2>Payment Methods</h2>
+            <p>Here you can manage your payment methods.</p>
+        </div>
+
+        <button id="notificationsBtn" class="profileNavigationBtn">
+            <span class="button-text">Notifications</span>
+            <span class="button-arrow">&gt;</span>
+        </button>
+
+        <div id="notifications" style="display:none;">
+            <button class="backBtn profileNavigationBtn">
+                <span class="button-text">Back</span>
+                <span class="button-arrow">&lt;</span>
+            </button>
+            <h2>Notifications</h2>
+            <p>Here you can manage your notifications.</p>
+        </div>
+
+    <!--</div>-->
+
     <!-- Firebase scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    
+
     <!-- Internal script for Firebase config and auth -->
     <script type="module">
         import { auth } from '../JS/modules/dbConfig.js';
 
         //Loads the logged in user's name and profile picture
-        
         auth.onAuthStateChanged((user) => {
             const welcomeElement = document.getElementById('loadUsername');
             const profilePhoto = document.getElementById('profile-photo');
@@ -46,6 +155,8 @@
             }
         });
     </script>
+
+    <script type="module" src="../JS/userProfile.js"></script>
 </body>
 </html>
 
