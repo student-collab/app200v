@@ -3,110 +3,147 @@
 // DOM elements
 const myProfile = document.getElementById('myProfile');
 const myTasks = document.getElementById('myTasks');
-const myTasksBtn = document.getElementById('myTasksBtn');
 const myReviews = document.getElementById('myReviews');
-const myReviewsBtn = document.getElementById('myReviewsBtn');
 const savedTasks = document.getElementById('savedTasks');
-const savedTasksBtn = document.getElementById('savedTasksBtn');
 const messages = document.getElementById('messages');
-const messagesBtn = document.getElementById('messagesBtn');
 const paymentMethods = document.getElementById('paymentMethods');
-const paymentMethodsBtn = document.getElementById('paymentMethodsBtn');
 const notifications = document.getElementById('notifications');
-const notificationsBtn = document.getElementById('notificationsBtn');
+const userInfo = document.getElementById('userInfo');
+
+const profileSubheader = document.getElementById('profileSubheader');
+const subheaderTitle = document.getElementById('subheaderTitle');
+const subheaderIcon = document.getElementById('subheaderIcon');
+
+let buttons = [];
+
+// All section panels that can be opened from profile navigation.
+const sections = [myTasks, myReviews, savedTasks, messages, paymentMethods, notifications];
+
+// Only allow subheader click to navigate back when we are in section mode.
+function onSubheaderClick() {
+  if (profileSubheader.classList.contains('is-back')) {
+    showProfile();
+  }
+}
+
+// Reset subheader to default profile state (title + gear icon + no back behavior).
+function setSubheaderAsProfile() {
+  subheaderTitle.textContent = 'My Profile';
+  subheaderIcon.innerHTML = '&#9881';
+  profileSubheader.classList.remove('is-back');
+}
+
+// Turn subheader into a back control and show the current section title.
+function setSubheaderAsBackButton(title) {
+  subheaderTitle.textContent = title;
+  subheaderIcon.textContent = '←';
+  profileSubheader.classList.add('is-back');
+}
 
 
-// Function to show tasks section
+// Shared section display logic: hide everything else, show selected section, update subheader.
+function showSection(section, title) {
+  sections.forEach(view => {
+    view.style.display = 'none';
+  });
+
+  buttons.forEach(btn => {
+    btn.style.display = 'none';
+  });
+
+  userInfo.style.display = 'none';
+  section.style.display = 'block';
+  setSubheaderAsBackButton(title);
+}
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', initialize);
+
+function initialize() {
+  //IDs for all profile action buttons in the HTML.
+  const buttonIds = [
+    "myTasksBtn",
+    "myReviewsBtn",
+    "savedTasksBtn",
+    "messagesBtn",
+    "paymentMethodsBtn",
+    "notificationsBtn"
+  ];
+
+  //Convert IDs into real DOM button elements and ignore missing ones.
+  buttons = buttonIds.map(id => document.getElementById(id)).filter(Boolean);
+
+  //Map each button ID to the function that should run when it is clicked.
+  const buttonActions = {
+    myTasksBtn: showTasks,
+    myReviewsBtn: showReviews,
+    savedTasksBtn: showSavedTasks,
+    messagesBtn: showMessages,
+    paymentMethodsBtn: showPaymentMethods,
+    notificationsBtn: showNotifications
+  };
+
+  //Attach the correct click handler to each existing button.
+  buttonIds.forEach(id => {
+    const btn = document.getElementById(id);
+    const action = buttonActions[id];
+    if (btn && action) {
+      btn.addEventListener('click', action);
+    }
+  });
+
+  if (profileSubheader) {
+    profileSubheader.addEventListener('click', onSubheaderClick);
+  }
+
+  // Hide legacy in-section back buttons since subheader now handles back behavior.
+  document.querySelectorAll('.backBtn').forEach(btn => {
+    btn.style.display = 'none';
+  });
+
+}
+
+//Function to show tasks section
 function showTasks() {
-    myTasksBtn.style.display = 'none';
-    myReviewsBtn.style.display = 'none';
-    savedTasksBtn.style.display = 'none';
-    messagesBtn.style.display = 'none';
-    paymentMethodsBtn.style.display = 'none';
-    notificationsBtn.style.display = 'none';
-    myTasks.style.display = 'block';
+  showSection(myTasks, 'My Tasks');
 }
 
-// Function to show reviews section
+//Function to show reviews section
 function showReviews() {
-    myTasksBtn.style.display = 'none';
-    myReviewsBtn.style.display = 'none';
-    savedTasksBtn.style.display = 'none';
-    messagesBtn.style.display = 'none';
-    paymentMethodsBtn.style.display = 'none';
-    notificationsBtn.style.display = 'none';
-    myReviews.style.display = 'block';
+  showSection(myReviews, 'My Reviews');
 }
 
-// Function to show saved tasks section
+
 function showSavedTasks() {
-    myTasksBtn.style.display = 'none';
-    myReviewsBtn.style.display = 'none';
-    savedTasksBtn.style.display = 'none';
-    messagesBtn.style.display = 'none';
-    paymentMethodsBtn.style.display = 'none';
-    notificationsBtn.style.display = 'none';
-    savedTasks.style.display = 'block';
+  showSection(savedTasks, 'Saved Tasks');
 }
 
-// Function to show messages section
 function showMessages() {
-    myTasksBtn.style.display = 'none';
-    myReviewsBtn.style.display = 'none';
-    savedTasksBtn.style.display = 'none';
-    messagesBtn.style.display = 'none';
-    paymentMethodsBtn.style.display = 'none';
-    notificationsBtn.style.display = 'none';
-    messages.style.display = 'block';
+  showSection(messages, 'Messages');
 }
 
-// Function to show payment methods section
+
 function showPaymentMethods() {
-    myTasksBtn.style.display = 'none';
-    myReviewsBtn.style.display = 'none';
-    savedTasksBtn.style.display = 'none';
-    messagesBtn.style.display = 'none';
-    paymentMethodsBtn.style.display = 'none';
-    notificationsBtn.style.display = 'none';
-    paymentMethods.style.display = 'block';
+  showSection(paymentMethods, 'Payment Methods');
 }
 
-// Function to show notifications section
 function showNotifications() {
-    myTasksBtn.style.display = 'none';
-    myReviewsBtn.style.display = 'none';
-    savedTasksBtn.style.display = 'none';
-    messagesBtn.style.display = 'none';
-    paymentMethodsBtn.style.display = 'none';
-    notificationsBtn.style.display = 'none';
-    notifications.style.display = 'block';
+  showSection(notifications, 'Notifications');
 }
 
-// Function to show profile section
+//Function to show profile section
 function showProfile() {
-    myTasks.style.display = 'none';
-    myTasksBtn.style.display = 'flex';
-    myReviews.style.display = 'none';
-    myReviewsBtn.style.display = 'flex';
-    savedTasks.style.display = 'none';
-    savedTasksBtn.style.display = 'flex';
-    messages.style.display = 'none';
-    messagesBtn.style.display = 'flex';
-    paymentMethods.style.display = 'none';
-    paymentMethodsBtn.style.display = 'flex';
-    notifications.style.display = 'none';
-    notificationsBtn.style.display = 'flex';
+    sections.forEach(view => {
+    view.style.display = 'none';
+  });
+    userInfo.style.display = 'block';
+
+    buttons.forEach(btn => {
+    btn.style.display = 'flex';
+  });
+
+  setSubheaderAsProfile();
 }
-
-// Event listeners
-myTasksBtn.addEventListener('click', showTasks);
-myReviewsBtn.addEventListener('click', showReviews);
-savedTasksBtn.addEventListener('click', showSavedTasks);
-messagesBtn.addEventListener('click', showMessages);
-paymentMethodsBtn.addEventListener('click', showPaymentMethods);
-notificationsBtn.addEventListener('click', showNotifications);
-
-// Attach showProfile to all back buttons. This way, we don't need to create a unique back button for all sections
-document.querySelectorAll('.backBtn').forEach(btn => {
-    btn.addEventListener('click', showProfile);
-});

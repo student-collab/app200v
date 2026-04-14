@@ -59,6 +59,25 @@ header > #moon-symbol-background{
     margin: 0 0 0 1rem;
 }
 
+.subheader.is-back {
+    cursor: pointer;
+}
+
+.subheader.is-back .subheader-content {
+    justify-content: flex-start;
+    gap: 0.6rem;
+}
+
+.subheader.is-back #subheaderIcon {
+    order: -1;
+    margin-left: 1rem;
+}
+
+.subheader.is-back #subheaderTitle {
+    margin-left: 0;
+}
+
+
 .container {
     text-align: center;
     background: rgb(247, 247, 247);
