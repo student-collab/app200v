@@ -12,7 +12,7 @@ document.addEventListener('readystatechange', async (e) => {
             newNav.innerHTML = fetchedNav;
             emptyNav.parentNode.replaceChild(newNav, emptyNav);
             
-            const xmlResponse = await fetch('/pages/html-fragments/login-screen.xml');
+            const xmlResponse = await fetch('/pages/html-fragments/header.xml');
             const fetchedHeader = await xmlResponse.text();
             document.body.insertAdjacentHTML('afterbegin', fetchedHeader);
             
