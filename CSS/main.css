@@ -32,7 +32,8 @@ Footer - Side avslutning med nyttige lenker
 
 
 */
-
+html{overflow-x: hidden;}
+*{box-sizing: border-box;}
 
 /* * * * * * * * * * *
 ** Skriftstørrelser  *
@@ -60,7 +61,11 @@ Footer - Side avslutning med nyttige lenker
     
 
 }
-body{background-color: var(--bg-color);}
+body{
+    width:100%;
+    background-color: var(--bg-color);
+    overflow-x: hidden;
+}
 
 /* * * * * * * * * *
  *  mobile-header  *
