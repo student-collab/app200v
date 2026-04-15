@@ -1,5 +1,5 @@
 import { initMenu } from './modules/initMenu.js';
-import { auth} from './modules/dbConfig.js';
+import { auth, loginAnonymously} from './modules/dbConfig.js';
 import { setUser } from './modules/FS_Requests.js';
 
 document.addEventListener('readystatechange', async (e) => {
@@ -19,6 +19,15 @@ document.addEventListener('readystatechange', async (e) => {
              initMenu();  // Loads menu  
             
               console.log("inserted menu");
+               document.addEventListener('click', (e) => {
+                            const clicked = e.target.closest('[data-role]'); 
+                            
+                            if (clicked?.dataset.role === 'login-trigger') {
+                                showLogin();
+                            } else if (!e.target.closest('[data-role="login-panel"]')) {
+                                hideLogin(); 
+                            }
+                });
 
               auth.onAuthStateChanged((user) => {
 
@@ -40,6 +49,15 @@ document.addEventListener('readystatechange', async (e) => {
                   });
         
   
+function showLogin(){
+    const loginScreen = document.getElementById("login-screen");
+    loginScreen.classList.toggle('hidden');
+}
+
+function hideLogin(){
+    const loginScreen = document.getElementById("login-screen");
+    loginScreen.classList.add('hidden');
+}
 
 
 export function showLoginUI() {
