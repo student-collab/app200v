@@ -124,6 +124,7 @@ header > #login-clickable{
     border-radius: 15px;
 }
 #login-screen{
+    user-select: none;
     position: absolute;
     transform: translate(-220px, 50px);
     z-index: 2;

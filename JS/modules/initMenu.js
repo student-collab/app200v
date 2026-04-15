@@ -1,4 +1,5 @@
 import { registerWithEmail, loginWithGoogle, signOut, signIn} from './dbConfig.js';
+import{showLoginUI} from '/JS/main.js';
 
 /**
  * 
@@ -80,8 +81,14 @@ function toggleVisibility () {
 if (signOutBtn) {
   
   signOutBtn.addEventListener('click', async()=> {
-    LOGIN_SCREEN.reset()
-    await signOut();});
+    LOGIN_SCREEN.reset();
+    await signOut();
+    const LoginInfo = document.querySelectorAll("span");
+    LoginInfo.forEach(info=>info.textContent="");
+    showLoginUI();
+    
+  });
+
 }
 
 
