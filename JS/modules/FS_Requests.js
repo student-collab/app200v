@@ -117,17 +117,28 @@ async function getTask(taskId = "") {
           return { id: snap.id, ...snap.data() };
         }
   }
+async function setTask(taskId, data, imageFiles = []) {
 
-  async function setTask(taskId, data) { // ref method payload --- 
-    
-    if(taskId !== 0){
-      await db.collection('tasks').doc(taskId).set(data);
-    }
-    else{
-      const docRef = await firebase.firestore().collection('tasks').add(data);
-      return docRef.id;
-    }
+  let resolvedId = taskId;
+  if (taskId !== 0) {
+    await db.collection('tasks').doc(taskId).set(data);
+  } else {
+    const docRef = await firebase.firestore().collection('tasks').add(data);
+    resolvedId = docRef.id;
   }
+
+  if (imageFiles.length > 0) {
+    const urls = await Promise.all(
+      imageFiles.map(file => uploadImage(file, resolvedId))
+    );
+
+    await db.collection('tasks').doc(resolvedId).update({
+      images: urls
+    });
+  }
+
+  return resolvedId;
+}
 
   async function updateTask(taskId, changes) {
     await db.collection('tasks').doc(taskId).update(changes);

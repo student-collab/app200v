@@ -1,11 +1,60 @@
 import {auth} from './modules/dbConfig.js';
+
+import {setTask} from './modules/FS_Requests.js'; 
+
+
+window.addEventListener('load', ()=>{
+    const submitButton = document.getElementById("btn-post-task");
+    submitButton.addEventListener('click',async ()=> postingTask());
+    const clearPostTaskForm = document.getElementById("clear-form");
+    const postTaskForm = document.getElementById("form__post-task");
+    clearPostTaskForm.addEventListener('click',()=>postTaskForm.reset());
+    
+    
+
+})
+
+async function postingTask (){
+    console.log("submit");
+        const FORM = document.getElementById('form__post-task');
+        if (!FORM.checkValidity()) {
+            FORM.reportValidity(); 
+            return; // Stop execution
+        }
+        const valgtPris = document.getElementById("viser-pris");
+        payload.pris = valgtPris.value;
+  
+        const imageFiles = window.getDroppedFiles(); // your existing API
+        const newTaskId = await setTask(0, taskData, imageFiles);
+        
+        
+        //let docID = await setTask(0,payload);
+        console.info ("Sent");
+        console.info ("ID: " + docID);
+
+
+}
+let payload = { 
+                    title           :"",
+                    description     :"",
+                    status          : "open",
+                    pris            :"",
+                    meta            : {     created: "",
+                                            tags: ['tag1', 'tag2']
+                                        },
+                    assignee        : {  uid:"" ,
+                                        ePost: "" },
+                    location        : { "kommune"       : "",
+                                        "longitude"    : "", 
+                                        "latitude"      : ""
+                                    }
+                    };
+
 auth.onAuthStateChanged((user)=>{
 
                 if (user) {
                     insertMap();
-                    //insertForm();
-                    //insertUser(user);
-                    //document.getElementById("createTask").classList.remove("hidden");
+                    insertUser(user);
                 }
                 else {
                     // User is not signed in
@@ -23,7 +72,15 @@ function insertMap() {
     document.head.appendChild(APILoader);
 
 }
+function insertUser(user){
+   
+      
+      payload.assignee.ePost = user.email;
+      payload.assignee.uid = user.uid;
+    
+}
 
+  
 window.initMap = function() {
     // Define Norway's bounding box
     const norwayBounds = new google.maps.LatLngBounds(
@@ -44,7 +101,6 @@ window.initMap = function() {
     const geocoder = new google.maps.Geocoder();
 
     google.maps.event.addListener(map, 'click', function(event) {
-        return;
         var lat = event.latLng.lat();
         var lng = event.latLng.lng();
         console.log('Clicked Coordinates:', lat, lng);
@@ -85,10 +141,9 @@ window.initMap = function() {
                     county: extractComponent(components, "administrative_area_level_1"),
                 };
 
-                const display = document.getElementById("location-display");
-                if (display) display.textContent = selectedLocation.municipality;
 
-                resolve(selectedLocation); // ← Return the data here
+
+                resolve(selectedLocation); 
             });
         });
     }
@@ -99,19 +154,20 @@ window.initMap = function() {
     function fillForm(lat, lng, selectedLocation){
         console.info(selectedLocation);
         console.log("lat: " + lat + " lng: " + lng);
-        const kommuneInput = document.getElementById("kommune");
-        const latInput = document.getElementById("lat");
-        const lngInput = document.getElementById("lng");
-        const tidInput = document.getElementById("tid");
 
-        const timestamp = Date.now(); //millisekunder siden Unix-epoch
-        const readableTimestamp = new Date(timestamp).toString();
-        kommuneInput.value = selectedLocation.municipality;
-        latInput.value = lat;
-        lngInput.value = lng;
-        tidInput.value = readableTimestamp;
+        const kommuneInput = document.getElementById("kommune");
+        const userLocation = (selectedLocation.address) ?? "";
+        kommuneInput.value = userLocation + " " + selectedLocation.municipality + " kommune" ;
+        payload.location.latitude = lat;
+        payload.location.longitude = lng;
+        
       
     }
     
 
 }
+/*
+export function getPayload() {
+  return payload;
+}
+  */

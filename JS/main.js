@@ -5,12 +5,19 @@ import { setUser } from './modules/FS_Requests.js';
 document.addEventListener('readystatechange', async (e) => {
     console.log("Readystate: " + document.readyState);
     if (!document.readyState === 'complete') {return}
-            const res = await fetch('/pages/html-fragments/icon-navbar.xml');
-            const fetchedNav = await res.text();
-            let emptyNav = document.getElementById("replaceNav");
-            let newNav = document.createElement("nav");
-            newNav.innerHTML = fetchedNav;
-            emptyNav.parentNode.replaceChild(newNav, emptyNav);
+          const res = await fetch('/pages/html-fragments/icon-navbar.xml');
+          let fetchedNav = await res.text();
+          let locationDOM = document.getElementById("replaceNav");
+          let tempContainer = document.createElement("div");
+          tempContainer.innerHTML = fetchedNav;
+          let fragment = document.createDocumentFragment();
+
+          while (tempContainer.firstChild) {
+            fragment.appendChild(tempContainer.firstChild);
+          }
+
+          locationDOM.parentNode.replaceChild(fragment, locationDOM);
+    
             
             const xmlResponse = await fetch('/pages/html-fragments/header.xml');
             const fetchedHeader = await xmlResponse.text();

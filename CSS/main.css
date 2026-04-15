@@ -39,15 +39,18 @@ Footer - Side avslutning med nyttige lenker
 ** * * * * * * * * * */
 :root{
     font-size: 16px; /* 1rem = 16px */
-    --nav-mnu-link-color:coral;
-    --bg-color: #F7F7F7;
-    --menu-highlight:#F4D4AA;
-    --border-color: rgb(172, 200, 224);
+    
+    
+    
+    
+    
 }
 /* * * * * * * * * * *
 **      Farger       *
 ** * * * * * * * * * */
 :root{
+    
+    --bg-color: #F7F7F7;
     --font-color-main: #767D86;
     --font-color-forms: #9598A8;
     --backgroundcolor-form-fields: #EBECF0;
@@ -59,14 +62,38 @@ Footer - Side avslutning med nyttige lenker
 }
 body{background-color: var(--bg-color);}
 
-/* * * * * * * * * * *
-**      Header       *
-** * * * * * * * * * */
+/* * * * * * * * * *
+ *  mobile-header  *
+ * * * * * * * * * */
 header{
-
+    display:flex;
+    justify-content: space-between;
     border-bottom: 2px solid var(--border-color);
     margin-bottom: 2em;
 }
+header div#logo-header{
+    display:flex;
+}
+header > div#logo-header > img{
+    align-self: center;
+    margin: 0 .5rem 0 1rem;
+    
+    
+}
+
+#caption{
+ display: flex;
+ justify-content: center;   
+}
+#caption > h2{ 
+    margin-left:2em;
+}
+#caption__left-arrow{
+    font-size: 2em;
+    align-self: center;
+    
+}
+
 
 /* * * * * * * * * * * * * * *
 **      Header stor skjerm   *

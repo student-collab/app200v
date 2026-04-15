@@ -17,6 +17,8 @@
 
   <link rel="stylesheet" href="/CSS/postTaskDesktop.css" media="(min-width: 900px) ">
 <script src="/JS/main.js" type = "module" defer></script>
+<script src="/JS/modules/postTask-fileDrop.js" type = "module" defer></script>
+<script src="/JS/postTask.js" type = "module" defer></script>
 
 
   <link rel="icon" href="/img/favicon.png">
@@ -35,15 +37,24 @@
    <div id="page-grid">
         <div id="main-content">
             <form id ="form__post-task" action="">
+                <div id="clear-form">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="76 118 58 70" width="24" height="24">
+                        <path fill="currentColor" stroke="currentColor" stroke-width="2.11667" stroke-linecap="round"
+                        d="m 104.941,178.0277 c -3.16401,-0.2109 -6.345367,-0.40276 -9.470648,-0.96094 -1.58094,-0.37989 -3.365918,-0.74466 -4.466378,-2.04054 -0.925689,-1.36841 0.943709,-2.3256 2.050331,-2.56592 1.62963,-0.4845 3.113816,-0.83847 4.796857,-1.04622 0.449372,-0.28407 0.42638,-0.91112 0.05592,-1.09918 -2.582447,-0.14089 -5.142665,0.41489 -7.726535,0.38203 l -13.898512,0.36375 c 0.03385,0.28832 0.590098,0.62309 0.826875,0.92763 2.33455,2.30507 4.669101,4.61013 7.003652,6.91519 1.795409,0.35757 3.664695,0.24526 5.492177,0.33479 6.44703,0.11044 12.895471,0.0872 19.343061,0.0489 0.68353,-1.14112 -0.8281,-0.97612 -1.53875,-1.03898 -0.82268,-0.0735 -1.64537,-0.14701 -2.46805,-0.22052 z" />
+                        <path fill="none" stroke="currentColor" stroke-width="2.11667" stroke-linecap="round"
+                        d="m 110.08786,151.0101 c 2.93925,3.301 7.56644,5.28909 13.17363,5.24387 m -5.40226,-6.22805 10.99934,-25.45197 m -16.24321,21.16734 9.9122,-23.02188 m -14.83632,33.44568 c 2.93925,3.301 7.56644,5.28909 13.17363,5.24387 m 4.02883,-10.23195 9.9122,-23.02188 m -29.03809,34.00108 c 0,0 -3.04648,6.57846 -2.84881,7.2803 1.88306,6.68595 10.15043,6.30937 11.93788,4.52192 2.03487,-2.03487 3.25578,-6.87332 3.25578,-6.87332" />
+                    </svg>
+                    <span>Tøm skjemaet</span>
+                </div>
                 <label for="task-title">Oppgave tittel</label>
-                <input id = "task-title" type="text">
+                <input id = "task-title" type="text" required>
                 <label for="beskrivelse">Beskrivelse</label>
-                <textarea id = "beskrivelse" style ="resize: none;" name="" id=""></textarea>
+                <textarea id = "beskrivelse" style ="resize: none;" required></textarea>
                 
                 <label for="btn-lokasjon">Lokasjon</label>
-                <button id="btn-lokasjon" type="button"> &#x1F4CD; Klikk for å velge lokasjon på kartet</button>
+                <input id = "kommune" type="text" disabled placeholder="&#x1F4CD; Klikk på kartet for å velge lokasjon" required>
                 <label for="categories">Velg passsende kategori for ditt oppdrag</label>
-                <select name="chosenCategory" id="categories">
+                <select name="chosenCategory" id="categories" required>
                     <option value="">--Velg kategori--</option>
                     <option value="Husarbeid">Husarbeid</option>
                     <option value="Hagearbeid">Hagearbeid</option>
@@ -54,15 +65,15 @@
                 
                 <div id="slider-pris-container">
                     <input id="pris-slider" type="range" min="100" max="100000" value="50"  >
-                    <span id="viser-pris">50</span>
+                    <input id="viser-pris" type="text" disabled>
                 </div>
                 <script>
                             var slider = document.getElementById("pris-slider");
                             var output = document.getElementById("viser-pris");
-                            output.innerHTML = slider.value; // Display the default slider value
+                            output.value = slider.value; // Display the default slider value
 
                             slider.oninput = function() {
-                            output.innerHTML = this.value;
+                            output.value = this.value;
                             }
 
                 </script>
@@ -74,28 +85,51 @@
                     </div>
             </form>
 
-            <p>Vindu for å laste opp bilder
-                <a href="https://css-tricks.com/drag-and-drop-file-uploading/">https://css-tricks.com/drag-and-drop-file-uploading/</a>
-            </p>
+            <div id="file-drop" role="button" tabindex="0"
+       aria-label="Last opp bilder – klikk eller dra filer hit">
+
+    <input type="file" id="file-drop__input"
+           multiple accept="image/*"
+           aria-hidden="true">
+
+    <div id="file-drop__zone">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 104 104"
+           aria-hidden="true">
+        <g transform="translate(1,2)">
+          <path fill="none" stroke="currentColor" stroke-width="8.75"
+            d="m 90.717415,48.468075 v 40.874474 c 0,5.004459 -4.059483,9.033328
+               -9.101961,9.033328 H 22.176802 c -5.042481,0 -9.101961,-4.028869
+               -9.101961,-9.033328 v -60.9867 c 0,-5.004453 4.05948,-9.033319
+               9.101961,-9.033319 h 38.770014"/>
+          <path fill="none" stroke="currentColor" stroke-width="8.8"
+            d="m 80.213094,19.347656 v 9.875 h -9.87695 v 0.806641 h 9.87695
+               v 9.875 h 0.80469 v -9.875 h 9.87695 v -0.806641 h -9.87695 v -9.875 z"/>
+          <path fill="currentColor" stroke="currentColor" stroke-width="1"
+            d="M 23.076141,82.026109 37.183826,63.182273 48.167666,77.793804
+               62.37612,58.345353 80.212264,82.328417 Z"/>
+        </g>
+      </svg>
+      <p>Dra bilder hit, eller <strong>klikk for å velge</strong></p>
+      <span>PNG, JPG, WEBP – maks 10 MB per fil</span>
+    </div>
+
+    <div id="file-drop__list" hidden></div>
+
+    <p id="file-drop__status" role="alert" aria-live="polite"></p>
+  </div>
             
-            <div id="file-drop">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 104 104" width="24" height="24">
-                    <g transform="translate(1, 2)">
-                        <path fill="none" stroke="currentColor" stroke-width="8.75"
-                        d="m 90.717415,48.468075 v 40.874474 c 0,5.004459 -4.059483,9.033328 -9.101961,9.033328 H 22.176802 c -5.042481,0 -9.101961,-4.028869 -9.101961,-9.033328 v -60.9867 c 0,-5.004453 4.05948,-9.033319 9.101961,-9.033319 h 38.770014" />
-                        <path fill="none" stroke="currentColor" stroke-width="8.8"
-                        d="m 80.213094,19.347656 v 9.875 h -9.87695 v 0.806641 h 9.87695 v 9.875 h 0.80469 v -9.875 h 9.87695 v -0.806641 h -9.87695 v -9.875 z" />
-                        <path fill="currentColor" stroke="currentColor" stroke-width="1"
-                        d="M 23.076141,82.026109 37.183826,63.182273 48.167666,77.793804 62.37612,58.345353 80.212264,82.328417 Z" />
-                    </g>
-                </svg>
-            </div>
             <button id = "btn-post-task" type = "button"> Lagre oppdraget</button>
         </div> 
+        
+        <div id="map-panel">
+                <div id="map-sidebar" class="map-instance"></div>
+        </div>
+        
+        <nav id="replaceNav">
+             
+        </nav>
+            
 
-            <nav id="replaceNav">
-tom 
-            </nav>
         
     </div>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>

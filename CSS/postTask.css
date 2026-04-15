@@ -1,38 +1,8 @@
 
 header, 
 #page-grid,
-#search-field-and-info {max-width: 1600px;
+#search-field-and-info {max-width: 2000px;
   margin: 0 auto;}
-
-/* * * * * * * * * *
- *  mobile-header  *
- * * * * * * * * * */
-header{
-    display:flex;
-    justify-content: space-between;
-}
-header div#logo-header{
-    display:flex;
-}
-header > div#logo-header > img{
-    align-self: center;
-    margin: 0 .5rem 0 1rem;
-    
-    
-}
-
-#caption{
- display: flex;
- justify-content: center;   
-}
-#caption > h2{ 
-    margin-left:2em;
-}
-#caption__left-arrow{
-    font-size: 2em;
-    align-self: center;
-    
-}
 
 /* * * * * * * * * * * * * * * *
  *  Toggle button for urgent   *
@@ -76,6 +46,7 @@ header > div#logo-header > img{
         display: flex;
         justify-content: space-between;
         background-color: white;
+        border-radius: 10px;
 
     }
     #urg-btn-container > span{ 
@@ -85,6 +56,7 @@ header > div#logo-header > img{
 /* * * * * * * * *
  *  user input   *
  * * * * * * * * */
+ #clear-form{cursor:pointer;}
 #form__post-task{
     display: flex;
     flex-direction: column;
@@ -111,21 +83,131 @@ header > div#logo-header > img{
 #form__post-task textarea{
     height: 5em;
 }
-#btn-lokasjon{color:var(--font-color-forms);}
-#pris-slider{width:40%;}
-
-#file-drop{
-    height: 10em;
-    border:2px solid var(--bordercolor-form-fields);
-    border-radius: 10px;
-
+#slider-pris-container{display: flex;}
+#pris-slider{width:100%;}
+#viser-pris{
+    width:4em;
+    text-align: right;
+    padding-right: 1em;
 }
-#file-drop svg{
-    margin-left: 50%;
-    transform: translateY(80px);
-    color: var(--font-color-menu-icons);
-    
+#file-drop {
+      position: relative;
+      border: 1.5px dashed var(--bordercolor-form-fields);
+      border-radius: 10px;
+      background-color: var(--backgroundcolor-form-fields);
+      transition: border-color .2s, background-color .2s;
+      cursor: pointer;
+      /* order: 3; allerede satt i eksisterende CSS */
 }
+
+ #file-drop.dragover {
+      border-color: var(--background-color-dark);
+      background-color: #e8ecf5;
+    }
+
+    #file-drop__zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      padding: 1.6rem 1rem;
+      pointer-events: none; /* klikkene fanges av input under */
+      user-select: none;
+    }
+
+    #file-drop__zone svg {
+      width: 28px;
+      height: 28px;
+      color: var(--font-color-menu-icons);
+      transition: transform .2s;
+    }
+    #file-drop.dragover #file-drop__zone svg {
+      transform: translateY(-3px);
+    }
+
+    #file-drop__zone p {
+      font-size: .8rem;
+      color: var(--font-color-forms);
+      margin: 0;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    #file-drop__zone span {
+      font-size: .72rem;
+      color: var(--bordercolor-form-fields);
+    }
+
+    #file-drop__input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    #file-drop__list {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+      padding: 0 .75rem .75rem;
+    }
+
+    .fd-item {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      padding: .4rem .6rem;
+      background: white;
+      border: 1px solid var(--bordercolor-form-fields);
+      border-radius: 7px;
+      font-size: .75rem;
+      color: var(--font-color-main);
+      animation: fd-slide .18s ease;
+    }
+
+    @keyframes fd-slide {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0);   }
+    }
+
+    .fd-item__name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .fd-item__size {
+      color: var(--bordercolor-form-fields);
+      flex-shrink: 0;
+      font-size: .7rem;
+    }
+
+    .fd-item__remove {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--bordercolor-form-fields);
+      font-size: .95rem;
+      line-height: 1;
+      padding: 0;
+      transition: color .15s;
+      flex-shrink: 0;
+    }
+    .fd-item__remove:hover { color: #c0392b; }
+
+    #file-drop__status {
+      font-size: .72rem;
+      padding: .3rem .75rem .55rem;
+      color: #c0392b;
+      display: none;
+    }
+    #file-drop__status.visible { display: block; }
+
+
 #btn-post-task{
     background-color: var(--background-color-dark);
     border: 2px solid var(--bordercolor-form-fields);
@@ -134,12 +216,32 @@ header > div#logo-header > img{
     color:white;
     border-radius: 10px;
 }
+/* * * * * * * * * * * * *
+ *    Google-maps API    *
+ * * * * * * * * * * * * */
+ 
+ #page-grid{
+    display:flex;
+    flex-direction: column;
+}
+#main-content{display:contents;}
+#map-panel{
+    height:400px;
+    
+}
 
+#map-sidebar{height:100%;} 
+
+#form__post-task { order: 1; }
+#file-drop { order: 3; }
+#map-panel     { order: 2; }
+#btn-post-task  { order: 4; }
 
 /* * * * * * * * * * * * *
  *  mobile-footer menu   *
  * * * * * * * * * * * * */
 #footer-menu{
+    order:5;
     display: flex;
     justify-content: space-around;
     align-items: center;
