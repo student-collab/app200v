@@ -32,6 +32,9 @@ const signOutBtn = document.getElementById("sign-out");
 const registerBtn  = document.getElementById('btn-register');
 const eyeSymbol = document.getElementById('toggle-password');
 const input = document.getElementById('password');
+const clearFields = document.getElementById("clear-fields");
+const eyeStroke = document.getElementById('eye-stroke');
+
 ratherGoogleSignIn.addEventListener('click', () =>  loginWithGoogle());
 
 ratherGoogleSignIn.addEventListener('click', (e) => {
@@ -52,11 +55,15 @@ signInBtn.addEventListener('click', async ()=>{
     
 });
 
-
+clearFields.addEventListener('click', ()=> LOGIN_SCREEN.reset());
 
 eyeSymbol.addEventListener('mousedown', toggleVisibility);
 eyeSymbol.addEventListener('mouseup', toggleVisibility);
-const eyeStroke = document.getElementById('eye-stroke');
+
+
+
+
+
 function toggleVisibility () {
   
   if (input.type === 'password') {
@@ -66,12 +73,15 @@ function toggleVisibility () {
     input.type = 'password';
     eyeStroke.classList.remove('eye-open');
   }
-
-
 }
+
+
+
 if (signOutBtn) {
   
-  signOutBtn.addEventListener('click', async()=> await signOut());
+  signOutBtn.addEventListener('click', async()=> {
+    LOGIN_SCREEN.reset()
+    await signOut();});
 }
 
 

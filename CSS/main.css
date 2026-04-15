@@ -136,14 +136,17 @@ header  #login-symbol-background{
 #login-clickable > span{
     align-self: center
 }
-#toggle-password{ 
+
+#toggle-password .eye-open{ visibility: hidden;}
+#login-screen-controllers{ 
+    display: flex;
+    justify-content: space-between;
+}
+#login-screen-controllers > svg {
     width:1.5em;
     color: var(--background-color-dark);
-    align-self: end;
+    
 }
-#toggle-password .eye-open{ visibility: hidden;
-
-} 
 #inlog-info{
     display:flex;
     flex-direction: column;
