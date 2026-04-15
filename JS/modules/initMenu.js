@@ -58,22 +58,28 @@ signInBtn.addEventListener('click', async ()=>{
 
 clearFields.addEventListener('click', ()=> LOGIN_SCREEN.reset());
 
-eyeSymbol.addEventListener('mousedown', toggleVisibility);
-eyeSymbol.addEventListener('mouseup', toggleVisibility);
+eyeSymbol.addEventListener('mousedown', showUsrInput);
+eyeSymbol.addEventListener('mouseup', hideUsrInput);
+eyeSymbol.addEventListener('mouseleave', hideUsrInput);
+
+
+eyeSymbol.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // Prevents potential unwanted behaviors like scrolling
+    showUsrInput();
+});
+eyeSymbol.addEventListener('touchend', hideUsrInput);
 
 
 
+function hideUsrInput () {
+  input.type = 'password';
+  eyeStroke.classList.remove('eye-open');
+}
 
-
-function toggleVisibility () {
+function showUsrInput () {
+  input.type = 'text';
+  eyeStroke.classList.add('eye-open');
   
-  if (input.type === 'password') {
-    input.type = 'text';
-    eyeStroke.classList.add('eye-open');
-  } else {
-    input.type = 'password';
-    eyeStroke.classList.remove('eye-open');
-  }
 }
 
 
