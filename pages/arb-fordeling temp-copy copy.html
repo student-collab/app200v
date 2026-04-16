@@ -8,16 +8,25 @@
   <link rel="icon" href="../img/favicon.png">
 
   <style>
+    #navUL{list-style: none;}
+    
+    #navUL a, #navUL a:active, #navUL a:visited {
+      text-decoration: none; color:inherit; font-size: 2rem;;
+      
+    }
+    
     /* ── Dropdown nav ── */
     .dropdown { position: relative; }
 
     .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
 
     .dropdown-menu {
+      border:2px solid coral;
       display: none;
       position: absolute;
-      top: 100%;
-      left: 0;
+      top: 0;
+      left:10%;
+      transform: translateX(100%);
       background: #fff;
       border: 1px solid #ddd;
       border-radius: 6px;
@@ -91,32 +100,52 @@
 
 <body>
   <nav>
-    <figure>
-      <a href="../index.html">
-        <img src="../img/teamWork.png" alt="logo">
-      </a>
-    </figure>
+    <p>
+  <strong><span id="intern-fiks" style="cursor:pointer">Intern fiks...</span></strong>
+  <span id="hidden-intern-fix" style="display:none">
+    Ved å bruke denne knappen får du tilgang til en filmappe. <br>
+    Scriptet vil da finne alle html-filer i mappen og undermapper. Det blir generert linker som legges til i menyen. <br>
+    Disse linkene er ikke varige, men du kan bruke inspect, finne dem der, høyreklikke og velge kopier element. <br>
+    Deretter kan du paste elementet inn i HTML-koden manuelt ... som sagt: intern fiks.
+  </span>
+</p>
+<label for="folderPicker" id="folder-label" style="display:none">Intern fiks for å oppdatere menyen</label>
+<input type="file" webkitdirectory id="folderPicker" style="display:none; margin: 1rem 0">
 
-    <button id="burger_button">
-      <img id="burger_stripes" style="max-width:100px;" src="../img/burgerStripes.png" alt="menu">
-      <img id="burger_close" class="hidden" style="max-width:100px;" src="../img/burgerClose.png" alt="close">
-    </button>
+<script>
+  document.getElementById('intern-fiks').addEventListener('click', () => {
+    ['hidden-intern-fix', 'folder-label', 'folderPicker'].forEach(id => {
+      const el = document.getElementById(id);
+      el.style.display = el.style.display === 'none' ? '' : 'none';
+    });
+  });
+</script>
 
     <ul id="navUL">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="dbtesting.html">DB test</a></li>
-      <li><a href="arb-fordeling.html">Arb fordeling</a></li>
-
-      <!-- Dropdown -->
-      <li class="dropdown">
-        <a href="#">Pages ▾</a>
-        <ul class="dropdown-menu">
-          <li><a href="messages.html">Messages</a></li>
+       <li><a href="messages.html">Messages</a></li>
           <li><a href="post-task.html">Post Task</a></li>
           <li><a href="search.html">Search</a></li>
           <li><a href="taskFeed.html">Task Feed</a></li>
           <li><a href="userPostedTasks.html">My Posted Tasks</a></li>
           <li><a href="userProfile.html">User Profile</a></li>
+      
+      <li class="dropdown">
+        
+        <a href="#"><strong>Sider som ikke blir en del av appen </strong></a>
+        
+        <ul id = "recieve-html-paths" class="dropdown-menu">
+             <li><a href="pages/arb-fordeling temp-copy.html">arb-fordeling temp-copy.html</a></li>
+          <li><a href="pages/arb-fordeling.html">arb-fordeling.html</a></li>
+          <li><a href="pages/dbtesting.html">dbtesting.html</a></li>
+          <li><a href="pages/grid-test.html">grid-test.html</a></li>
+          <li><a href="pages/grid-test2.html">grid-test2.html</a></li>
+          <li><a href="pages/mapsTesting.html">mapsTesting.html</a></li>
+          <li><a href="pages/postedTaskDetail.html">postedTaskDetail.html</a></li>
+          <li><a href="pages/tabs.html">tabs.html</a></li>
+          <li><a href="pages/tom-side.html">tom-side.html</a></li>
+          <li><a href="pages/urgent-toggle.html">urgent-toggle.html</a></li>
+          <li><a href="pages/html-fragments/navbar.html">navbar.html</a></li>
+          
         </ul>
       </li>
     </ul>
@@ -186,5 +215,60 @@
     <p class="subtitle">Bilder ikke lastet opp ennå.</p>
 
   </main>
+
+  <script>
+   document.getElementById('folderPicker').addEventListener('change', function () {
+  const files = Array.from(this.files);
+
+  const navLinks = Array.from(document.querySelectorAll('#navUL > li:not(.dropdown) a'))
+    .map(a => a.getAttribute('href'));
+
+  const unlisted = files
+    .filter(f => f.name.endsWith('.html') && !navLinks.includes(f.name));
+
+  const menu = document.getElementById('recieve-html-paths');
+  menu.innerHTML = '';
+
+  if (unlisted.length === 0) {
+    menu.innerHTML = '<li style="padding:8px 16px;color:#999">Ingen nye filer</li>';
+    return;
+  }
+
+  for (const f of unlisted) {
+    const li = document.createElement('li');
+    li.innerHTML = `<a href="${f.webkitRelativePath}">${f.name}</a>`;
+    //                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ full path, bare name as label
+    menu.appendChild(li);
+  }
+});
+  </script>
+<footer>
+  <ul>
+    <h2>Webapp sider</h2>
+      <li><a href="messages.html">Messages</a></li>
+          <li><a href="post-task.html">Post Task</a></li>
+          <li><a href="search.html">Search</a></li>
+          <li><a href="taskFeed.html">Task Feed</a></li>
+          <li><a href="userPostedTasks.html">My Posted Tasks</a></li>
+          <li><a href="userProfile.html">User Profile</a></li>
+          <h2>Prosjektfiler</h2>
+          <li><a href="pages/arb-fordeling temp-copy.html">arb-fordeling temp-copy.html</a></li>
+          <li><a href="pages/arb-fordeling.html">arb-fordeling.html</a></li>
+          <li><a href="pages/dbtesting.html">dbtesting.html</a></li>
+          <li><a href="pages/grid-test.html">grid-test.html</a></li>
+          <li><a href="pages/grid-test2.html">grid-test2.html</a></li>
+          <li><a href="pages/mapsTesting.html">mapsTesting.html</a></li>
+          <li><a href="pages/postedTaskDetail.html">postedTaskDetail.html</a></li>
+          <li><a href="pages/tabs.html">tabs.html</a></li>
+          <li><a href="pages/tom-side.html">tom-side.html</a></li>
+          <li><a href="pages/urgent-toggle.html">urgent-toggle.html</a></li>
+          <li><a href="pages/html-fragments/navbar.html">navbar.html</a></li>
+  </ul>
+  </ul>
+  </footer>
 </body>
 </html>
+
+  
+
+      

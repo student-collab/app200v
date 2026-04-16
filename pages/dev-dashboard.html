@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TeamWork – Arbeidsfordeling</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="../CSS/main.css">
+  <link rel="icon" href="../img/favicon.png">
+  
+
+  <style>
+    #navUL { list-style: none; }
+
+    #navUL a, #navUL a:active, #navUL a:visited {
+      text-decoration: none; color: inherit; font-size: 2rem;
+    }
+
+    /* ── Dropdown nav ── */
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 0; left: 10%;
+      transform: translateX(100%);
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      list-style: none;
+      margin: 4px 0 0;
+      padding: 4px 0;
+      min-width: 170px;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,.12);
+    }
+
+    .dropdown:hover .dropdown-menu,
+    .dropdown:focus-within .dropdown-menu { display: block; }
+
+    .dropdown-menu li a {
+      display: block;
+      padding: 8px 16px;
+      color: #222;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .dropdown-menu li a:hover { background: #f5f5f5; }
+
+    /* ── Page layout ── */
+    main { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+
+    h1 { font-size: 1.4rem; margin: 2rem 0 0.4rem; }
+    .subtitle { margin: 0 0 1.2rem; color: #555; font-size: 0.95rem; }
+
+    /* ── Wireframe rows: card + note side by side ── */
+    .wireframe-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .wireframe-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    /* ── Image card ── */
+    .wireframe-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: box-shadow .2s, transform .2s;
+      background: #fafafa;
+    }
+
+    .wireframe-card:hover {
+      box-shadow: 0 6px 20px rgba(0,0,0,.13);
+      transform: translateY(-3px);
+    }
+
+    .wireframe-card a { display: block; }
+
+    .wireframe-card img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .card-label {
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #333;
+      text-align: center;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+
+    /* ── Note panel ── */
+    .note-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      height: 100%;
+    }
+
+    .note-panel-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #888;
+    }
+
+    .note-panel textarea {
+      flex: 1;
+      min-height: 160px;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: #222;
+      background: #f9f9f9;
+      resize: vertical;
+      transition: border-color .2s, background .2s;
+    }
+
+    .note-panel textarea:focus {
+      outline: none;
+      border-color: #6ee7b7;
+      background: #fff;
+    }
+
+    .note-panel textarea.highlighted {
+      border-color: #6ee7b7;
+      box-shadow: 0 0 0 3px rgba(110,231,183,.25);
+      background: #fff;
+    }
+
+    .note-footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .note-save-btn {
+      padding: 6px 16px;
+      background: #0f1117;
+      color: #6ee7b7;
+      border: 1px solid #2a2d3a;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .note-save-btn:hover { background: #1a1f2e; }
+    .note-save-btn:disabled { opacity: .5; cursor: default; }
+
+    .note-status {
+      font-size: 0.75rem;
+      color: #aaa;
+      font-style: italic;
+    }
+    .note-status.ok  { color: #6ee7b7; }
+    .note-status.err { color: #f87171; }
+
+    /* ── Responsive: stack on narrow screens ── */
+    @media (max-width: 700px) {
+      .wireframe-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── devmenu hook ── -->
+  <div id="devinfo"></div>
+
+  <nav>
+    <p>
+      <strong><span id="intern-fiks" style="cursor:pointer">Intern fiks...</span></strong>
+      <span id="hidden-intern-fix" style="display:none">
+        Ved å bruke denne knappen får du tilgang til en filmappe. <br>
+        Scriptet vil da finne alle html-filer i mappen og undermapper. Det blir generert linker som legges til i menyen. <br>
+        Disse linkene er ikke varige, men du kan bruke inspect, finne dem der, høyreklikke og velge kopier element. <br>
+        Deretter kan du paste elementet inn i HTML-koden manuelt ... som sagt: intern fiks.
+      </span>
+    </p>
+    <label for="folderPicker" id="folder-label" style="display:none">Intern fiks for å oppdatere menyen</label>
+    <input type="file" webkitdirectory id="folderPicker" style="display:none; margin: 1rem 0">
+
+    <script>
+      document.getElementById('intern-fiks').addEventListener('click', () => {
+        ['hidden-intern-fix', 'folder-label', 'folderPicker'].forEach(id => {
+          const el = document.getElementById(id);
+          el.style.display = el.style.display === 'none' ? '' : 'none';
+        });
+      });
+    </script>
+
+    <ul id="navUL">
+      <li><a href="messages.html">Messages</a></li>
+      <li><a href="post-task.html">Post Task</a></li>
+      <li><a href="search.html">Search</a></li>
+      <li><a href="taskFeed.html">Task Feed</a></li>
+      <li><a href="userPostedTasks.html">My Posted Tasks</a></li>
+      <li><a href="userProfile.html">User Profile</a></li>
+
+      <li class="dropdown">
+        <a href="#"><strong>Sider som ikke blir en del av appen</strong></a>
+        <ul id="recieve-html-paths" class="dropdown-menu">
+          <li><a href="pages/arb-fordeling temp-copy.html">arb-fordeling temp-copy.html</a></li>
+          <li><a href="pages/arb-fordeling.html">arb-fordeling.html</a></li>
+          <li><a href="pages/dbtesting.html">dbtesting.html</a></li>
+          <li><a href="pages/grid-test.html">grid-test.html</a></li>
+          <li><a href="pages/grid-test2.html">grid-test2.html</a></li>
+          <li><a href="pages/mapsTesting.html">mapsTesting.html</a></li>
+          <li><a href="pages/postedTaskDetail.html">postedTaskDetail.html</a></li>
+          <li><a href="pages/tabs.html">tabs.html</a></li>
+          <li><a href="pages/tom-side.html">tom-side.html</a></li>
+          <li><a href="pages/urgent-toggle.html">urgent-toggle.html</a></li>
+          <li><a href="pages/html-fragments/navbar.html">navbar.html</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main>
+    <p>Hei luna</p>
+
+    <!-- ── Light mode ── -->
+    <h1>Wireframes – Light mode – 08.04.2026</h1>
+    <p class="subtitle">Klikk på et bilde for å gå til siden det viser. Skriv notater til høyre og trykk Lagre.</p>
+
+    <div class="wireframe-grid">
+
+      <!--
+        Each .wireframe-row has:
+          data-page  = the Firestore doc key (matches location.pathname on that page)
+
+        The FIRST textarea also gets id="note-textarea" so the devmenu hash-link
+        (#note-textarea?page=...) has a stable anchor. The scroll+focus logic below
+        handles routing to the right panel when a page= param is present.
+      -->
+
+      <div class="wireframe-row" data-page="notes-messages.html">
+        <div class="wireframe-card">
+          <a href="messages.html">
+            <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-messages.png?alt=media&token=2098bab3-5449-4361-b867-3af4e4a7e597" alt="Messages">
+            <div class="card-label">Messages</div>
+          </a>
+        </div>
+        <div class="note-panel">
+          <span class="note-panel-label">Dev note — messages.html</span>
+          <textarea id="note-textarea" placeholder="Skriv en dev-note her…"></textarea>
+          <div class="note-footer">
+            <button class="note-save-btn">Lagre</button>
+            <span class="note-status"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wireframe-row" data-page="notes-post-task.html">
+        <div class="wireframe-card">
+          <a href="post-task.html">
+            <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-postTask.png?alt=media&token=a302d77f-76a4-4915-80cb-a3ca856e4de5" alt="Post Task">
+            <div class="card-label">Post Task</div>
+          </a>
+        </div>
+        <div class="note-panel">
+          <span class="note-panel-label">Dev note — post-task.html</span>
+          <textarea placeholder="Skriv en dev-note her…"></textarea>
+          <div class="note-footer">
+            <button class="note-save-btn">Lagre</button>
+            <span class="note-status"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wireframe-row" data-page="notes-post-task.html#step2">
+        <div class="wireframe-card">
+          <a href="post-task.html">
+            <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-postTask2.png?alt=media&token=36973212-e7b0-4235-a612-0cb33aac50a1" alt="Post Task (step 2)">
+            <div class="card-label">Post Task (step 2)</div>
+          </a>
+        </div>
+        <div class="note-panel">
+          <span class="note-panel-label">Dev note — post-task.html (steg 2)</span>
+          <textarea placeholder="Skriv en dev-note her…"></textarea>
+          <div class="note-footer">
+            <button class="note-save-btn">Lagre</button>
+            <span class="note-status"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wireframe-row" data-page="notes-search.html">
+        <div class="wireframe-card">
+          <a href="search.html">
+            <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-search.png?alt=media&token=bacc97f6-7aca-4fdb-b5bb-9de1edc5d8a5" alt="Search">
+            <div class="card-label">Search</div>
+          </a>
+        </div>
+        <div class="note-panel">
+          <span class="note-panel-label">Dev note — search.html</span>
+          <textarea placeholder="Skriv en dev-note her…"></textarea>
+          <div class="note-footer">
+            <button class="note-save-btn">Lagre</button>
+            <span class="note-status"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wireframe-row" data-page="notes-taskFeed.html">
+        <div class="wireframe-card">
+          <a href="taskFeed.html">
+            <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-taskFeed.png?alt=media&token=83f96899-c370-4bf1-9cc1-f441996d783d" alt="Task Feed">
+            <div class="card-label">Task Feed</div>
+          </a>
+        </div>
+        <div class="note-panel">
+          <span class="note-panel-label">Dev note — taskFeed.html</span>
+          <textarea placeholder="Skriv en dev-note her…"></textarea>
+          <div class="note-footer">
+            <button class="note-save-btn">Lagre</button>
+            <span class="note-status"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wireframe-row" data-page="notes-userPostedTasks.html">
+        <div class="wireframe-card">
+          <a href="userPostedTasks.html">
+            <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-userPostedTasks.png?alt=media&token=deb7c375-9f46-40b5-97c5-1f689681a1cb" alt="My Posted Tasks">
+            <div class="card-label">My Posted Tasks</div>
+          </a>
+        </div>
+        <div class="note-panel">
+          <span class="note-panel-label">Dev note — userPostedTasks.html</span>
+          <textarea placeholder="Skriv en dev-note her…"></textarea>
+          <div class="note-footer">
+            <button class="note-save-btn">Lagre</button>
+            <span class="note-status"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wireframe-row" data-page="notes-userProfile.html">
+        <div class="wireframe-card">
+          <a href="userProfile.html">
+            <img src="https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-userProfile.png?alt=media&token=e4aada9b-2650-4027-b7d6-c32bdb8e42c0" alt="User Profile">
+            <div class="card-label">User Profile</div>
+          </a>
+        </div>
+        <div class="note-panel">
+          <span class="note-panel-label">Dev note — userProfile.html</span>
+          <textarea placeholder="Skriv en dev-note her…"></textarea>
+          <div class="note-footer">
+            <button class="note-save-btn">Lagre</button>
+            <span class="note-status"></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Dark mode (placeholder) ── -->
+    <h1>Wireframes – Dark mode – 08.04.2026</h1>
+    <p class="subtitle">Bilder ikke lastet opp ennå.</p>
+
+  </main>
+
+  <!-- ── folderPicker logic (unchanged) ── -->
+  <script>
+    document.getElementById('folderPicker').addEventListener('change', function () {
+      const files = Array.from(this.files);
+      const navLinks = Array.from(document.querySelectorAll('#navUL > li:not(.dropdown) a'))
+        .map(a => a.getAttribute('href'));
+      const unlisted = files.filter(f => f.name.endsWith('.html') && !navLinks.includes(f.name));
+      const menu = document.getElementById('recieve-html-paths');
+      menu.innerHTML = '';
+      if (unlisted.length === 0) {
+        menu.innerHTML = '<li style="padding:8px 16px;color:#999">Ingen nye filer</li>';
+        return;
+      }
+      for (const f of unlisted) {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${f.webkitRelativePath}">${f.name}</a>`;
+        menu.appendChild(li);
+      }
+    });
+  </script>
+
+  <!-- ── Firebase compat SDK ── -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  
+
+    
+    <script type="module">
+  import{db } from '/JS/modules/dbConfig.js'
+
+  window.onload = async function () {
+    
+  
+
+
+
+    // ────────────────────────────────────────────────────────────────────────────
+    const COLLECTION = 'devNotes';
+
+    // Collect all rows
+    const rows = Array.from(document.querySelectorAll('.wireframe-row'));
+
+    // Build a map: pageKey → { textarea, btn, status }
+    const panels = rows.map(row => ({
+      pageKey: row.dataset.page,
+      textarea: row.querySelector('textarea'),
+      btn:      row.querySelector('.note-save-btn'),
+      status:   row.querySelector('.note-status'),
+    }));
+
+    // ── Load all notes in parallel ────────────────────────────────────────────
+    async function loadAllNotes() {
+      await Promise.all(panels.map(async p => {
+        try {
+          const snap = await db.collection(COLLECTION).doc(p.pageKey).get();
+          if (snap.exists) {
+            p.textarea.value = snap.data().note || '';
+          }
+        } catch (e) {
+          p.status.textContent = '⚠ load failed';
+          p.status.className = 'note-status err';
+        }
+      }));
+    }
+
+    // ── Save handler ──────────────────────────────────────────────────────────
+    panels.forEach(p => {
+      p.btn.addEventListener('click', async () => {
+        p.btn.disabled = true;
+        p.status.textContent = 'lagrer…';
+        p.status.className = 'note-status';
+        try {
+          await db.collection(COLLECTION).doc(p.pageKey).set({ note: p.textarea.value });
+          p.status.textContent = '✓ lagret';
+          p.status.className = 'note-status ok';
+        } catch (e) {
+          p.status.textContent = '⚠ feil ved lagring';
+          p.status.className = 'note-status err';
+        } finally {
+          p.btn.disabled = false;
+          setTimeout(() => { p.status.textContent = ''; p.status.className = 'note-status'; }, 3000);
+        }
+      });
+    });
+
+    // ── Handle devmenu deep-link: #note-textarea?page=/some-page.html ─────────
+    // devmenu.js generates: OVERVIEW_PAGE + '#note-textarea?page=' + encodedPath
+    // We read the ?page= from location.search OR from the hash query string.
+    function getTargetPage() {
+      // Try hash-embedded query: url#note-textarea?page=...
+      const hashQuery = location.hash.split('?')[1];
+      if (hashQuery) {
+        const p = new URLSearchParams(hashQuery).get('page');
+        if (p) return decodeURIComponent(p);
+      }
+      // Try normal query string
+      return new URLSearchParams(location.search).get('page');
+    }
+
+    function scrollToPanel(pageKey) {
+      const panel = panels.find(p => p.pageKey === pageKey);
+      if (!panel) return;
+      panel.textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      panel.textarea.focus();
+      panel.textarea.classList.add('highlighted');
+      setTimeout(() => panel.textarea.classList.remove('highlighted'), 2000);
+    }
+
+    // ── Init ─────────────────────────────────────────────────────────────────
+    loadAllNotes().then(() => {
+      const target = getTargetPage();
+      if (target) scrollToPanel(target);
+    });
+
+    // ── Expose db for devmenu.js (if it loads after this module) ─────────────
+    // devmenu.js is called from main.js as:  initDevMenu(db)
+    // If main.js already has db, this line is not needed.
+    window.__devDb = db;
+  } // window.onload lukker
+  </script>
+
+  <footer>
+    <ul>
+      <h2>Webapp sider</h2>
+      <li><a href="messages.html">Messages</a></li>
+      <li><a href="post-task.html">Post Task</a></li>
+      <li><a href="search.html">Search</a></li>
+      <li><a href="taskFeed.html">Task Feed</a></li>
+      <li><a href="userPostedTasks.html">My Posted Tasks</a></li>
+      <li><a href="userProfile.html">User Profile</a></li>
+      <h2>Prosjektfiler</h2>
+      <li><a href="pages/dev-dashboard.html">dev-dashboard.html</a></li>
+      <li><a href="pages/arb-fordeling.html">arb-fordeling.html</a></li>
+      <li><a href="pages/dbtesting.html">dbtesting.html</a></li>
+      <li><a href="pages/grid-test.html">grid-test.html</a></li>
+      <li><a href="pages/grid-test2.html">grid-test2.html</a></li>
+      <li><a href="pages/mapsTesting.html">mapsTesting.html</a></li>
+      <li><a href="pages/postedTaskDetail.html">postedTaskDetail.html</a></li>
+      <li><a href="pages/tabs.html">tabs.html</a></li>
+      <li><a href="pages/tom-side.html">tom-side.html</a></li>
+      <li><a href="pages/urgent-toggle.html">urgent-toggle.html</a></li>
+      <li><a href="pages/html-fragments/navbar.html">navbar.html</a></li>
+    </ul>
+  </footer>
+ 
+ 
+</body>
+</html>

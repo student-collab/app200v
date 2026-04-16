@@ -120,6 +120,4 @@ registerBtn.addEventListener('click', async () => {
 });
 
 
-
 }
-

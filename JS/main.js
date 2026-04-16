@@ -1,6 +1,9 @@
 import { initMenu } from './modules/initMenu.js';
 import { auth, loginAnonymously} from './modules/dbConfig.js';
-import { setUser } from './modules/FS_Requests.js';
+// import { setUser } from './modules/FS_Requests.js'; 
+// setUser er for å lagre brukere i databasen
+// Tvilsomt at det skal skje i main.js som lastes for alle sider ...
+import { initDevPanel } from '/JS/modules/dev-panel.js';
 
 document.addEventListener('readystatechange', async (e) => {
     console.log("Readystate: " + document.readyState);
@@ -26,6 +29,80 @@ document.addEventListener('readystatechange', async (e) => {
              initMenu();  // Loads menu  
             
               console.log("inserted menu");
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                                 *
+ *          devInfoEL er til bruk for oss under byggeprosessen                     *
+ *          Den er finner elementet id = devinfo som injisjeres av main.js         *
+ *          Elementet er i html-fragments header.xml                               *
+ *                                                                                 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ */
+                
+const devInfoEl = document.getElementById('devinfo');
+if (devInfoEl) { initDevPanel(devInfoEl); }
+
+// Inject toggle styles
+const style = document.createElement('style');
+style.textContent = `
+  #devinfo-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width:100%;
+  }
+  .toggle-track {
+    display: block;
+    width: 32px;
+    height: 18px;
+    background: #ccc;
+    border-radius: 9px;
+    position: relative;
+    transition: background 0.2s;
+  }
+  #devinfo-toggle[aria-pressed="true"] .toggle-track {
+    background: #4caf50;
+  }
+  .toggle-thumb {
+    display: block;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.2s;
+  }
+  #devinfo-toggle[aria-pressed="true"] .toggle-thumb {
+    transform: translateX(14px);
+  }
+`;
+document.head.appendChild(style);
+
+// Wire up toggle button
+const toggleBtn = document.getElementById('devinfo-toggle');
+if (toggleBtn && devInfoEl) {
+  devInfoEl.hidden = true; // start hidden
+  toggleBtn.addEventListener('click', () => {
+    const isOn = toggleBtn.getAttribute('aria-pressed') === 'true';
+    toggleBtn.setAttribute('aria-pressed', String(!isOn));
+    devInfoEl.hidden = isOn;
+  });
+}
+
+ /* * * * * * * * * * * * ^^^^^^^^^^^^^^^^ * * * * * * * * * * * * * * * * * * * * *
+ *                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                            *
+ *          Slettes samtidig - slett også JS/modules/devpanel.js                   *
+ *                                                                                 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
                document.addEventListener('click', (e) => {
                             const clicked = e.target.closest('[data-role]'); 
                             
