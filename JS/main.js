@@ -7,7 +7,7 @@ import { initDevPanel } from '/JS/modules/dev-panel.js';
 
 document.addEventListener('readystatechange', async (e) => {
     console.log("Readystate: " + document.readyState);
-    if (!document.readyState === 'complete') {return}
+    if (document.readyState !== 'complete') { return; }
           const res = await fetch('/pages/html-fragments/icon-navbar.xml');
           let fetchedNav = await res.text();
           let locationDOM = document.getElementById("replaceNav");
