@@ -42,7 +42,7 @@
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-messages"/></svg>
     <span>Messages</span>
   </a>
-  <a class="nav-item" href="profile.html" aria-current="page">
+  <a class="nav-item" href="userProfile.html" aria-current="page">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-profile"/></svg>
     <span>Profile</span>
   </a>
