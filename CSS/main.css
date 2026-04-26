@@ -99,19 +99,6 @@ header > div#logo-header > img{
     
 }
 
-
-/* * * * * * * * * * * * * * *
-**      Header stor skjerm   *
-** * * * * * * * * * * * * * */
-
-@media (min-width: 900px) {
-    header{
-        box-shadow: 0px 2px 2px 0px var(--border-color);
-    }
-
-  
-}
-
 /* * * * * * * * * * * * * * *
  *      Login screen         *
  * * * * * * * * * * * * * * */
@@ -158,8 +145,7 @@ header  #login-symbol-background{
     height: 2em;
     border-radius: 100%;
     align-self: center;
-    
-    
+        
 }
 #login-symbol-background > svg{
     width:1.5em;
@@ -206,7 +192,46 @@ overflow-x: auto;
             padding:2em;
         }
 }
+ 
 
+/* * * * * * * * * * * * *
+ *  mobile-footer menu   *
+ * * * * * * * * * * * * */
+#footer-menu{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid #e0e0e0;
+}
+
+.nav-item {
+  font-size: 1.5rem; /*symbolene har width og height 2em som vil si 2 x verdien som velges her*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  color: #333;
+}
+.nav-item span {
+
+    font-size: 1rem;
+}
+
+.nav-item svg{
+    color:var(--font-color-menu-icons);
+    
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *  Spesifikk CSS for search.html --- skal ikke være her       *
+ *  main.css lastes for ALLE sider,                            * 
+ *  CSS som gjelder én spesifikk side bør linkes inn           *
+ *  kun på den siden for å unngå at den lastes unødvendig      * 
+ *  og for å finne frem til den enkelte sidens CSS             *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 body.search-page {
     background-color: var(--bg-color);
@@ -254,3 +279,7 @@ body.search-page {
     margin: 1rem 0 0 0;
     font-size: 1rem;
 }
+
+/* * ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ * * * * * * * * * * * * * * *
+ *  Spesifikk CSS for search.html -- SLUTT
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
