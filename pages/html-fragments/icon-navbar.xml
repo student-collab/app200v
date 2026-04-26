@@ -33,9 +33,9 @@
   </defs>
 </svg>
 <nav id="footer-menu" aria-label="Main navigation">
-  <a class="nav-item" href="/index.html">
+  <a class="nav-item" href="/pages/oppgaveliste.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-home"/></svg>
-    <span>Feed</span>
+    <span>oppgaveliste</span>
   </a>
   <a class="nav-item" href="#">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-search"/></svg>
