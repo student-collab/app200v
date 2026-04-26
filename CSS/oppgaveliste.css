@@ -28,8 +28,9 @@ header,
  }
 #searchbar-mag-symbol{
     position: absolute;
-    left:.2em;
-    top:.5em;
+    left:2em;
+    top:2.2em;
+    color: var(--font-color-main);
     
 }
 
@@ -46,8 +47,12 @@ border: 2px solid var(--border-color);
 /* * * * * * * * * *
  *  task element   *
  * * * * * * * * * */
- 
-
+ #oppgavelisten>a{
+    text-decoration: none;
+ }
+#oppgavelisten>a,
+#oppgavelisten>a:visited
+{ color:inherit;}
  
 .task{
      padding:0 2em 0 2em;
@@ -61,7 +66,6 @@ border: 2px solid var(--border-color);
 .task__title {
     margin-bottom:0;
 }
-.task__beskrivelse{display:none;}
 .task__info{
     display: flex;
 
@@ -85,12 +89,6 @@ border: 2px solid var(--border-color);
 .task__price { 
     
     font-weight: bold;
-}
-
-.task__btn { 
-    border-radius: 1em;
-    background-color: black;
-    color:white;
 }
 
 .task__img { 
