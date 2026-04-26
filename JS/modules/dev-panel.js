@@ -8,25 +8,23 @@ const PAGES = [
   { label: '/search.html', path: '/pages/search.html', deprecated: true },
 
   // Main pages
-  { label: 'Messages',        path: 'messages.html' },
-  { label: 'Post Task',       path: 'post-task.html' },
-  { label: 'Search',          path: 'search.html' },
-  { label: 'Task Feed',       path: 'taskFeed.html' },
-  { label: 'My Posted Tasks', path: 'userPostedTasks.html' },
-  { label: 'User Profile',    path: 'userProfile.html' },
+  { label: 'Messages',        path: '/pages/messages.html' },
+  { label: 'Post Task',       path: '/pages/post-task.html' },
+  { label: 'oppgaveliste',    path: '/pages/oppgaveliste.html' },
+  { label: 'User Profile',    path: '/pages/userProfile.html' },
 
   // Prosjektfiler
-  { label: 'Arb Fordeling',       path: 'pages/arb-fordeling.html' },
-  { label: 'DB Testing',          path: 'pages/dbtesting.html' },
-  { label: 'Grid Test',           path: 'pages/grid-test.html' },
-  { label: 'Grid Test 2',         path: 'pages/grid-test2.html' },
-  { label: 'Maps Testing',        path: 'pages/mapsTesting.html' },
-  { label: 'Posted Task Detail',  path: 'pages/postedTaskDetail.html' },
-  { label: 'Tabs',                path: 'pages/tabs.html' },
-  { label: 'Tom Side',            path: 'pages/tom-side.html' },
-  { label: 'Urgent Toggle',       path: 'pages/urgent-toggle.html' },
-  { label: 'Navbar',              path: 'pages/html-fragments/navbar.html' },
+  { label: 'dbtesting',         path: '/pages/dbtesting.html' },
+  { label: 'mapsTesting',       path: '/pages/mapsTesting.html' },
+  { label: 'postedTaskDetail',  path: '/pages/postedTaskDetail.html' },
+  { label: 'tabs',              path: '/pages/tabs.html' },
+  { label: 'tom-side',          path: '/pages/tom-side.html' },
+  { label: 'urgent-toggle',     path: '/pages/urgent-toggle.html' },
+  { label: 'navbar',            path: '/pages/html-fragments/navbar.html' }
+
 ];
+
+
 
 export function initDevPanel(container) {
   const currentPath = window.location.pathname;
