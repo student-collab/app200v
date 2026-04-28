@@ -68,7 +68,7 @@ body{
 }
 
 /* * * * * * * * * *
- *  mobile-header  *
+ *     header      * 
  * * * * * * * * * */
 header{
     display:flex;
@@ -83,19 +83,6 @@ header > div#logo-header > img{
     align-self: center;
     margin: 0 .5rem 0 1rem;
     
-    
-}
-
-#caption{
- display: flex;
- justify-content: center;   
-}
-#caption > h2{ 
-    margin-left:2em;
-}
-#caption__left-arrow{
-    font-size: 2em;
-    align-self: center;
     
 }
 
@@ -177,22 +164,6 @@ overflow-x: auto;
 }
 #inlog-info button{ color: brown}
 
-/* * * * * * * * * * * * * * * * * *
-**      Login screen stor skjerm   *
-** * * * * * * * * * * * * * * * * */
-
-@media (min-width: 900px) {
-        header > #login-clickable:hover {
-            cursor:pointer;
-            text-decoration: underline;
-            background-color: #ddd;
-        }
-#inlog-info :hover{cursor:pointer;}
-        header > #login-clickable {
-            padding:2em;
-        }
-}
- 
 
 /* * * * * * * * * * * * *
  *  mobile-footer menu   *

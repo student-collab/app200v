@@ -1,4 +1,17 @@
 
+#caption{
+ display: flex;
+ justify-content: center;   
+}
+#caption > h2{ 
+    margin-left:2em;
+}
+#caption__left-arrow{
+    font-size: 2em;
+    align-self: center;
+    
+}
+
 
 /* * * * * * * * * * * * * * * *
  *  Toggle button for urgent   *
