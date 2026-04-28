@@ -8,20 +8,30 @@ import { initDevPanel } from '/JS/modules/dev-panel.js';
 document.addEventListener('readystatechange', async (e) => {
     console.log("Readystate: " + document.readyState);
     if (document.readyState !== 'complete') { return; }
-          const res = await fetch('/pages/html-fragments/icon-navbar.xml');
-          let fetchedNav = await res.text();
+
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+     *                                                                           *
+     *    Setter inn navbar, meny for navigasjon, på alle sider som              * 
+     *    har et element med id = "replaceNav" (og main.js er linket inn)        *
+     *                                                                           *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           let locationDOM = document.getElementById("replaceNav");
-          let tempContainer = document.createElement("div");
-          tempContainer.innerHTML = fetchedNav;
-          let fragment = document.createDocumentFragment();
+          if (locationDOM) {
+            const res = await fetch('/pages/html-fragments/icon-navbar.xml');
+            let fetchedNav = await res.text();
+            let tempContainer = document.createElement("div");
+            tempContainer.innerHTML = fetchedNav;
+            let fragment = document.createDocumentFragment();
 
-          while (tempContainer.firstChild) {
-            fragment.appendChild(tempContainer.firstChild);
-          }
+            while (tempContainer.firstChild) {
+              fragment.appendChild(tempContainer.firstChild);
+            }
 
-          locationDOM.parentNode.replaceChild(fragment, locationDOM);
-    
-            
+            locationDOM.parentNode.replaceChild(fragment, locationDOM);
+        }
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+     *    Setter inn header på alle sider - rett etter body tag åpner            * 
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
             const xmlResponse = await fetch('/pages/html-fragments/header.xml');
             const fetchedHeader = await xmlResponse.text();
             document.body.insertAdjacentHTML('afterbegin', fetchedHeader);
@@ -29,6 +39,8 @@ document.addEventListener('readystatechange', async (e) => {
              initMenu();  // Loads menu  
             
               console.log("inserted menu");
+
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                                 *
  *          devInfoEL er til bruk for oss under byggeprosessen                     *

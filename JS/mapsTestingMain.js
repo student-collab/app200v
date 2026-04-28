@@ -306,19 +306,23 @@ function createRegisterTaskForm() {
   
  }
 
- // Generate 100 fictive tasks
+const imageURLs = [
+  "https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/ekornblomst-90x90.png?alt=media&token=a63cda7a-81e2-4ee2-8657-e43a84d42418",
+  "https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/ekorn54x54.png?alt=media&token=1af4a4aa-298e-4381-80c6-3fd1b73d5bc9",
+  "https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/deer54x54.png?alt=media&token=60f2af4e-ca14-4b97-a218-12e424919be0"
+];
+
 async function generateFictiveTasks() {
   const tasks = [];
-  
-  // Sample data pools
+
   const titles = [
-    "Fix broken fence", "Paint house exterior", "Repair roof leak", 
+    "Fix broken fence", "Paint house exterior", "Repair roof leak",
     "Clean gutters", "Landscape garden", "Fix plumbing issue",
     "Replace windows", "Repair deck", "Paint interior walls",
     "Install new door", "Fix electrical outlet", "Repair driveway",
     "Clean chimney", "Seal foundation cracks", "Replace siding"
   ];
-  
+
   const descriptions = [
     "Urgent maintenance needed",
     "Regular maintenance task",
@@ -328,91 +332,88 @@ async function generateFictiveTasks() {
     "Scheduled maintenance",
     "Follow-up from previous visit"
   ];
-  
+
   const communes = [
     "Oslo", "Bergen", "Trondheim", "Stavanger", "Kristiansand",
     "Tromsø", "Fredrikstad", "Sandnes", "Drammen", "Skien"
   ];
-  
+
   const tags = [
     "urgent", "maintenance", "repair", "electrical", "plumbing",
     "carpentry", "painting", "landscaping", "roofing", "inspection"
   ];
-  
+
   const userUIDs = [
     "user001", "user002", "user003", "user004", "user005",
     "user006", "user007", "user008", "user009", "user010"
   ];
-  
-  // Generate random coordinates within Norway bounds
+
+  const categories = ["Husarbeid", "Hagearbeid", "Hundepass", "Vedlikehold"];
+
   function getRandomNorwegianCoords() {
     return {
-      latitude: 58 + Math.random() * 13,  // ~58°N to ~71°N
-      longitude: 5 + Math.random() * 25   // ~5°E to ~30°E
+      latitude:  58 + Math.random() * 13,
+      longitude:  5 + Math.random() * 25
     };
   }
-  
-  // Generate random email
-  function generateEmail(uid) {
-    return `${uid}@example.com`;
-  }
-  
-  // Generate random tags (1-3 tags per task)
+
+  function generateEmail(uid) { return `${uid}@example.com`; }
+
   function getRandomTags() {
     const numTags = Math.floor(Math.random() * 3) + 1;
     const selectedTags = [];
     for (let i = 0; i < numTags; i++) {
       selectedTags.push(tags[Math.floor(Math.random() * tags.length)]);
     }
-    return [...new Set(selectedTags)]; // Remove duplicates
+    return [...new Set(selectedTags)];
   }
-  
-  /* Midlertidig generering av tulledata 100 % AI - tok 30 sekunder */
-  // Create 100 tasks
-  for (let i = 0; i < 100; i++) {
+
+  for (let i = 0; i < 20; i++) {
     const randomUID = userUIDs[Math.floor(Math.random() * userUIDs.length)];
     const coords = getRandomNorwegianCoords();
-    
+
     const payload = {
-      title: titles[Math.floor(Math.random() * titles.length)],
+      title:       titles[Math.floor(Math.random() * titles.length)],
       description: descriptions[Math.floor(Math.random() * descriptions.length)],
-      status: "open",
+      status:      "open",
+      pris:        Math.floor(Math.random() * 99) * 100 + 100, // 100–9900 i steg på 100
+      category:    categories[Math.floor(Math.random() * categories.length)],
+      urgent:      Math.random() < 0.2,
       meta: {
-        created: Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000), // Random date within last 30 days
-        tags: getRandomTags()
+        created: firebase.firestore.FieldValue.serverTimestamp(),
+        tags:    getRandomTags()
       },
       assignee: {
-        uid: randomUID,
+        uid:   randomUID,
         ePost: generateEmail(randomUID)
       },
       location: {
-        kommune: communes[Math.floor(Math.random() * communes.length)],
+        kommune:   communes[Math.floor(Math.random() * communes.length)],
         longitude: coords.longitude,
-        latitude: coords.latitude
-      }
+        latitude:  coords.latitude
+      },
+      images: [ imageURLs[i % imageURLs.length] ]
     };
-    
+
     tasks.push(payload);
   }
-  
+
   return tasks;
 }
 
-// Execute and send to Firestore
 async function createAllFictiveTasks() {
   const tasks = await generateFictiveTasks();
-  
+
   for (let i = 0; i < tasks.length; i++) {
     try {
-      const docID = await setTask(0, tasks[i]);
-      console.log(`Task ${i + 1}/100 created with ID: ${docID}`);
+      const docID = await setTask("", tasks[i]);
+      console.log(`Task ${i + 1}/20 created with ID: ${docID}`);
     } catch (error) {
       console.error(`Failed to create task ${i + 1}:`, error);
     }
   }
-  
-  console.log("All 100 fictive tasks created!");
-}
 
-// Run it
+  console.log("All 20 fictive tasks created!");
+}
+//Lager 20 oppgaver til databasen
 //createAllFictiveTasks();

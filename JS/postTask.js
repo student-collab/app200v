@@ -69,7 +69,7 @@ async function postingTask (){
         if (!user) return;
         Object.assign(payload, {
             title: "", description: "", status: "open", pris: 0,
-            meta: { created: firebase.firestore.FieldValue.serverTimestamp(), tags: [] },
+            meta: {},
             assignee: { uid: user.uid, ePost: user.email },
             location: { kommune: "", longitude: 0, latitude: 0 },
             images: []
