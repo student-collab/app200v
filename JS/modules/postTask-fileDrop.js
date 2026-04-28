@@ -6,7 +6,8 @@ let files = [];                     // intern liste
 
 /* ── getter for fil-listen ───────────────────────── */
 export function getDroppedFiles() { return files; }
-
+/* ── sletter fil-listen ───────────────────────── */
+export function clearDroppedFiles() { files = []; render(); }
 
 
 window.addEventListener('load', ()=>{  
@@ -74,8 +75,6 @@ function addFiles(incoming) {
   render();
 }
 
-
-export function clearDroppedFiles() { files = []; render(); }
 
 
 /* ── Drag & drop ──────────────────────────────────────────────── */
