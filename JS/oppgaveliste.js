@@ -1,55 +1,91 @@
+import { getTasks,
+        getTask,
+        
+} from './modules/FS_Requests.js'; 
+
 window.addEventListener('load', contentLoader);
-function contentLoader () {
+let mainInfo = []; // For info som skal vises på skjermen
+
+const CATEGORY_ICONS = {
+    'Hage':         'shovel',        // or 'flower-2' if shovel missing
+    'IT & Teknikk': 'monitor',
+    'Rengjøring':   'sparkles',
+    'Flytting':     'truck',
+    'Montering':    'wrench',
+    'Transport':    'package',
+    'Undervisning': 'book-open',
+    'Maling':       'paint-roller',  // or 'brush'
+    'Rydding':      'trash-2',
+    'Annet':        'circle-help',
+};
+function lagerKlasser(text) {
+    return text
+        .toLowerCase()
+        // Map Norwegian chars and & in one pass, or handle & separately if needed
+        .replace(/[øæå&]/g, (match) => {
+            if (match === 'ø') return 'o';
+            if (match === 'æ') return 'ae';
+            if (match === 'å') return 'a';
+            return ''; // Remove &
+        })
+        // Replace remaining non-alphanumeric with hyphen
+        .replace(/[^a-z0-9]+/g, '-')
+        // Trim hyphens
+        .replace(/^-+|-+$/g, '');
+}   
+/*  Oppretter nytt objekt CSS_slugs. Nøklene er kategoriene som i CATEGORY_ICONS
+    verdiene er kategorinavn behandlet av lagerKlasser                                 */
+const CSS_slugs = Object.fromEntries(
+    Object.keys(CATEGORY_ICONS).map(cat => [cat, lagerKlasser(cat)])
+);
+
+console.table(CSS_slugs);
+
+
+/* ------------------ hjelpefunksjon ------------ */
+function prepRender (task) {
+    const roll = Math.floor(Math.random() * 6) + 1;   //rating er ikke på plass enda
+
+  let infoTask = {
+        id: task.id,    
+        title: task.title, 
+        pris: task.pris,
+        kommune: task.location.kommune,
+        kategori: task.category,
+        rating: roll
+    }
+    mainInfo.push(infoTask);
+}
+
+async function contentLoader () {
     console.log("Fetching tasks from FireStore");
+    let myData = await getTask();
+    
+    myData.forEach ((task)=> prepRender(task));  
+    renderTasks();
 
     /*
     Lastes OPP
-            const payload = {
-                                    title:       "",
-                                    description: "",
-                                    status:      "open",
-                                    pris:        0,
-
-                                    meta: {
-                                        created: new Date(),
-                                        tags:    [],
-                                    },
-
-                                    assignee: {
-                                        uid:   "",
-                                        ePost: "",
-                                    },
-
-                                    location: {
-                                        kommune:   "",
-                                        longitude: 0,
-                                        latitude:  0,
-                                    },
-
-                                    images: [],
-            };
+        let payload =  {
+        title: "", description: "", status: "open", pris: 0,
+        meta: {},
+        assignee: { uid: "", ePost: "" },
+        location: { kommune: "", longitude: 0, latitude: 0 },
+        images: []
+    };
     */
-    const mineOppgaver = [
-    {
-        id: "abc123",
-        title: "Flytte sofa",
-        pris: 200,
-        rating: 4.2,
-        location: { kommune: "Oslo" },
-        imgUrl: "../img/testSize/deer54x54.png"
-    }
-];
+   
 console.log("rendering");
-renderTasks(mineOppgaver);
+//renderTasks(mineOppgaver);
 }
-function renderTasks(tasks) {
+function renderTasks() {
     const insertInto = document.getElementById('oppgavelisten');
-    if (!insertInto) {
-        console.error("Fant ikke element med id 'oppgavelisten' ");
+    if (!insertInto || mainInfo.length == 0) {
+        console.error("Mangler element 'oppgavelisten' eller mangler data fra FireBase");
         return;
     }
     const myDocFrag = document.createDocumentFragment();
-    tasks.forEach(task => {
+    mainInfo.forEach(task => {
 
 /*
 Hvert kort består av:
@@ -92,7 +128,7 @@ Hvert kort består av:
         const location = document.createElement('span');
         location.className = 'task__location';
         location.innerHTML = '<svg width="1em" height="1em"><use href="#icon-location"/></svg>';
-        location.append(task.location.kommune);
+        location.append(task.kommune);
 
         const rating = document.createElement('span');
         rating.className = 'task__rating';
@@ -102,21 +138,24 @@ Hvert kort består av:
         const price = document.createElement('span');
         price.className = 'task__price';
         price.textContent = `${task.pris} kr`;
-
-        // --- Image ---
-        const img = document.createElement('img');
-        img.src = task.imgUrl ?? '../img/placeholder.png';
-        img.alt = task.title;
-        img.className = 'task__img';
+ 
+       // --- Icon ---
+        const icon = document.createElement('i');
+        icon.dataset.lucide = CATEGORY_ICONS[task.kategori] ?? 'circle-help';
+        icon.className = `task__img ${CSS_slugs[task.kategori]}`;
 
         // --- Setter sammen ---
         infWrap.append(location, rating, price);
         iWrap.appendChild(title);
         iWrap.appendChild(infWrap);
         yWrap.appendChild(iWrap);
-        yWrap.appendChild(img);
+                
+                
+        yWrap.appendChild(icon);
         myDocFrag.appendChild(yWrap);
     });
     insertInto.innerHTML = "";
     insertInto.appendChild(myDocFrag);
+    lucide.createIcons();
+    console.info(CSS_slugs);
 }

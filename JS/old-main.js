@@ -15,7 +15,7 @@ document.addEventListener('readystatechange', async () => {
     document.body.insertAdjacentHTML('afterbegin', html);
   }
 
-  initMenu();
+  // initMenu(); Krasjer med ny main.js
 
   auth.onAuthStateChanged(async (user) => {
     if (!user) {

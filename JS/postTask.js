@@ -69,6 +69,7 @@ async function postingTask (){
         if (!user) return;
         Object.assign(payload, {
             title: "", description: "", status: "open", pris: 0,
+            category:"",
             meta: {},
             assignee: { uid: user.uid, ePost: user.email },
             location: { kommune: "", longitude: 0, latitude: 0 },
@@ -79,11 +80,14 @@ async function postingTask (){
     
     let payload =  {
         title: "", description: "", status: "open", pris: 0,
+        category:"",
         meta: {},
         assignee: { uid: "", ePost: "" },
         location: { kommune: "", longitude: 0, latitude: 0 },
+        urgent: false,
         images: []
     };
+    
 
 auth.onAuthStateChanged((user)=>{
 

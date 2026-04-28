@@ -1,0 +1,95 @@
+/* --------------------------------------------------------- 1. Base Icon Styling Applies to ALL category icons to ensure consistent size and alignment within the text flow. --------------------------------------------------------- */
+
+.task__img {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em; 
+  height: 2em;
+  padding: 0.2em; /* Space around the icon for background */
+  border-radius: 0.4em; /* Soft rounded corners */
+  background-color: #f0f0f0; /* Default fallback color */
+  color: #333; /* Default icon color */ /* Lucide specific: ensure stroke is visible */
+  stroke-width: 2;
+  fill: none; /* Alignment */
+  vertical-align: middle;
+  font-size: inherit; /* Inherits font size from parent */
+}
+
+/* --------------------------------------------------------- 2. Category Specific Colors Target the specific class names you generated. Adjust hex codes to match your brand. --------------------------------------------------------- */ /* Hage (Garden) -> Green */
+
+.hage {
+  background-color: #efffe0;
+  color: #4c7225;
+}
+
+/* IT & Teknikk -> Blue */
+
+.it-teknikk {
+  background-color: #e5ffcb;
+  color: #557f2a;
+}
+
+/* Rengjøring (Cleaning) -> Teal/Cyan */
+
+.rengjoring {
+  background-color: #e9ffd4;
+  color: #58842b;
+}
+
+/* Flytting (Moving) -> Orange */
+
+.flytting {
+  background-color: #ddffba;
+  color: #5d8c2e;
+}
+
+/* Montering (Assembly) -> Amber/Yellow */
+
+.montering {
+  background-color: #e1ffc3;
+  color: #629330;
+}
+
+/* Transport -> Purple */
+
+.transport {
+  background-color: #d8ffb2;
+  color: #659932;
+}
+
+/* Undervisning (Teaching) -> Indigo */
+
+.undervisning {
+  background-color: #d4ffa9;
+  color: #699e34;
+}
+
+/* Maling (Painting) -> Pink/Rose */
+
+.maling {
+  background-color: #d0ffa0;
+  color: #517a28;
+}
+
+/* Rydding (Cleanup) -> Red */
+
+.rydding {
+  background-color: #ccff98;
+  color: #5f8e2f;
+}
+
+/* Annet (Other) -> Grey */
+
+.annet {
+  background-color: #c7ff8f;
+  color: #5b892d;
+}
+
+/* Optional: Hover effect for interactivity */
+
+.task__img:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}

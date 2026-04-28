@@ -348,7 +348,7 @@ async function generateFictiveTasks() {
     "user006", "user007", "user008", "user009", "user010"
   ];
 
-  const categories = ["Husarbeid", "Hagearbeid", "Hundepass", "Vedlikehold"];
+  const categories = ["Hage", "IT & Teknikk", "Rengjøring", "Flytting", "Montering", "Transport", "Undervisning", "Maling", "Rydding", "Annet"];
 
   function getRandomNorwegianCoords() {
     return {
@@ -368,7 +368,7 @@ async function generateFictiveTasks() {
     return [...new Set(selectedTags)];
   }
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 50; i++) {
     const randomUID = userUIDs[Math.floor(Math.random() * userUIDs.length)];
     const coords = getRandomNorwegianCoords();
 
@@ -415,5 +415,5 @@ async function createAllFictiveTasks() {
 
   console.log("All 20 fictive tasks created!");
 }
-//Lager 20 oppgaver til databasen
+//Lager 50 oppgaver til databasen
 //createAllFictiveTasks();
