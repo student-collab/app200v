@@ -94,3 +94,37 @@ border: 2px solid var(--border-color);
 .task__img { 
     align-self:center;
 }
+
+
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *  Hentet fra main CSS Gjelder gjelder kun for oppgaveliste.html  *             *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+ #search-field-and-info input {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: var(--backgroundcolor-form-fields);
+    color: var(--font-color-main);
+    border: 1px solid var(--bordercolor-form-fields);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 1rem;
+    
+}
+#search-field-and-info input::placeholder {
+    color: var(--font-color-forms);
+}
+
+#search-field-and-info {
+    background-color: #ffffff;
+    border: 1px solid var(--bordercolor-form-fields);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+/* * ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ * * * * * * * * * * * * * * *
+ *  Spesifikk CSS for oppgavelisten.html -- SLUTT
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+

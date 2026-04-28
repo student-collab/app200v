@@ -4,14 +4,14 @@ import {setTask} from './modules/FS_Requests.js';
 
 
 window.addEventListener('load', ()=>{
+    /* ----------- post-task-knappen ---------------------------- */
     const submitButton = document.getElementById("btn-post-task");
     submitButton.addEventListener('click',async ()=> postingTask());
+    /* ----------- tøm-skjema-ikonet ---------------------------- */
     const clearPostTaskForm = document.getElementById("clear-form");
     const postTaskForm = document.getElementById("form__post-task");
     clearPostTaskForm.addEventListener('click',()=>postTaskForm.reset());
     
-    
-
 })
 
 async function postingTask (){
@@ -19,7 +19,7 @@ async function postingTask (){
         const FORM = document.getElementById('form__post-task');
         if (!FORM.checkValidity()) {
             FORM.reportValidity(); 
-            return; // Stop execution
+            return; // Stopper hvis skjema ikke er fylt
         }
         const valgtPris = document.getElementById("viser-pris");
         payload.pris = valgtPris.value;

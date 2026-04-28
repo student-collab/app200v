@@ -10,7 +10,55 @@
   <script src="../JS/main.js" type="module" defer></script>
 </head>
 
+<style>
 
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *  Flyttet ut av main.css -- dette gjelder kun for        *
+ *  search.html                                            *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+body.search-page {
+    background-color: var(--bg-color);
+    color: var(--font-color-main);
+}
+
+.search-page-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem 3rem 1rem;
+}
+
+#search-field-and-info {
+    background-color: #ffffff;
+    border: 1px solid var(--bordercolor-form-fields);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+.search-page__title {
+    margin: 0 0 1rem 0;
+    color: var(--font-color-main);
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+
+
+.search-empty-text {
+    color: var(--font-color-forms);
+    margin: 1rem 0 0 0;
+    font-size: 1rem;
+}
+
+/* * ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ * * * * * * * * * * * * * * *
+ *  Spesifikk CSS for search.html -- SLUTT
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+
+</style>
 <body class="search-page" style="background:#f7f7f7; color:#767D86;">
 
   <header>
