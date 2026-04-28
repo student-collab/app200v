@@ -33,7 +33,7 @@
 
 <div id="caption"><span id="caption__left-arrow">&#x1F860;</span><h2>Post a task</h2></div>
 
-   <div id="page-grid">
+   <div id="page-wrap">
         <div id="main-content">
             <form id ="form__post-task" action="">
                 <div id="clear-form">
@@ -63,19 +63,10 @@
                 <label for="pris">Budsjett Pris</label>
                 
                 <div id="slider-pris-container">
-                    <input id="pris-slider" type="range" min="100" max="100000" value="50"  >
-                    <input id="viser-pris" type="text" disabled>
+                    <input id="pris-slider" type="range" min="100" max="10000" value="500"  >
+                    <input id="viser-pris" type="number" min="100" max="10000" >
                 </div>
-                <script>
-                            var slider = document.getElementById("pris-slider");
-                            var output = document.getElementById("viser-pris");
-                            output.value = slider.value; // Display the default slider value
-
-                            slider.oninput = function() {
-                            output.value = this.value;
-                            }
-
-                </script>
+                
                 <label for="urg-toggle-btn">Haster</label>
                 <div id="urg-btn-container">
                     <span>Velg om dette oppdraget haster</span>

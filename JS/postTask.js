@@ -12,7 +12,32 @@ window.addEventListener('load', ()=>{
     const postTaskForm = document.getElementById("form__post-task");
     clearPostTaskForm.addEventListener('click',()=>postTaskForm.reset());
     
+    /* ----------- pris-slider ---------------------------- */
+    const slider = document.getElementById("pris-slider");
+    const output = document.getElementById("viser-pris");
+
+    slider.addEventListener("pointerdown", bigOutputDuringSlide);
+    slider.addEventListener("pointerup",  normalOutput );
+    slider.addEventListener("touchstart", bigOutputDuringSlide);
+    slider.addEventListener("touchend",  normalOutput);
+    output.value = slider.value; // Justerer visningen til sliders default value
+    /*
+          Regler for slider og visning av verdi kalt output
+          #1 Slider og output skal vise samme tall
+          #2 Hvis brukeren velger større en max: juster til max
+          #3 Hvis brukeren velger mindre en minimum: juster til minimum
+    */
+    slider.oninput = function() { output.value = this.value;}                           //#1
+    output.oninput = function() {
+        if (Number(output.value) > Number(slider.max)) {output.value = slider.max;}     //#2
+        if (Number(output.value) < Number(slider.min)) {output.value = slider.min;}     //#3
+        if (slider.value != output.value) { slider.value = output.value;}
+    }
+    // Når brukeren endrer tallet vises det større fordi det interesserer brukeren i øyeblikket
+    function bigOutputDuringSlide (){output.classList.add("sliderActive")}
+    function normalOutput (){output.classList.remove("sliderActive")}
 })
+
 
 async function postingTask (){
     console.log("submit");

@@ -2,9 +2,12 @@
 :root{font-size: 13px;} /*Defineres i main CSS ikke her */
 
 header, 
-#page-grid,
-#search-field-and-info {max-width: 1600px;
-  margin: 0 auto;}
+#page-wrap,
+#search-field-and-info {
+  max-width: 1600px;
+  margin: 0 auto;
+/*  padding: 0 10rem;*/
+}
 
 
 /* * * * * * * * * * * * * * * * *

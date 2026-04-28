@@ -92,12 +92,22 @@
 #form__post-task textarea{
     height: 5em;
 }
-#slider-pris-container{display: flex;}
-#pris-slider{width:100%;}
+#slider-pris-container{
+  margin-left: 2em;
+}
+#pris-slider{width:60%;}
 #viser-pris{
     width:4em;
     text-align: right;
-    padding-right: 1em;
+    padding-right: .5em;
+    position: absolute;
+    left: 70%;
+    font-size: 1.5em;
+  }
+  #viser-pris:focus, 
+  #viser-pris.sliderActive{
+    
+    font-weight: bold;
 }
 #file-drop {
       position: relative;
@@ -229,9 +239,12 @@
  *    Google-maps API    *
  * * * * * * * * * * * * */
  
- #page-grid{
+ #page-wrap{
     display:flex;
     flex-direction: column;
+    gap:1.5em;
+    padding: 0 1rem;
+    
 }
 #main-content{display:contents;}
 #map-panel{
