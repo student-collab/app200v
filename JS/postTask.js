@@ -1,6 +1,7 @@
 import {auth} from './modules/dbConfig.js';
 
 import {setTask} from './modules/FS_Requests.js'; 
+import { getDroppedFiles, clearDroppedFiles } from './modules/postTask-fileDrop.js';
 
 
 window.addEventListener('load', ()=>{
@@ -46,34 +47,43 @@ async function postingTask (){
             FORM.reportValidity(); 
             return; // Stopper hvis skjema ikke er fylt
         }
-        const valgtPris = document.getElementById("viser-pris");
-        payload.pris = valgtPris.value;
+        const valgtPris = document.getElementById("viser-pris").value;
+        payload.pris = Number(valgtPris);
+        payload.title       = document.getElementById("task-title").value;
+        payload.description = document.getElementById("beskrivelse").value;
+        payload.category    = document.getElementById("kategori").value;
+        payload.urgent      = document.getElementById("urg-toggle-btn").checked;
+        payload.location.address = "not storing adress - rather the coordinates";
+        payload.meta.created = firebase.firestore.FieldValue.serverTimestamp();
+        payload.meta.tags    = [];
   
-        const imageFiles = window.getDroppedFiles(); // your existing API
-        const newTaskId = await setTask(0, taskData, imageFiles);
+        const imageFiles = getDroppedFiles();
+        const docID = await setTask("", payload, imageFiles);
         
-        
-        //let docID = await setTask(0,payload);
+        console.info(imageFiles);
         console.info ("Sent");
         console.info ("ID: " + docID);
-
-
-}
-let payload = { 
-                    title           :"",
-                    description     :"",
-                    status          : "open",
-                    pris            :"",
-                    meta            : {     created: "",
-                                            tags: ['tag1', 'tag2']
-                                        },
-                    assignee        : {  uid:"" ,
-                                        ePost: "" },
-                    location        : { "kommune"       : "",
-                                        "longitude"    : "", 
-                                        "latitude"      : ""
-                                    }
-                    };
+        // Tømmer listen over valgte filer og fjerner data fra forrige opplasting
+        clearDroppedFiles();
+        const user = auth.currentUser;
+        if (!user) return;
+        Object.assign(payload, {
+            title: "", description: "", status: "open", pris: 0,
+            meta: { created: firebase.firestore.FieldValue.serverTimestamp(), tags: [] },
+            assignee: { uid: user.uid, ePost: user.email },
+            location: { kommune: "", longitude: 0, latitude: 0 },
+            images: []
+        });
+        
+    }
+    
+    let payload =  {
+        title: "", description: "", status: "open", pris: 0,
+        meta: {},
+        assignee: { uid: "", ePost: "" },
+        location: { kommune: "", longitude: 0, latitude: 0 },
+        images: []
+    };
 
 auth.onAuthStateChanged((user)=>{
 
@@ -183,6 +193,7 @@ window.initMap = function() {
         const kommuneInput = document.getElementById("kommune");
         const userLocation = (selectedLocation.address) ?? "";
         kommuneInput.value = userLocation + " " + selectedLocation.municipality + " kommune" ;
+        payload.location.kommune = selectedLocation.municipality;
         payload.location.latitude = lat;
         payload.location.longitude = lng;
         

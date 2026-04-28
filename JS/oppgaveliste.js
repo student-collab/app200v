@@ -1,6 +1,34 @@
 window.addEventListener('load', contentLoader);
 function contentLoader () {
     console.log("Fetching tasks from FireStore");
+
+    /*
+    Lastes OPP
+            const payload = {
+                                    title:       "",
+                                    description: "",
+                                    status:      "open",
+                                    pris:        0,
+
+                                    meta: {
+                                        created: new Date(),
+                                        tags:    [],
+                                    },
+
+                                    assignee: {
+                                        uid:   "",
+                                        ePost: "",
+                                    },
+
+                                    location: {
+                                        kommune:   "",
+                                        longitude: 0,
+                                        latitude:  0,
+                                    },
+
+                                    images: [],
+            };
+    */
     const mineOppgaver = [
     {
         id: "abc123",

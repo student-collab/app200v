@@ -16,7 +16,6 @@
   <link rel="stylesheet" href="/CSS/main.css">
 
 <script src="/JS/main.js" type = "module" defer></script>
-<script src="/JS/modules/postTask-fileDrop.js" type = "module" defer></script>
 <script src="/JS/postTask.js" type = "module" defer></script>
 
 
@@ -51,9 +50,9 @@
                 <textarea id = "beskrivelse" style ="resize: none;" required></textarea>
                 
                 <label for="btn-lokasjon">Lokasjon</label>
-                <input id = "kommune" type="text" disabled placeholder="&#x1F4CD; Klikk på kartet for å velge lokasjon" required>
-                <label for="categories">Velg passsende kategori for ditt oppdrag</label>
-                <select name="chosenCategory" id="categories" required>
+                <input id = "kommune" type="text" readonly placeholder="&#x1F4CD; Klikk på kartet for å velge lokasjon" required>
+                <label for="kategori">Velg passsende kategori for ditt oppdrag</label>
+                <select name="chosenCategory" id="kategori" required>
                     <option value="">--Velg kategori--</option>
                     <option value="Husarbeid">Husarbeid</option>
                     <option value="Hagearbeid">Hagearbeid</option>
@@ -79,8 +78,7 @@
        aria-label="Last opp bilder – klikk eller dra filer hit">
 
     <input type="file" id="file-drop__input"
-           multiple accept="image/*"
-           aria-hidden="true">
+           multiple accept="image/*">
 
     <div id="file-drop__zone">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 104 104"
@@ -125,6 +123,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 </body>
 
 </html>

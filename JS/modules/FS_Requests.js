@@ -10,7 +10,7 @@
 */
 
 // For å kommunisere med databasen via SDK importerer vi databaseobjektet fra konfig-filen dbConfig.js
-import { db } from './dbConfig.js'; 
+import { db, storage} from './dbConfig.js'; 
 
 // db er et objekt returnert av SDK. SDK System Development Kit er lenket inn med HTML. Denne løsningen kalles Compat (?) og er fra Content Delivery Network (CDN)
 
@@ -117,13 +117,20 @@ async function getTask(taskId = "") {
           return { id: snap.id, ...snap.data() };
         }
   }
+
+  async function uploadImage(file, taskId) {
+    const storageRef = storage.ref(`tasks/${taskId}/${Date.now()}_${file.name}`);
+    const snapshot = await storageRef.put(file);
+    return snapshot.ref.getDownloadURL();
+}
+
 async function setTask(taskId, data, imageFiles = []) {
 
   let resolvedId = taskId;
-  if (taskId !== 0) {
+  if (taskId !== "") {
     await db.collection('tasks').doc(taskId).set(data);
   } else {
-    const docRef = await firebase.firestore().collection('tasks').add(data);
+     const docRef = await db.collection('tasks').add(data);
     resolvedId = docRef.id;
   }
 
@@ -164,11 +171,11 @@ export async function readFSdb(path = 'collection/document') {
 
   // Odd segments = document, even = collection
   if (segments.length % 2 === 1) {
-    const snap = await getDocs(collection(db, path));
+   const snap = await db.collection(path).get();
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   } else {
-    const snap = await getDoc(doc(db, path));
-    if (!snap.exists()) return null;
+    const snap = await db.doc(path).get();
+    if (!snap.exists) return null;
     return { id: snap.id, ...snap.data() };
   }
 }
