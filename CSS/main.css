@@ -85,7 +85,10 @@ header > div#logo-header > img{
     
     
 }
-
+#login-clickable > span{
+    align-self: center;
+    margin-right:1rem;
+}
 /* * * * * * * * * * * * * * *
  *      Login screen         *
  * * * * * * * * * * * * * * */
@@ -139,9 +142,7 @@ header  #login-symbol-background{
     transform:translateY(0.25em);
     
 }
-#login-clickable > span{
-    align-self: center
-}
+
 
 #toggle-password .eye-open{ visibility: hidden;}
 #login-screen-controllers{ 
