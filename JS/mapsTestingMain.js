@@ -351,11 +351,35 @@ async function generateFictiveTasks() {
   const categories = ["Hage", "IT & Teknikk", "Rengjøring", "Flytting", "Montering", "Transport", "Undervisning", "Maling", "Rydding", "Annet"];
 
   function getRandomNorwegianCoords() {
-    return {
-      latitude:  58 + Math.random() * 13,
-      longitude:  5 + Math.random() * 25
-    };
+    const myLat = 59.272349982043586;
+    const myLon = 10.417871475219727;
+    const randomIndex = Math.floor(Math.random() * 4);
+    const taskRadius = [5, 10, 20, 200][randomIndex];
+   return  getRandomCoordsWithinRadius(myLat, myLon, taskRadius);
   }
+/* Trenger at det finnes oppgaver innenfor bestemt avstand fra gitt punkt */
+function getRandomCoordsWithinRadius(baseLat, baseLon, radiusKm) {
+  const earthRadiusKm = 6371;
+
+  // 1. Random distance with uniform distribution (avoid clustering in center)
+  // If we just did random * radius, points would cluster in the middle.
+  const r = radiusKm * Math.sqrt(Math.random());
+
+  // 2. Random angle (0 to 360 degrees)
+  const theta = Math.random() * 2 * Math.PI;
+
+  // 3. Convert distance to degrees
+  // Latitude is constant: ~111.32 km per degree
+  const latOffset = (r / 111.32) * Math.cos(theta);
+  
+  // Longitude varies by latitude: ~111.32 * cos(lat) km per degree
+  const lonOffset = (r / (111.32 * Math.cos(baseLat * Math.PI / 180))) * Math.sin(theta);
+
+  return {
+    latitude: baseLat + latOffset,
+    longitude: baseLon + lonOffset
+  };
+}
 
   function generateEmail(uid) { return `${uid}@example.com`; }
 
