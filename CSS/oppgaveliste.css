@@ -13,22 +13,17 @@ header,
 /* * * * * * * * * * * * * * * * *
  *   Søkefeltmed filterknapper   *
  * * * * * * * * * * * * * * * * */
- #search-field-and-info{
-    position: relative;
-    font-size: 1rem;
-}
-#search-field-and-info > button{
-    color:var(--font-color-main, green);
-    font-size:.8rem;
-    border-radius: 15px;
-    padding: .2em .2em;
-    margin: 1em 1em 1em 0;
-    border:2px solid #777;
 
- }
- #search-field-and-info > button:active{
-    border:2px solid #999;
- }
+#search-field-and-info {
+    position: relative;
+    background-color: #ffffff;
+    border: 1px solid var(--bordercolor-form-fields);
+    border-radius: 15px;
+    padding: 24px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+ 
 #searchbar-mag-symbol{
     position: absolute;
     left:2em;
@@ -39,13 +34,58 @@ header,
 
 #search-field-and-info > input{
     width:90%;
-font-size: 1.5em;
-padding-left:1.5em;
-border-radius: 2em;
-line-height: 2em;
-border: 2px solid var(--border-color);
+    font-size: 1.5em;
+    padding-left:1.5em;
+    border-radius: 15px;
+    line-height: 2em;
+    border: 2px solid var(--border-color);
+    background-color: var(--backgroundcolor-form-fields);
+    color: var(--font-color-main);
+    border: 1px solid var(--bordercolor-form-fields);
+    padding: 14px 16px;
 }
 
+#search-field-and-info > button{
+    color:var(--font-color-main);
+    border-radius: 10px;
+    padding: 0 14px ;
+    margin: 1em 1em 1em 0;
+    border:1px solid var(--font-color-main);
+    cursor:pointer;
+    background-color: transparent;
+    line-height:1.5rem;
+ }
+.distance-segment {
+  display: inline-flex;
+  border: 1px solid var(--font-color-main);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--backgroundcolor-form-fields);
+}
+
+.segment-btn {
+  padding: 0 14px;
+  border: none;
+  border-right: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--font-color-forms);
+  cursor: pointer;
+  font-family: inherit;
+  line-height:1.5rem;
+}
+
+.segment-btn:last-child {
+  border-right: none;
+}
+
+.segment-btn--active {
+  background: var(--backgroundcolor-main);
+  color: var(--font-color-main);
+  font-weight: 600;
+}
+#search-field-and-info input::placeholder {
+    color: var(--font-color-forms);
+}
 
 /* * * * * * * * * *
  *  task element   *
@@ -98,36 +138,4 @@ border: 2px solid var(--border-color);
     align-self:center;
 }
 
-
-
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *  Hentet fra main CSS Gjelder gjelder kun for oppgaveliste.html  *             *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
- #search-field-and-info input {
-    width: 100%;
-    box-sizing: border-box;
-    background-color: var(--backgroundcolor-form-fields);
-    color: var(--font-color-main);
-    border: 1px solid var(--bordercolor-form-fields);
-    border-radius: 12px;
-    padding: 14px 16px;
-    font-size: 1rem;
-    
-}
-#search-field-and-info input::placeholder {
-    color: var(--font-color-forms);
-}
-
-#search-field-and-info {
-    background-color: #ffffff;
-    border: 1px solid var(--bordercolor-form-fields);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
-}
-/* * ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ * * * * * * * * * * * * * * *
- *  Spesifikk CSS for oppgavelisten.html -- SLUTT
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 

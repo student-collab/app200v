@@ -42,8 +42,7 @@ import { db, storage} from './dbConfig.js';
 Nedenfor er det generert hjelpefunksjoner som vi kan bruke ved å importere dem
 
 import-syntaks: 
-                    import { getTasks,
-                            getTask,
+                    import {getTask,
                             setTask,
                             updateTask,
                             deleteTask,
@@ -55,35 +54,6 @@ import-syntaks:
 
 /* Kartlegger oppdrag per kommune */
 
-export async function getOppdragKommune (){
-  const snap = await db.collection('tasks').get();
-  const countPerKommune = {};
-  snap.docs.forEach(d => {
-                            const k = d.data().location.kommune;
-                            if (k) countPerKommune[k] = (countPerKommune[k] || 0) + 1;
-                  });
-return countPerKommune;
-}
-async function getTasks(kommuner) {
-  const antKommuner = kommuner.length;
-  if(antKommuner > 30){
-    const chunks = [];
-    for (let i = 0; i < antKommuner; i += 30)
-      chunks.push(kommuner.slice(i, i + 30));
-
-    const snaps = await Promise.all(
-      chunks.map(chunk => db.collection('tasks').where('location.kommune', 'in', chunk).get())
-    );
-
-    return snaps.flatMap(s => s.docs.map(d => ({ id: d.id, ...d.data() })));
-
-  }
- const snap = (kommuner.length === 0)
-  ? await db.collection('tasks').get() 
-  : await db.collection('tasks').where('location.kommune', 'in', kommuner).get();
-
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-}
 
 /*
         Froklaring av syntaks for returveriden: 
@@ -164,7 +134,6 @@ async function setTask(taskId, data, imageFiles = []) {
 
 
 
-
 export async function readFSdb(path = 'collection/document') {
   
   const segments = path.split('/').filter(Boolean);
@@ -180,7 +149,7 @@ export async function readFSdb(path = 'collection/document') {
   }
 }
 
-export { getTasks, getTask, setTask, updateTask, deleteTask, clearField};
+export { getTask, setTask, updateTask, deleteTask, clearField};
 
 //Oppretter eller oppdaterer en bruker i 'users' collection i Firestore
 export async function setUser(userId, data) { //userId= Firebase Authenticator ID

@@ -40,7 +40,6 @@
     </defs>
 </svg>
 
-
   <div id="search-field-and-info"> 
       <!-- En enkel forstørrelsesglass SVG som kanskje fjernes -->
       <svg id = "searchbar-mag-symbol" viewBox="0 0 24 24" fill="none" style="width: 2em; height:2em;"  stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -48,9 +47,14 @@
         <line x1="16.5" y1="16.5" x2="22" y2="22"/>
       </svg>
     <input type="text" placeholder="     Search tasks near you">
-    <button id ="distance-btn">distance</button>
-    <button id = "rating-btn">rating</button>
-    <button id ="urgent-btn">urgent</button>
+    <button id = "rating-btn">⭐ Rating</button>
+    <button id ="urgent-btn">⚡Urgent</button>
+    <div class="distance-segment">
+      <button class="segment-btn">5 km</button>
+      <button class="segment-btn segment-btn--active">10 km</button>
+      <button class="segment-btn">20 km</button>
+      <button class="segment-btn">Alle</button>
+  </div>
     <p>6 tasks nearby</p>
   </div> 
 

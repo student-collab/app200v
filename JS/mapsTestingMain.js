@@ -1,7 +1,6 @@
 import {getValgteKommuner} from './kommunevelger.js';
-import {auth} from './modules/dbConfig.js';
-import { getTasks, getOppdragKommune,
-        getTask,
+import {auth, db} from './modules/dbConfig.js';
+import {getTask,
         setTask,
         updateTask,
         deleteTask,
@@ -9,6 +8,37 @@ import { getTasks, getOppdragKommune,
         readFSdb        
 } from './modules/FS_Requests.js'; 
 
+
+async function getTasks(kommuner) {
+  const antKommuner = kommuner.length;
+  if(antKommuner > 30){
+    const chunks = [];
+    for (let i = 0; i < antKommuner; i += 30)
+      chunks.push(kommuner.slice(i, i + 30));
+
+    const snaps = await Promise.all(
+      chunks.map(chunk => db.collection('tasks').where('location.kommune', 'in', chunk).get())
+    );
+
+    return snaps.flatMap(s => s.docs.map(d => ({ id: d.id, ...d.data() })));
+
+  }
+ const snap = (kommuner.length === 0)
+  ? await db.collection('tasks').get() 
+  : await db.collection('tasks').where('location.kommune', 'in', kommuner).get();
+
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+export async function getOppdragKommune (){
+  const snap = await db.collection('tasks').get();
+  const countPerKommune = {};
+  snap.docs.forEach(d => {
+                            const k = d.data().location.kommune;
+                            if (k) countPerKommune[k] = (countPerKommune[k] || 0) + 1;
+                  });
+return countPerKommune;
+}
 window.addEventListener("load", () => {
    document.querySelectorAll('.tabs').forEach(tab => {
         tab.hidden = tab.id !== "browse-task";

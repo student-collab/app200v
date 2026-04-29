@@ -6,8 +6,7 @@ import {
     showResp
 } from './modules/showRead.js';
 
-import { getTasks,
-        getTask,
+import { getTask,
         setTask,
         updateTask,
         deleteTask,
@@ -18,7 +17,6 @@ import { getTasks,
 function myfunction(){
     if (1){
         getTask();
-        getTasks();
         setTask();
         updateTask();
         deleteTask();
