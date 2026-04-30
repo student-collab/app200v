@@ -1,4 +1,3 @@
-import {getTask} from './modules/FS_Requests.js'; 
 import {db} from '../JS/modules/dbConfig.js'; 
 const MAX_RADIUS = 20; // Justeres til å være høyeste brukervalg
 const userLat = 59.272349982043586;
@@ -113,13 +112,24 @@ function prepRender (task) {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 async function taskLoader () {
-    console.log("Fetching tasks from FireStore");
-    let myData = await getTask();
-    
-    myData.forEach ((task)=> prepRender(task));  
-    renderTasks();
-    console.log("Rendering");
+    mainInfo = [];
+    try{
+        console.log("Fetching tasks from FireStore");
+        const snap = await db.collection('tasks').get();
+        const tasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        tasks.forEach(task => prepRender(task));
+        renderTasks();
+        console.log("Rendering");
+    } catch (err) {
+        console.error("Feil ved henting av oppgaver:", err);
+        document.getElementById('oppgavelisten').innerHTML =
+            '<p style="padding:2em;color:#c00;">Kunne ' 
+            + 'ikke laste oppgaver. Sjekk internettforbindelsen og prøv igjen.</p>';
+    }
 }
+
+
+
     /*  --- --- --- Eksempel på payload brukes for å huske --- --- --- *
         let payload =  {
             title: "", description: "", status: "open", pris: 0,
@@ -131,12 +141,18 @@ async function taskLoader () {
     */
    
 async function taskLoaderDistanceFilter (taskRadius = MAX_RADIUS){
-    
-    const myTasks = await getTasksByDistance(userLat, userLng, taskRadius);
-    
-    myTasks.forEach ((task)=> prepRender(task));  
-    renderTasks();
-    console.log("Rendering");
+    mainInfo = [];
+    try{
+        const myTasks = await getTasksByDistance(userLat, userLng, taskRadius);
+        myTasks.forEach ((task)=> prepRender(task));  
+        renderTasks();
+        console.log("Rendering");
+    } catch (err) {
+console.error("Feil ved henting av oppgaver:", err);
+        document.getElementById('oppgavelisten').innerHTML =
+            '<p style="padding:2em;color:#c00;">Kunne '
+            +'ikke laste oppgaver. Sjekk internettforbindelsen og prøv igjen.</p>';
+    }
 }
 
 function getBoundingBox(lat, lng, radiusKm) {
@@ -149,16 +165,6 @@ function getBoundingBox(lat, lng, radiusKm) {
         minLng: lng - lngOffset,
         maxLng: lng + lngOffset
     };
-}
-
-function getRadius (){
-    const optionButtons = document.getElementsByName('distance');
-
-    for (let i = 0; i < optionButtons.length; i++) {
-        if (optionButtons[i].checked) {
-            return optionButtons[i].value
-        }
-    }   
 }
 
 function haversine(lat1, lng1, lat2, lng2) {
@@ -179,7 +185,7 @@ function haversine(lat1, lng1, lat2, lng2) {
 
 let cachedTasks = null; // For å unngå ekstra spørringer ved bytte av avstand
 
-export async function getTasksByDistance(userLat, userLng, radiusKm) {
+async function getTasksByDistance(userLat, userLng, radiusKm) {
 
     if(!cachedTasks){
         const box = getBoundingBox(userLat, userLng, MAX_RADIUS);
@@ -208,8 +214,12 @@ export async function getTasksByDistance(userLat, userLng, radiusKm) {
  * * * * * *  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 function renderTasks() {
     const insertInto = document.getElementById('oppgavelisten');
-    if (!insertInto || mainInfo.length == 0) {
-        console.error("Mangler element 'oppgavelisten' eller mangler data fra FireBase");
+    if (!insertInto) {
+    console.error("Mangler element 'oppgavelisten'");
+    return;
+    }
+    if (mainInfo.length === 0) {
+        insertInto.innerHTML = '<p>Ingen oppgaver funnet i dette området.</p>';
         return;
     }
     const myDocFrag = document.createDocumentFragment();
