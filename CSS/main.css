@@ -175,6 +175,11 @@ overflow-x: auto;
     align-items: center;
     padding: 8px 0;
     border-top: 1px solid #e0e0e0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color:var(--bg-color);
+
 }
 
 .nav-item {

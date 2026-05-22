@@ -13,15 +13,24 @@ header,
 /* * * * * * * * * * * * * * * * *
  *   Søkefeltmed filterknapper   *
  * * * * * * * * * * * * * * * * */
-
 #search-field-and-info {
-    position: relative;
+    position: fixed;
+    /* top blir satt dynamisk i soppgavelisten.js*/
+    left: 0;
+    right: 0;
+    z-index: 100;
+    transition: transform 0.25s ease;
     background-color: #ffffff;
     border: 1px solid var(--bordercolor-form-fields);
     border-radius: 15px;
     padding: 24px;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
 }
+
+#search-field-and-info.search--hidden {
+    transform: translateY(-100%);
+}
+
 
  
 #searchbar-mag-symbol{
@@ -90,6 +99,7 @@ header,
 /* * * * * * * * * *
  *  task element   *
  * * * * * * * * * */
+ 
  #oppgavelisten>a{
     text-decoration: none;
  }

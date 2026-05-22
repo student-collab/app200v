@@ -1,4 +1,6 @@
 import {db} from '../JS/modules/dbConfig.js'; 
+import { headerReady } from './main.js';
+
 const MAX_RADIUS = 20; // Justeres til å være høyeste brukervalg
 const userLat = 59.272349982043586;
 const userLng = 10.417871475219727; // Skal hentes fra innlogget bruker
@@ -19,7 +21,9 @@ window.addEventListener('load', ()=>{
                     
                 });
             });
-    contentLoad ();
+    
+            contentLoad ();
+
 });
 
 function contentLoad () {
@@ -104,7 +108,7 @@ function prepRender (task) {
         urgent:task.urgent,
         distance: distanceRounded
     }
-     if (mainInfo.length === 0){ 
+     if (mainInfo.length === 0 && false){ 
         nearbyTasks = 0;
             console.log('first task in cachedTask before sorting:')
             console.table(Object.keys(task));
@@ -318,3 +322,45 @@ Hvert kort består av:
     insertInto.appendChild(myDocFrag);
     lucide.createIcons();
 }
+/* * * * * * * * * * * * * * * * * * * * * * * *
+*        Søkefelt kommer og går med scroll     *
+* * * * * * * * * * * * * * * * * * * * * * * **/
+
+
+headerReady.then(() => {
+    adjustSearchField();
+});    
+
+function adjustSearchField(){
+    const header = document.getElementById('inserted-header');
+    console.info(header);
+    let headerHeight =  header.getBoundingClientRect().bottom;
+    
+    const searchBar = document.getElementById('search-field-and-info');
+    const searchHeight = searchBar.offsetHeight;
+    searchBar.style.top = headerHeight + 'px';
+    headerHeight -= 10;
+    
+    const oppgavelisten = document.getElementById('oppgavelisten');
+    oppgavelisten.style.paddingTop = searchHeight + 'px';
+
+    let lastScrollY = 0;
+
+    window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+        if (Math.abs(currentScrollY - lastScrollY) < 5) return;
+        
+        const headerGone = currentScrollY > headerHeight;
+        searchBar.style.top = headerGone ? '0' : headerHeight + 'px';
+        searchBar.classList.toggle('search--hidden', currentScrollY > lastScrollY);
+        console.log(headerGone);
+        lastScrollY = currentScrollY;
+    });
+    
+    
+    
+}
+
+
+
+
