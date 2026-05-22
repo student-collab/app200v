@@ -85,7 +85,7 @@ const MAX_RADIUS = 20; // Justeres til å være høyeste brukervalg
 
 let cachedTasks = null; // For å unngå ekstra spørringer ved bytte av avstand
 
-export async function getTasksByDistance(userLat, userLng, radiusKm) {
+async function getTasksByDistance(userLat, userLng, radiusKm) {
 
     if(!cachedTasks){
         const box = getBoundingBox(userLat, userLng, MAX_RADIUS);

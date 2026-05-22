@@ -16,7 +16,7 @@
   font-size: inherit; /* Inherits font size from parent */
 }
 
-/* --------------------------------------------------------- 2. Category Specific Colors Target the specific class names you generated. Adjust hex codes to match your brand. --------------------------------------------------------- */ /* Hage (Garden) -> Green */
+/* --------------------------------------------------------- 2. Category Specific Colors Target the specific class names you generated. Adjust hex codes to match your brand. --------------------------------------------------------- */ 
 
 .hage {
   background-color: #efffe0;
@@ -88,8 +88,17 @@
 
 /* Optional: Hover effect for interactivity */
 
-.task__img:hover {
+.task__img {
+  transition: all 0.2s ease;
+}
+
+.task__img:hover,
+.task__img:active {
   opacity: 0.9;
   transform: scale(1.05);
-  transition: all 0.2s ease;
+}
+/* --------------------------------------------------------- 3. urgent-icon --------------------------------------------------------- */ 
+.icon-urgent{
+  color:var(--font-color-main);
+  align-self: center;
 }

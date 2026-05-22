@@ -2,12 +2,14 @@ import {db} from '../JS/modules/dbConfig.js';
 const MAX_RADIUS = 20; // Justeres til å være høyeste brukervalg
 const userLat = 59.272349982043586;
 const userLng = 10.417871475219727; // Skal hentes fra innlogget bruker
-
+/*
+lat:59.272349982043586; lng:10.417871475219727; // Skal hentes 
+*/
 window.addEventListener('load', ()=>{ 
     document.querySelectorAll('.segment-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(){
                     
-                // finner alle segment-knappene og fjerener aktiv-klassen, legger til aktiv på seg selv 
+                // finner alle segment-knappene og fjerner aktiv-klassen, legger til aktiv på seg selv 
                     if (this.classList.contains('segment-btn--active')) return;
                     document.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('segment-btn--active'));
                     this.classList.add('segment-btn--active');
@@ -84,25 +86,32 @@ const CSS_slugs = Object.fromEntries(
 
 
 let mainInfo = []; // For info som skal vises på skjermen
+let nearbyTasks = 0;
 /* 
         Hjelpefunksjon lager array med nye objekter som kun inneholder
         informasjon som skal vises på skjermen
 */
 function prepRender (task) {
-  const roll = Math.floor(Math.random() * 6) + 1;   //rating er ikke på plass enda
-  
-   let distanceKM = haversine(userLat, userLng, task.location.latitude, task.location.longitude)
-   
-  
+ let distanceFloat = task.distance ?? haversine(userLat, userLng, task.location.latitude, task.location.longitude) 
+  let distanceRounded = Math.floor(distanceFloat * 10)/10;
   let infoTask = {
         id: task.id,    
         title: task.title, 
         pris: task.pris,
         kommune: task.location.kommune,
         kategori: task.category,
-        rating: roll,
-        distance:  (Math.floor(distanceKM * 10))/10
+        rating: task.rating,
+        urgent:task.urgent,
+        distance: distanceRounded
     }
+     if (mainInfo.length === 0){ 
+        nearbyTasks = 0;
+            console.log('first task in cachedTask before sorting:')
+            console.table(Object.keys(task));
+            console.table(Object.keys(infoTask));
+            console.info ("Stored object:\n" + JSON.stringify(task, null,3)  + "\n\nRendered object\n" + JSON.stringify(infoTask, null,3))
+    }
+    if(infoTask.distance <= 5) nearbyTasks ++;
     mainInfo.push(infoTask);
 }
 
@@ -130,25 +139,55 @@ async function taskLoader () {
 
 
 
-    /*  --- --- --- Eksempel på payload brukes for å huske --- --- --- *
-        let payload =  {
-            title: "", description: "", status: "open", pris: 0,
-            meta: {},
-            assignee: { uid: "", ePost: "" },
-            location: { kommune: "", longitude: 0, latitude: 0 },
-            images: []
-        };                                                                  
+
+
+/*  --- --- --- Eksempel på payload brukes for å huske --- --- --- *
+let payload =  {
+    title: "", description: "", status: "open", pris: 0,
+    meta: {},
+    assignee: { uid: "", ePost: "" },
+    location: { kommune: "", longitude: 0, latitude: 0 },
+    images: []
+    };                                                                  
     */
    
+let cachedTasks = null; // For å unngå ekstra spørringer ved bytte av avstand
+
 async function taskLoaderDistanceFilter (taskRadius = MAX_RADIUS){
-    mainInfo = [];
+     mainInfo = [];
+
     try{
-        const myTasks = await getTasksByDistance(userLat, userLng, taskRadius);
-        myTasks.forEach ((task)=> prepRender(task));  
-        renderTasks();
-        console.log("Rendering");
+         if(!cachedTasks){
+        const max_box = getBoundingBox(userLat, userLng, MAX_RADIUS);
+        const snap = await db.collection('tasks')
+        .where('location.latitude', '>=', max_box.minLat)
+        .where('location.latitude', '<=', max_box.maxLat)
+        .get();
+        cachedTasks = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .filter(task => {
+            const lng = task.location.longitude;
+            return lng >= max_box.minLng && lng <= max_box.maxLng;
+        })
+    }
+    const box = getBoundingBox(userLat, userLng, taskRadius);
+    /* Filtrering av oppdragene: reduce tar med seg tasksWithinRadius for hver iterasjon over elementene i cashedTasks -> task  */
+    const newMainInfo = cachedTasks.reduce((tasksWithinRadius, task) => {
+        const { longitude: lng, latitude: lat } = task.location; // deconstruct -- tillegger lng og lat verdiene fra task.location.lat -- istedet for property accessing: const lng = task.location.longitude; + ... en gang til for lat
+
+        if (lng < box.minLng || lng > box.maxLng ||
+            lat < box.minLat || lat > box.maxLat) return tasksWithinRadius; // ingen endring i tasksWithinRadius == filtrerte bort oppgaven
+
+        const distance = haversine(userLat, userLng, lat, lng);
+        if (distance > taskRadius) return tasksWithinRadius;
+
+        tasksWithinRadius.push({ ...task, distance });            // alle nøklene fra objektet legges inn i nytt objekt sammen med ny nøkkel og veridpar ---> distance : "distance-verdi"
+        return tasksWithinRadius;                                // tasksWithinRadius returneres med den nye oppgaven lagt til == filtrerte ikke bort oppgaven
+    }, []); // [] == initial verdi for tasksWithinRadius
+    newMainInfo.forEach ((task)=> prepRender(task));  
+    renderTasks();
+
     } catch (err) {
-console.error("Feil ved henting av oppgaver:", err);
+        console.error("Feil ved henting av oppgaver:", err);
         document.getElementById('oppgavelisten').innerHTML =
             '<p style="padding:2em;color:#c00;">Kunne '
             +'ikke laste oppgaver. Sjekk internettforbindelsen og prøv igjen.</p>';
@@ -182,33 +221,6 @@ function haversine(lat1, lng1, lat2, lng2) {
 
 
 
-
-let cachedTasks = null; // For å unngå ekstra spørringer ved bytte av avstand
-
-async function getTasksByDistance(userLat, userLng, radiusKm) {
-
-    if(!cachedTasks){
-        const box = getBoundingBox(userLat, userLng, MAX_RADIUS);
-        const snap = await db.collection('tasks')
-        .where('location.latitude', '>=', box.minLat)
-        .where('location.latitude', '<=', box.maxLat)
-        .get();
-        cachedTasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    }
-    const box = getBoundingBox(userLat, userLng, radiusKm);
-    return cachedTasks
-        .filter(task => {
-            const lng = task.location.longitude;
-            return lng >= box.minLng && lng <= box.maxLng;
-        })
-        .map(task => ({
-            ...task,
-            distance: haversine(userLat, userLng, task.location.latitude, task.location.longitude)
-        }))
-        .filter(task => task.distance <= radiusKm)   // trim the box corners
-        .sort((a, b) => a.distance - b.distance);
-}
-
 /* * * * * *  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *      Genererer HTML for informasjon som skal vises på skjerm         *
  * * * * * *  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -223,8 +235,10 @@ function renderTasks() {
         return;
     }
     const myDocFrag = document.createDocumentFragment();
-    mainInfo.forEach(task => {
-
+    
+    document.getElementById('nearby-tasks').textContent = nearbyTasks;
+    mainInfo.sort((a, b) => a.distance - b.distance).forEach(task => {
+      
 /*
 Hvert kort består av:
         - ytre wrap (yWrap) med id=task-<nr> og class=tasak
@@ -277,9 +291,16 @@ Hvert kort består av:
         price.textContent = `${task.pris} kr`;
  
        // --- Icon ---
-        const icon = document.createElement('i');
-        icon.dataset.lucide = CATEGORY_ICONS[task.kategori] ?? 'circle-help';
-        icon.className = `task__img ${CSS_slugs[task.kategori]}`;
+        const iconCategory = document.createElement('i');
+        iconCategory.dataset.lucide = CATEGORY_ICONS[task.kategori] ?? 'circle-help';
+        iconCategory.className = `task__img ${CSS_slugs[task.kategori]}`;
+        
+        let iconUrgent = null;
+        if (task.urgent){
+            iconUrgent = document.createElement('i');
+            iconUrgent.dataset.lucide = 'circle-alert';
+            iconUrgent.className = 'icon-urgent';
+        }
 
         // --- Setter sammen ---
         infWrap.append(location, rating, price);
@@ -287,12 +308,13 @@ Hvert kort består av:
         iWrap.appendChild(infWrap);
         yWrap.appendChild(iWrap);
                 
-                
-        yWrap.appendChild(icon);
+        if (iconUrgent) {
+            yWrap.appendChild(iconUrgent);
+        }   
+        yWrap.appendChild(iconCategory);
         myDocFrag.appendChild(yWrap);
     });
     insertInto.innerHTML = "";
     insertInto.appendChild(myDocFrag);
     lucide.createIcons();
-    console.info(CSS_slugs);
 }

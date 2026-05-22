@@ -328,7 +328,7 @@ function createRegisterTaskForm() {
                     assignee        : {  uid: brukerInput,
                                         ePost: ePostInput },
                     location        : { "kommune"       : kommuneInput,
-                                        "longditude"    : lngInput, 
+                                        "longitude"    : lngInput, 
                                         "latitude"      : latInput
                                     }
                     };
@@ -342,8 +342,28 @@ const imageURLs = [
   "https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/deer54x54.png?alt=media&token=60f2af4e-ca14-4b97-a218-12e424919be0"
 ];
 
+/**
+ * 
+ *    Koden under er brukt til å lage fikitve oppdrag - tasks
+ *    Hver oppdrag har en del informasjon
+ * 
+ *    For å se at sortering og filtrering fungerer er trenger vi spredning.
+ *    Tilfeldig utvalg fra 1-6 for rating for eksempel
+ * 
+ *    Koordinater og stedsnavn:
+ *    Vi har tatt utgangspunkt i et referansepunkt og koden under lager oppdrag som 
+ *    er innenfor forskjellige avstander fra refereansepunktet: 5 , 10 , 20 eller 200 km 
+ *    fra referansepunktet. Det er fordi brukerne kan velge disse avstandende fra sitt
+ *    eget referansepunkt.
+ * 
+ *    Koden selvfølgelig overflødig men psudodata er vikitg for å se at 
+ *    web-applikasjonen gjør det den skal
+ * 
+ * 
+ * 
+ * 
+ */
 async function generateFictiveTasks() {
-  const tasks = [];
 
   const titles = [
     "Fix broken fence", "Paint house exterior", "Repair roof leak",
@@ -380,15 +400,70 @@ async function generateFictiveTasks() {
 
   const categories = ["Hage", "IT & Teknikk", "Rengjøring", "Flytting", "Montering", "Transport", "Undervisning", "Maling", "Rydding", "Annet"];
 
-  function getRandomNorwegianCoords() {
-    const myLat = 59.272349982043586;
-    const myLon = 10.417871475219727;
-    const randomIndex = Math.floor(Math.random() * 4);
-    const taskRadius = [5, 10, 20, 200][randomIndex];
-   return  getRandomCoordsWithinRadius(myLat, myLon, taskRadius);
-  }
-/* Trenger at det finnes oppgaver innenfor bestemt avstand fra gitt punkt */
-function getRandomCoordsWithinRadius(baseLat, baseLon, radiusKm) {
+
+/*  
+    For at vi skal få treff fra forskjellige distanser, så vi ser at koden fungerer, 
+    er referansepunkt (59.27, 10.42 = Tønsberg) brukt for å generere oppdrag innenfor forskjellige 
+    avstander fra refereansepunktet.
+
+*/
+const communesByZone = {
+  5: [
+    { name: "Tønsberg sentrum"        , latitude: 59.2723, longitude: 10.4179 },
+    { name: "Sem"                     , latitude: 59.2950, longitude: 10.3800 },
+    { name: "Teie (Nøtterøy)"        , latitude: 59.2450, longitude: 10.4050 },
+    { name: "Vallø"                   , latitude: 59.2500, longitude: 10.4700 },
+    { name: "Borgheim"                , latitude: 59.2300, longitude: 10.3900 },
+    { name: "Eik"                     , latitude: 59.2850, longitude: 10.4500 },
+    { name: "Byskogen"                , latitude: 59.2600, longitude: 10.4300 },
+  ],
+  10: [
+    { name: "Stokke"                  , latitude: 59.2200, longitude: 10.2950 },
+    { name: "Skoppum"                 , latitude: 59.3300, longitude: 10.3500 },
+    { name: "Åsgårdstrand"            , latitude: 59.3450, longitude: 10.4650 },
+    { name: "Nøtterøy sør"           , latitude: 59.1950, longitude: 10.4200 },
+    { name: "Re (Revetal)"            , latitude: 59.2900, longitude: 10.2700 },
+    { name: "Borre"                   , latitude: 59.3700, longitude: 10.4500 },
+    { name: "Smørbukk"               , latitude: 59.2400, longitude: 10.5100 },
+  ],
+  20: [
+    { name: "Sandefjord"              , latitude: 59.1310, longitude: 10.2167 },
+    { name: "Horten"                  , latitude: 59.4144, longitude: 10.4817 },
+    { name: "Holmestrand"             , latitude: 59.4900, longitude: 10.3200 },
+    { name: "Tjøme"                   , latitude: 59.1200, longitude: 10.4100 },
+    { name: "Andebu"                  , latitude: 59.2000, longitude: 10.1600 },
+    { name: "Stokke (ytre)"          , latitude: 59.1700, longitude: 10.2900 },
+    { name: "Sande"                   , latitude: 59.5900, longitude: 10.2200 },
+    { name: "Hvasser"                 , latitude: 59.1050, longitude: 10.4600 },
+    { name: "Ramnes"                  , latitude: 59.3300, longitude: 10.1900 },
+  ],
+  200: [
+    { name: "Oslo"                    , latitude: 59.9139, longitude: 10.7522 },
+    { name: "Drammen"                 , latitude: 59.7440, longitude: 10.2045 },
+    { name: "Skien"                   , latitude: 59.2090, longitude:  9.6100 },
+    { name: "Bergen"                  , latitude: 60.3913, longitude:  5.3221 },
+    { name: "Trondheim"               , latitude: 63.4305, longitude: 10.3951 },
+    { name: "Stavanger"               , latitude: 58.9700, longitude:  5.7331 },
+    { name: "Kristiansand"            , latitude: 58.1467, longitude:  7.9956 },
+    { name: "Tromsø"                  , latitude: 69.6489, longitude: 18.9551 },
+  ],
+};
+function getLocationWithCoords(zone) {
+  const zones = [5, 10, 20, 200];
+  if (zone === undefined) zone = zones[Math.floor(Math.random() * zones.length)];
+  const pool   = communesByZone[zone];
+  const chosen = pool[Math.floor(Math.random() * pool.length)];
+  const coords = random3km(chosen.latitude, chosen.longitude, 3);
+  return {
+    kommune:   chosen.name,
+    latitude:  coords.latitude,
+    longitude: coords.longitude,
+  };
+}
+
+/* random3km finner tilfeldig koordinater innenfor en radius av 3km fra baseLat, baseLon. */ 
+function random3km(baseLat, baseLon ) {
+  const radiusKm = 3;
   const earthRadiusKm = 6371;
 
   // 1. Random distance with uniform distribution (avoid clustering in center)
@@ -421,16 +496,13 @@ function getRandomCoordsWithinRadius(baseLat, baseLon, radiusKm) {
     }
     return [...new Set(selectedTags)];
   }
-
-  for (let i = 0; i < 50; i++) {
+  function buildPayload(location) {
     const randomUID = userUIDs[Math.floor(Math.random() * userUIDs.length)];
-    const coords = getRandomNorwegianCoords();
-
-    const payload = {
+    return {
       title:       titles[Math.floor(Math.random() * titles.length)],
       description: descriptions[Math.floor(Math.random() * descriptions.length)],
       status:      "open",
-      pris:        Math.floor(Math.random() * 99) * 100 + 100, // 100–9900 i steg på 100
+      pris:        Math.floor(Math.random() * 99) * 100 + 100,
       category:    categories[Math.floor(Math.random() * categories.length)],
       urgent:      Math.random() < 0.2,
       meta: {
@@ -441,33 +513,88 @@ function getRandomCoordsWithinRadius(baseLat, baseLon, radiusKm) {
         uid:   randomUID,
         ePost: generateEmail(randomUID)
       },
-      location: {
-        kommune:   communes[Math.floor(Math.random() * communes.length)],
-        longitude: coords.longitude,
-        latitude:  coords.latitude
-      },
-      images: [ imageURLs[i % imageURLs.length] ]
+      location,
+      images: [ imageURLs[Math.floor(Math.random() * imageURLs.length)] ],
+      rating: Math.floor(Math.random() * 6) + 1
     };
-
-    tasks.push(payload);
+  }
+  
+  const tasks = [];
+  // Guarantee at least one task per zone
+  for (const zone of [5, 10, 20, 200]) {
+    const location = getLocationWithCoords(zone); // pass zone as argument
+    tasks.push(buildPayload(location));
   }
 
-  return tasks;
-}
+  // Fill remaining 46 randomly
+  
+  for (let i = 0; i < 46; i++) {
+    const location = getLocationWithCoords(); // picks zone randomly as before
+    tasks.push(buildPayload(location));
+  }
 
+  
+  return tasks;
+  
+}
 async function createAllFictiveTasks() {
   const tasks = await generateFictiveTasks();
-
   for (let i = 0; i < tasks.length; i++) {
     try {
       const docID = await setTask("", tasks[i]);
-      console.log(`Task ${i + 1}/20 created with ID: ${docID}`);
+      console.log(`Task ${i + 1}/50 created with ID: ${docID}`);
     } catch (error) {
       console.error(`Failed to create task ${i + 1}:`, error);
     }
   }
 
-  console.log("All 20 fictive tasks created!");
+  console.log("All 50 fictive tasks created!");
 }
 //Lager 50 oppgaver til databasen
-//createAllFictiveTasks();
+        createAllFictiveTasks();
+
+        /*
+let tempTasks = await generateFictiveTasks();
+
+const user = {lat : 59.272349982043586,lng : 10.417871475219727 }
+let userDistance = [];
+
+tempTasks.forEach(oppdrag=>{
+  userDistance.push({
+      tittel: oppdrag.title,
+      sted: oppdrag.location.kommune,
+      avstand: haversine(user.lat,user.lng,oppdrag.location.latitude,oppdrag.location.longitude)
+   });
+});
+ console.table(userDistance);
+function haversine(lat1, lng1, lat2, lng2) {
+    const R = 6371; // Earth radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+
+    const a = Math.sin(dLat / 2) ** 2 +
+              Math.cos(lat1 * Math.PI / 180) *
+              Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLng / 2) ** 2;
+
+    return R * 2 * Math.asin(Math.sqrt(a)); // returns km
+}
+
+const ti = [
+    { name: "Stokke"                  , latitude: 59.2200, longitude: 10.2950 },
+    { name: "Skoppum"                 , latitude: 59.3300, longitude: 10.3500 },
+    { name: "Åsgårdstrand"            , latitude: 59.3450, longitude: 10.4650 },
+    { name: "Nøtterøy sør"           , latitude: 59.1950, longitude: 10.4200 },
+    { name: "Re (Revetal)"            , latitude: 59.2900, longitude: 10.2700 },
+    { name: "Borre"                   , latitude: 59.3700, longitude: 10.4500 },
+    { name: "Smørbukk"               , latitude: 59.2400, longitude: 10.5100 },
+  ];
+  
+  let avstand = ti.map(p => {
+  return {
+    name: p.name,
+    distance: haversine(user.lat, user.lng, p.latitude, p.longitude)
+  };
+});
+console.table(avstand);   
+*/
