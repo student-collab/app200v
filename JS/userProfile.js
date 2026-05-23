@@ -5,9 +5,9 @@ const myProfile = document.getElementById('myProfile');
 const myTasks = document.getElementById('myTasks');
 const myReviews = document.getElementById('myReviews');
 const savedTasks = document.getElementById('savedTasks');
-const messages = document.getElementById('messages');
+//const messages = document.getElementById('messages');
 const paymentMethods = document.getElementById('paymentMethods');
-const notifications = document.getElementById('notifications');
+//const notifications = document.getElementById('notifications');
 const userInfo = document.getElementById('userInfo');
 
 const profileSubheader = document.getElementById('profileSubheader');
@@ -17,7 +17,7 @@ const subheaderIcon = document.getElementById('subheaderIcon');
 let buttons = [];
 
 // All section panels that can be opened from profile navigation.
-const sections = [myTasks, myReviews, savedTasks, messages, paymentMethods, notifications];
+const sections = [myTasks, myReviews, savedTasks, paymentMethods];
 
 // Only allow subheader click to navigate back when we are in section mode.
 function onSubheaderClick() {
@@ -68,9 +68,8 @@ function initialize() {
     "myTasksBtn",
     "myReviewsBtn",
     "savedTasksBtn",
-    "messagesBtn",
-    "paymentMethodsBtn",
-    "notificationsBtn"
+    "paymentMethodsBtn"
+  
   ];
 
   //Convert IDs into real DOM button elements and ignore missing ones.
@@ -81,9 +80,7 @@ function initialize() {
     myTasksBtn: showTasks,
     myReviewsBtn: showReviews,
     savedTasksBtn: showSavedTasks,
-    messagesBtn: showMessages,
-    paymentMethodsBtn: showPaymentMethods,
-    notificationsBtn: showNotifications
+    paymentMethodsBtn: showPaymentMethods
   };
 
   //Attach the correct click handler to each existing button.
@@ -121,18 +118,11 @@ function showSavedTasks() {
   showSection(savedTasks, 'Saved Tasks');
 }
 
-function showMessages() {
-  showSection(messages, 'Messages');
-}
-
 
 function showPaymentMethods() {
   showSection(paymentMethods, 'Payment Methods');
 }
 
-function showNotifications() {
-  showSection(notifications, 'Notifications');
-}
 
 //Function to show profile section
 function showProfile() {
