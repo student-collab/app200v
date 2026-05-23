@@ -21,7 +21,7 @@
 
 <body>
   <h1>Edit Profile</h1>
-  <p>Profile information</p>
+  <h3>Profile information</h3>
 
   <ul id="profileInfoList">
     <li><strong>First Name:</strong> <span id="profileFirstName">Loading...</span></li><br>
@@ -31,8 +31,33 @@
     <li><strong>Location:</strong> <span id="profileLocation">Loading...</span></li><br>
     <li><strong>Phone:</strong> <span id="profilePhone">Loading...</span></li><br>
   </ul>
+
+  <form id="profileEditForm" style="display:none;">
+    <label for="editFirstName">First Name:</label><br>
+    <input type="text" id="editFirstName" maxlength="80"><br><br>
+
+    <label for="editLastName">Last Name:</label><br>
+    <input type="text" id="editLastName" maxlength="80"><br><br>
+
+    <label for="editEmail">Email:</label><br>
+    <input type="email" id="editEmail" maxlength="120"><br><br>
+
+    <label for="editGender">Gender:</label><br>
+    <select id="editGender" name="gender">
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+    </select><br><br>
+
+    <label for="editLocation">Location:</label><br>
+    <input type="text" id="editLocation" maxlength="120"><br><br>
+
+    <label for="editPhone">Phone:</label><br>
+    <input type="text" id="editPhone" maxlength="40"><br>
+  </form>
+
   <p id="formStatus" aria-live="polite"></p>
-  
+  <button id="editInfoBtn" class="editInfo" type="button">Edit info</button>
+
   
   
   <nav id="replaceNav">
