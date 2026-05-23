@@ -68,7 +68,24 @@ import-syntaks:
 */
 
 
-
+async function getUser() {
+  
+        const querySnapshot = await db.collection('users').get();
+        
+        return querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+}
+async function getUserTasks(createdByUID) {
+ const snap = await db.collection('tasks')
+ .where("createdBy.uid", "==", createdByUID)
+ .get();
+ return snap.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+}
 async function getTask(taskId = "") {
     if(taskId == ""){
         console.log("getTask without taskId");
@@ -149,7 +166,7 @@ export async function readFSdb(path = 'collection/document') {
   }
 }
 
-export { getTask, setTask, updateTask, deleteTask, clearField};
+export { getUserTasks, getUser, getTask, setTask, updateTask, deleteTask, clearField};
 
 //Oppretter eller oppdaterer en bruker i 'users' collection i Firestore
 export async function setUser(userId, data) { //userId= Firebase Authenticator ID

@@ -1,10 +1,13 @@
 import {auth} from './modules/dbConfig.js';
 
-import {setTask} from './modules/FS_Requests.js'; 
+import {getUser, setTask} from './modules/FS_Requests.js'; 
 import { getDroppedFiles, clearDroppedFiles } from './modules/postTask-fileDrop.js';
 
 
 window.addEventListener('load', ()=>{
+    /* ----------- midlertidig test-knapp ---------------------------- */
+    const temTest = document.getElementById('se-oppgave-JSON');
+    temTest.addEventListener('click',async ()=> hentEksempel());
     /* ----------- post-task-knappen ---------------------------- */
     const submitButton = document.getElementById("btn-post-task");
     submitButton.addEventListener('click',async ()=> postingTask());
@@ -47,6 +50,10 @@ async function postingTask (){
             FORM.reportValidity(); 
             return; // Stopper hvis skjema ikke er fylt
         }
+        const user = auth.currentUser;
+        if (!user) return;
+        payload.createdBy = { uid: user.uid, ePost: user.email };
+
         const valgtPris = document.getElementById("viser-pris").value;
         payload.pris = Number(valgtPris);
         payload.title       = document.getElementById("task-title").value;
@@ -65,16 +72,6 @@ async function postingTask (){
         console.info ("ID: " + docID);
         // Tømmer listen over valgte filer og fjerner data fra forrige opplasting
         clearDroppedFiles();
-        const user = auth.currentUser;
-        if (!user) return;
-        Object.assign(payload, {
-            title: "", description: "", status: "open", pris: 0,
-            category:"",
-            meta: {},
-            assignee: { uid: user.uid, ePost: user.email },
-            location: { kommune: "", longitude: 0, latitude: 0 },
-            images: []
-        });
         
     }
     
@@ -83,6 +80,7 @@ async function postingTask (){
         category:"",
         meta: {},
         assignee: { uid: "", ePost: "" },
+        createdBy: { uid: "", ePost: "" },
         location: { kommune: "", longitude: 0, latitude: 0 },
         urgent: false,
         images: []
@@ -205,6 +203,10 @@ window.initMap = function() {
     }
     
 
+}
+async function hentEksempel(){
+    const fetchedUsers = await getUser();
+    console.info(JSON.stringify(fetchedUsers[0]));
 }
 /*
 export function getPayload() {

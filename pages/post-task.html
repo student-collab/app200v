@@ -31,7 +31,7 @@
 
 
 <div id="caption"><span id="caption__left-arrow">&#x1F860;</span><h2>Post a task</h2></div>
-
+<button id="se-oppgave-JSON">Hent eksempel task</button>
    <div id="page-wrap">
         <div id="main-content">
             <form id ="form__post-task" action="">
@@ -49,7 +49,7 @@
                 <label for="beskrivelse">Beskrivelse</label>
                 <textarea id = "beskrivelse" style ="resize: none;" required></textarea>
                 
-                <label for="btn-lokasjon">Lokasjon</label>
+                <label for="kommune">Lokasjon</label>
                 <input id = "kommune" type="text" readonly placeholder="&#x1F4CD; Klikk på kartet for å velge lokasjon" required>
                 <label for="kategori">Velg passsende kategori for ditt oppdrag</label>
                 <select name="chosenCategory" id="kategori" required>
@@ -59,7 +59,7 @@
                     <option value="Hundepass">Hundepass</option>
                     <option value="Vedlikehold">Vedlikehold</option>
                 </select>
-                <label for="pris">Budsjett Pris</label>
+                <label for="viser-pris">Budsjett Pris</label>
                 
                 <div id="slider-pris-container">
                     <input id="pris-slider" type="range" min="100" max="10000" value="500"  >

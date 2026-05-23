@@ -50,7 +50,7 @@ html{overflow-x: hidden;}
 **      Farger       *
 ** * * * * * * * * * */
 :root{
-    
+    box-sizing: border-box;
     --bg-color: #F7F7F7;
     --font-color-main: #767D86;
     --font-color-forms: #9598A8;
@@ -62,9 +62,11 @@ html{overflow-x: hidden;}
 
 }
 body{
-    width:100%;
+    max-width:100%;
     background-color: var(--bg-color);
     overflow-x: hidden;
+    padding-bottom: 150px;
+    margin:0;
 }
 
 /* * * * * * * * * *

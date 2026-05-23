@@ -1,0 +1,95 @@
+
+body {
+    background-color: #F7F7F7;
+}
+
+#myProfile {
+    text-align: center;
+    padding: 20px;
+}
+
+/* * * * * * * * * *
+ *  mobile-header  *
+ * * * * * * * * * */
+
+
+.subheader {
+    margin-right: 1rem;
+}
+
+.subheader-content {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ddd;
+}
+
+.subheader-content h2 {
+    margin: 0 0 0 1rem;
+}
+
+.subheader.is-back {
+    cursor: pointer;
+}
+
+.subheader.is-back .subheader-content {
+    justify-content: flex-start;
+    gap: 0.6rem;
+}
+
+.subheader.is-back #subheaderIcon {
+    order: -1;
+    margin-left: 1rem;
+}
+
+.subheader.is-back #subheaderTitle {
+    margin-left: 0;
+}
+
+
+.profile-photo {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 1rem auto;
+    border: 3px solid #777;
+    background-color: #f4f4f4;
+}
+
+.editProfileBtn {
+    background-color: rgb(220, 220, 220);
+    padding: 10px 25px;
+    border: none; /* no black border line */
+    border-radius: 12px; /* rounded corners */
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer; /* hand cursor when hovering */
+    
+}
+.editProfileBtn:hover {
+    background-color: rgb(200, 200, 200); /* slightly darker on hover */
+
+}
+
+.nav-knapper {
+    display: flex; /* to align text and arrow properly */
+    justify-content: space-between; /* space between text and arrow */
+    align-items: center;
+    background-color: white;
+    padding: 18px 20px;
+    width: 100%; /* stretches the button to full width of the container */
+    border: 2px solid  rgb(229, 229, 229);
+    border-radius: 12px; /* rounded corners */
+    font-weight: bold;
+    cursor: pointer; /* hand cursor when hovering */
+    margin-bottom: 5px; /*space between buttons */
+}
+
+
+
+

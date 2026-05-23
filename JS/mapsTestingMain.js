@@ -1,6 +1,6 @@
 import {getValgteKommuner} from './kommunevelger.js';
 import {auth, db} from './modules/dbConfig.js';
-import {getTask,
+import {getUser, getTask,
         setTask,
         updateTask,
         deleteTask,
@@ -393,10 +393,7 @@ async function generateFictiveTasks() {
     "carpentry", "painting", "landscaping", "roofing", "inspection"
   ];
 
-  const userUIDs = [
-    "user001", "user002", "user003", "user004", "user005",
-    "user006", "user007", "user008", "user009", "user010"
-  ];
+  const realUsers =  await getUser();
 
   const categories = ["Hage", "IT & Teknikk", "Rengjøring", "Flytting", "Montering", "Transport", "Undervisning", "Maling", "Rydding", "Annet"];
 
@@ -497,7 +494,7 @@ function random3km(baseLat, baseLon ) {
     return [...new Set(selectedTags)];
   }
   function buildPayload(location) {
-    const randomUID = userUIDs[Math.floor(Math.random() * userUIDs.length)];
+    const randomUser = realUsers[Math.floor(Math.random() * realUsers.length)];
     return {
       title:       titles[Math.floor(Math.random() * titles.length)],
       description: descriptions[Math.floor(Math.random() * descriptions.length)],
@@ -509,10 +506,11 @@ function random3km(baseLat, baseLon ) {
         created: firebase.firestore.FieldValue.serverTimestamp(),
         tags:    getRandomTags()
       },
-      assignee: {
-        uid:   randomUID,
-        ePost: generateEmail(randomUID)
+       createdBy: {
+        uid:   randomUser.id,
+        ePost: randomUser.email
       },
+      assignee: { uid: "", ePost: "" },
       location,
       images: [ imageURLs[Math.floor(Math.random() * imageURLs.length)] ],
       rating: Math.floor(Math.random() * 6) + 1
@@ -551,7 +549,7 @@ async function createAllFictiveTasks() {
   console.log("All 50 fictive tasks created!");
 }
 //Lager 50 oppgaver til databasen
-        createAllFictiveTasks();
+        //createAllFictiveTasks();
 
         /*
 let tempTasks = await generateFictiveTasks();
