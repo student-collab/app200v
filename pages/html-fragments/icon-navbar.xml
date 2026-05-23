@@ -7,9 +7,9 @@
       <path d="M9 21V12h6v9"/>
       <path d="M3 12v9h18V12"/>
     </symbol>
-    <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="7"/>
-      <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+    <symbol id="icon-notifications" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 4a4 4 0 0 0-4 4v2c0 1.8-.7 3.5-2 4.8V17h12v-2.2A6.8 6.8 0 0 1 16 10V8a4 4 0 0 0-4-4z"/>
+      <path d="M9.5 17a2.5 2.5 0 0 0 5 0"/>
     </symbol>
     <symbol id="icon-post" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="9"/>
@@ -37,9 +37,9 @@
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-home"/></svg>
     <span>oppgaveliste</span>
   </a>
-  <a class="nav-item" href="#">
-    <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-search"/></svg>
-    <span>Search</span>
+  <a class="nav-item" href="/pages/notifications.html">
+    <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-notifications"/></svg>
+    <span>Notifications</span>
   </a>
   <a class="nav-item" href="/pages/post-task.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-post"/></svg>
