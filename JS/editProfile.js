@@ -30,6 +30,7 @@ const statusEl = document.getElementById('formStatus');
 const profileInfoList = document.getElementById('profileInfoList');
 const profileEditForm = document.getElementById('profileEditForm');
 const editInfoBtn = document.getElementById('editInfoBtn');
+const profileSubheader = document.getElementById('profileSubheader');
 
 // Input fields used in edit mode.
 const editFirstNameEl = document.getElementById('editFirstName');
@@ -51,6 +52,7 @@ const editPhoneEl = document.getElementById('editPhone');
 let currentAuthUser = null;
 let currentUserDoc = null;
 let isEditMode = false;
+let hasUnsavedChanges = false;
 
 // Show a status message below the list.
 // isError=false -> green success/info color
@@ -92,6 +94,18 @@ function syncDisplayNameInput() {
   }
 }
 
+// Mark the form as dirty whenever the user changes anything in edit mode.
+function markUnsavedChanges() {
+  hasUnsavedChanges = true;
+}
+
+// Clear the dirty flag after loading fresh data or after a successful save.
+// This tells the page that the current form matches the saved data again,
+// so the back-button warning should not appear unless the user changes something new.
+function clearUnsavedChanges() {
+  hasUnsavedChanges = false;
+}
+
 // Render all requested fields into the HTML list.
 // Name is split into first and last from Firestore fields.
 // Params:
@@ -131,6 +145,7 @@ function fillEditForm(userDoc, authUser) {
   editPhoneEl.value = userDoc?.phone || '';
 
   syncDisplayNameInput();
+  clearUnsavedChanges();
 }
 
 // Switch between read-only and edit mode in one place.
@@ -143,6 +158,10 @@ function toggleEditMode(enableEdit) {
   profileInfoList.style.display = enableEdit ? 'none' : 'block';
   profileEditForm.style.display = enableEdit ? 'block' : 'none';
   editInfoBtn.textContent = enableEdit ? 'Save info' : 'Edit info';
+
+  if (!enableEdit) {
+    clearUnsavedChanges();
+  }
 }
 
 // Save all editable fields back to Firestore, then sync auth displayName.
@@ -205,6 +224,7 @@ async function saveProfileEdits(user) {
 
     // Keep Firebase Auth displayName in sync with profile name.
     await user.updateProfile({ displayName });
+    clearUnsavedChanges();
     return true;
   } catch (error) {
     setStatus(error.message || 'Could not save profile.', true);
@@ -236,12 +256,30 @@ auth.onAuthStateChanged(async (user) => {
     setStatus('Please log in to view profile details.', true);
     renderProfile(null, null);
     editInfoBtn.disabled = true;
+    clearUnsavedChanges();
     return;
   }
 
   currentAuthUser = user;
   editInfoBtn.disabled = false;
   await loadProfileInfo(user);
+});
+
+// Back navigation behaves differently depending on edit state.
+// If the user changed something and has not saved it yet, warn before leaving.
+profileSubheader.addEventListener('click', () => {
+  if (!isEditMode) {
+    window.location.href = 'userProfile.html';
+    return;
+  }
+
+  if (hasUnsavedChanges) {
+    setStatus('You have unsaved changes. Are you sure you wish to exit?', true);
+    const shouldLeave = window.confirm('You have unsaved changes. Are you sure you wish to exit?');
+    if (!shouldLeave) return;
+  }
+
+  window.location.href = 'userProfile.html';
 });
 
 // Main button behavior:
@@ -275,3 +313,11 @@ editInfoBtn.addEventListener('click', async () => {
 editFirstNameEl.addEventListener('input', syncDisplayNameInput);
 editLastNameEl.addEventListener('input', syncDisplayNameInput);
 useFullNameAsDisplayEl.addEventListener('change', syncDisplayNameInput);
+editFirstNameEl.addEventListener('input', markUnsavedChanges);
+editLastNameEl.addEventListener('input', markUnsavedChanges);
+useFullNameAsDisplayEl.addEventListener('change', markUnsavedChanges);
+editDisplayNameEl.addEventListener('input', markUnsavedChanges);
+editEmailEl.addEventListener('input', markUnsavedChanges);
+editGenderEl.addEventListener('change', markUnsavedChanges);
+editLocationEl.addEventListener('input', markUnsavedChanges);
+editPhoneEl.addEventListener('input', markUnsavedChanges);

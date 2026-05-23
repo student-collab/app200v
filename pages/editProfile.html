@@ -11,6 +11,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
   <meta name="description" content="" />
+  <link rel="stylesheet" href="../CSS/userProfile.css">
   <link rel="stylesheet" href="../CSS/main.css">
   <script src="../JS/main.js" type = "module" defer></script>
   <link rel="icon" href="../img/favicon.png">
@@ -20,7 +21,16 @@
 </head>
 
 <body>
-  <h1>Edit Profile</h1>
+
+  <div class="subheader is-back" id="profileSubheader">
+        <div class="subheader-content">
+            <h2 id="subheaderTitle">Edit Profile</h2>
+           <span id="subheaderIcon">←</span>
+        </div>
+    </div>
+
+   
+
   <h3>Profile information</h3>
 
   <ul id="profileInfoList">
@@ -33,6 +43,8 @@
     <li><strong>Phone:</strong> <span id="profilePhone">Loading...</span></li><br>
   </ul>
 
+
+  <!--This is shown after clicking Edit Info-->
   <form id="profileEditForm" style="display:none;">
 
     <label for="editDisplayName"><strong>Display Name:</strong></label><br>

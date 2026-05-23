@@ -52,6 +52,7 @@ header > #moon-symbol-background{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-top: 2px solid #ddd;
     border-bottom: 2px solid #ddd;
 }
 
