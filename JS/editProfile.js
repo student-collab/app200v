@@ -175,7 +175,7 @@ function toggleEditMode(enableEdit) {
   isEditMode = enableEdit;
   profileInfoList.style.display = enableEdit ? 'none' : 'block';
   profileEditForm.style.display = enableEdit ? 'block' : 'none';
-  editInfoBtn.textContent = enableEdit ? 'Save info' : 'Edit info';
+  editInfoBtn.textContent = enableEdit ? 'Save information' : 'Edit information';
 
   if (!enableEdit) {
     clearUnsavedChanges();
@@ -189,6 +189,12 @@ function toggleEditMode(enableEdit) {
 // - true  => save succeeded
 // - false => validation failed or save failed
 async function saveProfileEdits(user) {
+  // Enforce HTML required/type rules even though save is button-driven.
+  if (!profileEditForm.reportValidity()) {
+    setStatus('Please fill in all required fields.', true);
+    return false;
+  }
+
   // Read and normalize current input values.
   const firstName = cleanValue(editFirstNameEl.value);
   const lastName = cleanValue(editLastNameEl.value);
@@ -205,11 +211,6 @@ async function saveProfileEdits(user) {
   const phone = cleanValue(editPhoneEl.value);
 
   // Basic validation before writing to database.
-  if (!firstName || !lastName) {
-    setStatus('First name and last name are required.', true);
-    return false;
-  }
-
   if (!displayName) {
     setStatus('Display name cannot be empty.', true);
     return false;
