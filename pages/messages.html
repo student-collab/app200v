@@ -24,37 +24,18 @@
 
 <body>
   <h1>Messages</h1>
-  <p>Nothing here yet</p>
-  <h2>Runar kaprer siden!</h2>
-  <p>Jeg trenger en side for å eksperimentere med database. Låner denne</p>
+  
 
 
-  <p>Utgangspukt for beregning av avstander:<br> <strong>Sentrum Tønsberg</strong></p>
-  
-  
-<form>
+    <input id="messageInput" type="text">
+    <button id="sendBtn">Send</button>
 
-  <label for="lat">lat:</label>
-  <input id="lat" value="59.272349982043586" type="text" readonly>
-  <label for="lng">lng: </label>
-  <input id="lng" value = "10.417871475219727" type="text" readonly><br>
-  <span>Avstand i kilometer</span><br>
 
-  <input type="radio" id="option1" name="distance" value="5" checked>
-  <label for="option1">5</label>
-  
-  <input type="radio" id="option2" name="distance" value="10">
-  <label for="option2">10</label>
-  
-  <input type="radio" id="option3" name="distance" value="20">
-  <label for="option3">20</label><br>
-  
-  <button type="button" id="hent-oppgaver"> Hent oppgaver</button>
-  
-</form>   
-  <div id="showtask">
-    
-  </div>
+
+
+
+
+
   <nav id="replaceNav">
               Blir erstattet av main.js  
             </nav>
@@ -63,6 +44,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script type="module" src="js/messagesNEW.js"></script>
 </body>
 
 </html>
