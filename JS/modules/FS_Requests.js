@@ -176,7 +176,8 @@ export async function setUser(userId, data) { //userId= Firebase Authenticator I
 }
 
 
-//chat funksjoner
+//------------------- CHAT FUNKSJONER --------------------------------
+
 // Creates (or overwrites) a chat document with its participant user IDs.
 export async function createChat(chatId, participants) {
   await db.collection('chats').doc(chatId).set({
@@ -205,14 +206,16 @@ export async function getChatsForUser(userId) {
 }
 
 export function listenForMessages(chatId) {
+  if (!chatId) return () => {};
 
-  db.collection('chats')
+  return db.collection('chats')
     .doc(chatId)
     .collection('messages')
     .orderBy('createdAt')
     .onSnapshot((snapshot) => {
 
       const messagesDiv = document.getElementById('messages');
+      if (!messagesDiv) return;
 
       messagesDiv.innerHTML = "";
 
