@@ -175,6 +175,61 @@ export async function setUser(userId, data) { //userId= Firebase Authenticator I
   await db.collection('users').doc(userId).set(data, { merge: true }); //merge gjør at vi ikke sletter eksisterende data. //set skriver data til firestore
 }
 
+
+//chat funksjoner
+// Creates (or overwrites) a chat document with its participant user IDs.
+export async function createChat(chatId, participants) {
+  await db.collection('chats').doc(chatId).set({
+    participants: participants
+  });
+}
+
+// Adds one message document inside chats/{chatId}/messages.
+export async function sendMessage(chatId, message) {
+  await db.collection('chats')
+    .doc(chatId)
+    .collection('messages')
+    .add(message);
+}
+
+// Returns all chats where the given userId is in the participants array.
+export async function getChatsForUser(userId) {
+  const snap = await db.collection('chats')
+    .where('participants', 'array-contains', userId)
+    .get();
+
+  return snap.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+}
+
+export function listenForMessages(chatId) {
+
+  db.collection('chats')
+    .doc(chatId)
+    .collection('messages')
+    .orderBy('createdAt')
+    .onSnapshot((snapshot) => {
+
+      const messagesDiv = document.getElementById('messages');
+
+      messagesDiv.innerHTML = "";
+
+      snapshot.forEach(doc => {
+
+        const msg = doc.data();
+
+        messagesDiv.innerHTML += `
+          <p>
+            <strong>${msg.senderId}</strong>: ${msg.text}
+          </p>
+        `;
+      });
+
+    });
+}
+
 /**
  * 
  *          Senere - query 
