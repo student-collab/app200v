@@ -1,27 +1,72 @@
+//Author: Viktor Eliassen
 import { auth } from '../JS/modules/dbConfig.js';
-import { createChat, sendMessage, getChatsForUser, listenForMessages } from '../JS/modules/FS_Requests.js';
+import { createChat, sendMessage, getChatsForUser, listenForMessages, getUser } from '../JS/modules/FS_Requests.js';
 
-// Holds the chat the user is currently talking in.
+// Runtime state: active chat, active Firestore unsubscribe function, and cached users.
 let currentChatId = null;
 let stopListeningToMessages = null;
+let usersById = {};
 
-function startListeningToCurrentChat() {
-  if (stopListeningToMessages) {
-    stopListeningToMessages();
+// Cache DOM elements once so we do not query repeatedly.
+const createChatSelect = document.getElementById('createChat');
+const createChatBtn = document.getElementById('createChatBtn');
+const chatList = document.getElementById('chatList');
+const chatTitle = document.getElementById('chatTitle');
+const sendBtn = document.getElementById('sendBtn');
+const messageInput = document.getElementById('messageInput');
+
+// Converts a uid to a readable name for UI labels.
+function getUserDisplayName(uid) {
+  if (uid === auth.currentUser?.uid) return 'You';
+  return usersById[uid]?.name?.display || uid;
+}
+
+// Builds the chat button/title label from the other participant in the chat.
+function getChatLabel(chat) {
+  const otherUid = (chat.participants || []).find(uid => uid !== auth.currentUser?.uid);
+  return otherUid ? getUserDisplayName(otherUid) : chat.id;
+}
+
+// Updates the title text using selected chat label, with fallback when no chat is active.
+function updateChatTitle(chats = []) {
+  if (!chatTitle) return;
+
+  let label = 'none selected';
+  if (currentChatId) {
+    const activeChat = chats.find(chat => chat.id === currentChatId);
+    label = activeChat ? getChatLabel(activeChat) : currentChatId;
   }
+
+  chatTitle.textContent = 'Currently sending messages in chat with: ' + label;
+}
+
+// Ensures we only keep one live listener: stop old listener, start new on selected chat.
+function startListeningToCurrentChat() {
+  if (stopListeningToMessages) stopListeningToMessages();
   stopListeningToMessages = listenForMessages(currentChatId);
 }
 
-//Updates the title of the current chat for visual reasons
-function updateChatTitle() {
-  const chatTitle = document.getElementById('chatTitle');
-  if (!chatTitle) return;
-  chatTitle.textContent = 'Currently sending messages in chat: ' + (currentChatId || 'none selected');
+// Loads users once, caches them by uid, and fills the Create Chat dropdown.
+async function loadUsers() {
+  if (!auth.currentUser || !createChatSelect) return;
+
+  const users = await getUser();
+  usersById = Object.fromEntries(users.map(user => [user.id, user]));
+
+  createChatSelect.innerHTML = '';
+
+  users
+    .filter(user => user.id !== auth.currentUser.uid)
+    .forEach(user => {
+      const option = document.createElement('option');
+      option.value = user.id;
+      option.textContent = user.name?.display || user.id;
+      createChatSelect.appendChild(option);
+    });
 }
 
-// Renders one button per chat; clicking a button sets the active chat.
+// Draws active chat buttons for changing between active chats. Clicking a button selects the chat and starts message listening.
 function renderChatList(chats) {
-  const chatList = document.getElementById('chatList');
   if (!chatList) return;
 
   chatList.innerHTML = '';
@@ -29,77 +74,69 @@ function renderChatList(chats) {
   chats.forEach(chat => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.textContent = chat.id;
+
+    if (chat.id === currentChatId) btn.classList.add('active-chat-btn');
+    btn.textContent = getChatLabel(chat);
     btn.addEventListener('click', () => {
       currentChatId = chat.id;
-      updateChatTitle();
+      renderChatList(chats); //to update the active-chat-btn
+      updateChatTitle(chats);
       startListeningToCurrentChat();
     });
     chatList.appendChild(btn);
   });
+}
 
-  // Auto-select first chat if none is active yet.
+// Main page refresh: load users, load chats, select default chat, render UI, start listener.
+async function refreshMessagesPage() {
+  if (!auth.currentUser) return;
+
+  await loadUsers();
+
+  const chats = await getChatsForUser(auth.currentUser.uid);
+
   if (!currentChatId && chats.length > 0) {
     currentChatId = chats[0].id;
   }
 
-  updateChatTitle();
+  renderChatList(chats);
+  updateChatTitle(chats);
   startListeningToCurrentChat();
 }
 
-// Loads chats where the logged-in user is in participants[].
-async function loadMyChats() {
-  if (!auth.currentUser) return;
-  const chats = await getChatsForUser(auth.currentUser.uid);
-  renderChatList(chats);
- 
-}
-
-// Refresh chat list when auth state becomes available.
+// Initialize the page only when auth state is ready.
 auth.onAuthStateChanged((user) => {
   if (!user) return;
-  loadMyChats();
+  refreshMessagesPage();
 });
 
-
-
-//Create chat button
-document.getElementById('createChatBtn').addEventListener('click', async () => {
-
-  const input = document.getElementById('createChat');
-
-  const otherUserId = input.value.trim();
+// Creates a chat with selected user, then refreshes list/title/listener state.
+createChatBtn?.addEventListener('click', async () => {
+  const otherUserId = createChatSelect?.value;
   if (!otherUserId || !auth.currentUser) return;
 
-  // Use a sorted pair so the same two users always produce the same chatId.
   const participants = [auth.currentUser.uid, otherUserId];
   const chatId = [...participants].sort().join('_');
 
   await createChat(chatId, participants);
-  // New chat becomes current immediately.
   currentChatId = chatId;
-  updateChatTitle();
-  startListeningToCurrentChat();
-  await loadMyChats();
+  await refreshMessagesPage();
 
-  input.value = "";
+  if (createChatSelect) createChatSelect.selectedIndex = 0;
 });
 
-
-//Send button
-document.getElementById('sendBtn').addEventListener('click', async () => {
-
-  const input = document.getElementById('messageInput');
-  // Require active chat, logged-in user, and non-empty text.
-  if (!currentChatId || !auth.currentUser || !input.value.trim()) return;
+// Sends one message to the currently selected chat.
+sendBtn?.addEventListener('click', async () => {
+  if (!currentChatId || !auth.currentUser || !messageInput?.value.trim()) return;
 
   await sendMessage(currentChatId, {
-    text: input.value.trim(),
+    text: messageInput.value.trim(),
     senderId: auth.currentUser.uid,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 
-  input.value = "";
+  messageInput.value = '';
 });
 
+// Initial title before auth/chat data loads.
 updateChatTitle();

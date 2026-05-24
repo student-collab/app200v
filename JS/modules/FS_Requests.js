@@ -181,7 +181,7 @@ export async function setUser(userId, data) { //userId= Firebase Authenticator I
 // Creates (or overwrites) a chat document with its participant user IDs.
 export async function createChat(chatId, participants) {
   await db.collection('chats').doc(chatId).set({
-    participants: participants
+    participants
   });
 }
 
@@ -205,30 +205,70 @@ export async function getChatsForUser(userId) {
   }));
 }
 
+// Formats a Firestore timestamp for display; shows a placeholder while pending.
+function formatMessageTime(createdAt) {
+  return createdAt?.toDate ? createdAt.toDate().toLocaleString() : 'Sending..';
+}
+
+// Builds a uid -> displayName map for all senders present in this snapshot.
+// This avoids querying the same user document multiple times in one render pass.
+async function getSenderNamesFromSnapshot(snapshot) {
+  const senderIds = [...new Set(snapshot.docs.map(doc => doc.data()?.senderId).filter(Boolean))];
+
+  const senderNameEntries = await Promise.all(
+    senderIds.map(async (uid) => {
+      const userSnap = await db.collection('users').doc(uid).get();
+      const userData = userSnap.exists ? userSnap.data() : null;
+      return [uid, userData?.name?.display || uid];
+    })
+  );
+
+  return Object.fromEntries(senderNameEntries);
+}
+
+// Converts all message docs into one HTML string for a single DOM update.
+function buildMessagesHtml(snapshot, senderNames) {
+  return snapshot.docs.map((doc) => {
+    const msg = doc.data();
+    const senderName = senderNames[msg.senderId] || msg.senderId;
+    const timeStamp = formatMessageTime(msg.createdAt);
+
+    return `
+      <p>
+        <strong>${senderName}</strong>: ${msg.text} <br> ${timeStamp}
+      </p>
+    `;
+  }).join('');
+}
+
+// What makes the messages appear on screen
 export function listenForMessages(chatId) {
+  // No active chat: return a no-op unsubscribe function.
   if (!chatId) return () => {};
+
+  // Increments on every snapshot callback start.
+  // Used to ignore stale async renders when newer snapshots arrive first.
+  let renderVersion = 0;
 
   return db.collection('chats')
     .doc(chatId)
     .collection('messages')
     .orderBy('createdAt')
-    .onSnapshot((snapshot) => {
+    .onSnapshot(async (snapshot) => {
+      // Marks this callback invocation as the current render attempt.
+      const versionAtStart = ++renderVersion;
 
       const messagesDiv = document.getElementById('messages');
       if (!messagesDiv) return;
 
-      messagesDiv.innerHTML = "";
+      // Resolve sender names before rendering message rows.
+      const senderNames = await getSenderNamesFromSnapshot(snapshot);
 
-      snapshot.forEach(doc => {
+      // If a newer snapshot started rendering while we awaited names, skip stale paint.
+      if (versionAtStart !== renderVersion) return;
 
-        const msg = doc.data();
-
-        messagesDiv.innerHTML += `
-          <p>
-            <strong>${msg.senderId}</strong>: ${msg.text}
-          </p>
-        `;
-      });
+      // Paint once to reduce flicker and avoid partial renders.
+      messagesDiv.innerHTML = buildMessagesHtml(snapshot, senderNames);
 
     });
 }
