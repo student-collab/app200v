@@ -11,7 +11,6 @@ let usersById = {};
 const createChatSelect = document.getElementById('createChat');
 const createChatBtn = document.getElementById('createChatBtn');
 const chatList = document.getElementById('chatList');
-const chatTitle = document.getElementById('chatTitle');
 const sendBtn = document.getElementById('sendBtn');
 const messageInput = document.getElementById('messageInput');
 
@@ -25,19 +24,6 @@ function getUserDisplayName(uid) {
 function getChatLabel(chat) {
   const otherUid = (chat.participants || []).find(uid => uid !== auth.currentUser?.uid);
   return otherUid ? getUserDisplayName(otherUid) : chat.id;
-}
-
-// Updates the title text using selected chat label, with fallback when no chat is active.
-function updateChatTitle(chats = []) {
-  if (!chatTitle) return;
-
-  let label = 'none selected';
-  if (currentChatId) {
-    const activeChat = chats.find(chat => chat.id === currentChatId);
-    label = activeChat ? getChatLabel(activeChat) : currentChatId;
-  }
-
-  chatTitle.textContent = 'Currently sending messages in chat with: ' + label;
 }
 
 // Ensures we only keep one live listener: stop old listener, start new on selected chat.
@@ -80,7 +66,6 @@ function renderChatList(chats) {
     btn.addEventListener('click', () => {
       currentChatId = chat.id;
       renderChatList(chats); //to update the active-chat-btn
-      updateChatTitle(chats);
       startListeningToCurrentChat();
     });
     chatList.appendChild(btn);
@@ -100,7 +85,6 @@ async function refreshMessagesPage() {
   }
 
   renderChatList(chats);
-  updateChatTitle(chats);
   startListeningToCurrentChat();
 }
 
@@ -137,6 +121,3 @@ sendBtn?.addEventListener('click', async () => {
 
   messageInput.value = '';
 });
-
-// Initial title before auth/chat data loads.
-updateChatTitle();
