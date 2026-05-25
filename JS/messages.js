@@ -14,6 +14,12 @@ const chatList = document.getElementById('chatList');
 const sendBtn = document.getElementById('sendBtn');
 const messageInput = document.getElementById('messageInput');
 
+const loadingChatsState = document.getElementById('loadingChatsState');
+const noChatsActiveState = document.getElementById('noChatsActiveState');
+const hasActiveChatsState = document.getElementById('hasActiveChatsState');
+
+
+
 // Converts a uid to a readable name for UI labels.
 function getUserDisplayName(uid) {
   if (uid === auth.currentUser?.uid) return 'You';
@@ -72,6 +78,27 @@ function renderChatList(chats) {
   });
 }
 
+//updates which UI state is visible depending on whether the user is part of a chat.
+function updateChatStates(hasChats) {
+  
+  //always hide the loading state once chat data has finished loading. ? means only continue if this value exists
+  loadingChatsState?.classList.add('hidden');
+
+  //if user has atleast one chat
+  if (hasChats) {
+    //show active chats selection
+    hasActiveChatsState?.classList.remove('hidden');
+    //hide "no chats" empty state section
+    noChatsActiveState?.classList.add('hidden');
+  } else {
+    //hide active chats section because there are no active chats
+    hasActiveChatsState?.classList.add('hidden');
+
+    //show the empty state message for users without chats
+    noChatsActiveState?.classList.remove('hidden');
+  }
+}
+
 // Main page refresh: load users, load chats, select default chat, render UI, start listener.
 async function refreshMessagesPage() {
   if (!auth.currentUser) return;
@@ -80,12 +107,20 @@ async function refreshMessagesPage() {
 
   const chats = await getChatsForUser(auth.currentUser.uid);
 
+  //if there is more than 0 chats then return hasChats TRUE
+  updateChatStates(chats.length > 0);
+
   if (!currentChatId && chats.length > 0) {
     currentChatId = chats[0].id;
   }
 
   renderChatList(chats);
-  startListeningToCurrentChat();
+
+  //if condition so we avoid listening to empty chats
+  if(chats.length > 0) {
+    startListeningToCurrentChat();
+  }
+  
 }
 
 // Initialize the page only when auth state is ready.

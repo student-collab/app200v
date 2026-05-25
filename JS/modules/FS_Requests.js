@@ -206,9 +206,16 @@ export async function getChatsForUser(userId) {
 }
 
 // Formats a Firestore timestamp for display; shows a placeholder while pending.
+//function formatMessageTime(createdAt) {
+  //return createdAt?.toDate ? createdAt.toDate().toLocaleString() : 'Sending..';
+//}
+
+// Formats a Firestore timestamp for display and shows a placeholder while pending.
 function formatMessageTime(createdAt) {
-  return createdAt?.toDate ? createdAt.toDate().toLocaleString() : 'Sending..';
+  return createdAt?.toDate ? createdAt.toDate().toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : 'Sending..'; //datestyle short to avoid displaying seconds
 }
+
+
 
 // Builds a uid -> displayName map for all senders present in this snapshot.
 // This avoids querying the same user document multiple times in one render pass.

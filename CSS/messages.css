@@ -7,7 +7,6 @@
 body {
 	margin: 0; /*removes default browser body margin*/
 	padding: 8px 8px 16px; /*small safe spacing around page content on mobile*/
-	background: linear-gradient(180deg, #f5f7fb 0%, #eef2f7 100%); /*page background gradient*/
 }
 
 #messages {
@@ -50,12 +49,67 @@ body {
 	max-width: 480px; /*keeps comfortable reading width on larger phones*/
 	margin: 8px auto; /*centers the panel horizontally*/
 	padding: 12px; /*inner spacing inside the panel*/
-	border: 1px solid #d7dde8; /*panel border*/
-	border-radius: 12px; /*rounded panel corners*/
-	background: #f9fbff; /*panel background color*/
-	box-shadow: 0 6px 18px rgba(20, 40, 80, 0.08); /*soft shadow for depth*/
+	/*border: 1px solid #d7dde8; */ /*panel border*/
+	/*border-radius: 12px; */ /*rounded panel corners*/
+	/*background: #f9fbff; */ /*panel background color*/
+	/*box-shadow: 0 6px 18px rgba(20, 40, 80, 0.08); */ /*soft shadow for depth*/
+   
 }
+
+#icon-messagesOnSite {
+	width: 56px;
+	height: 56px;
+	display: block;
+	margin: 0 auto 10px;
+}
+
 
 .timeStamp {
 	text-align: center; /*align the timestamp text in the center*/
+}
+
+#noChatsActiveState, #loadingChatsState {
+	text-align:center;
+}
+
+
+
+
+/*for the subheader "Messages". Straight copied from userprofile.css*/
+.subheader {
+    width: 100%;
+    
+}
+
+.subheader-content {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 2px solid #ddd;
+    border-bottom: 2px solid #ddd;
+}
+
+.subheader-content h2 {
+    margin: 0 0 0 1rem;
+}
+
+.subheader.is-back {
+    cursor: pointer;
+}
+
+.subheader.is-back .subheader-content {
+    justify-content: flex-start;
+    gap: 0.6rem;
+}
+
+.subheader.is-back #subheaderIcon {
+    order: -1;
+    margin-left: 1rem;
+}
+
+.subheader.is-back #subheaderTitle {
+    margin-left: 0;
 }
