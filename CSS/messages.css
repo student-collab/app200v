@@ -1,3 +1,61 @@
+/*Author: Viktor Eliassen */
+
 .active-chat-btn {
 	background: #2e7d32;
+}
+
+body {
+	margin: 0; /*removes default browser body margin*/
+	padding: 8px 8px 16px; /*small safe spacing around page content on mobile*/
+	background: linear-gradient(180deg, #f5f7fb 0%, #eef2f7 100%); /*page background gradient*/
+}
+
+#messages {
+	display: flex; /*makes message area use flex layout*/
+	flex-direction: column; /*stacks messages vertically*/
+	gap: 12px; /*space between each message bubble*/
+	margin: 12px 0px; /*outer spacing above and below the message area*/
+	padding: 12px; /*inner spacing inside the message area*/
+	min-height: 220px; /*keeps message area from collapsing when few messages*/
+	max-height: 60vh; /*uses more vertical space on phone screens*/
+	overflow-y: auto; /*adds vertical scroll when messages exceed max height*/
+	border: 1px solid #d7dde8; /*light border around message area*/
+	border-radius: 12px; /*rounded corners for message area*/
+	background: #ffffff; /*white background for chat content*/
+}
+
+.message-box {
+
+	padding: 5px 10px; /*spacing between text and chatbox*/
+	border: 1px solid rgb(135, 134, 134); /*color of border*/
+	border-radius: 8px; /*intensity of border edge turn radius*/
+	max-width: 250px;/*max width of the message box before it starts a new line*/
+	overflow-wrap: break-word; /*forces long unbroken messages, for example DDDDDDDDDDDDDDDDDDD to wrap inside the box*/
+}
+
+.message-mine {
+
+	align-self:flex-end; /*places my messages to the right*/
+	background-color: rgb(167, 192, 231); /*background color for my messages*/
+}
+
+.message-other {
+	
+	align-self:flex-start; /*places other user's messages to the left*/
+	background-color: rgb(232, 232, 232); /*background color for other user's messages*/
+}
+
+.container {
+	width: 100%; /*full width for mobile*/
+	max-width: 480px; /*keeps comfortable reading width on larger phones*/
+	margin: 8px auto; /*centers the panel horizontally*/
+	padding: 12px; /*inner spacing inside the panel*/
+	border: 1px solid #d7dde8; /*panel border*/
+	border-radius: 12px; /*rounded panel corners*/
+	background: #f9fbff; /*panel background color*/
+	box-shadow: 0 6px 18px rgba(20, 40, 80, 0.08); /*soft shadow for depth*/
+}
+
+.timeStamp {
+	text-align: center; /*align the timestamp text in the center*/
 }
