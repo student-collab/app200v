@@ -10,7 +10,7 @@
 */
 
 // For å kommunisere med databasen via SDK importerer vi databaseobjektet fra konfig-filen dbConfig.js
-import { db, storage} from './dbConfig.js'; 
+import { db, storage, auth } from './dbConfig.js'; 
 
 // db er et objekt returnert av SDK. SDK System Development Kit er lenket inn med HTML. Denne løsningen kalles Compat (?) og er fra Content Delivery Network (CDN)
 
@@ -233,21 +233,38 @@ function buildMessagesHtml(snapshot, senderNames) {
     const senderName = senderNames[msg.senderId] || msg.senderId;
     const timeStamp = formatMessageTime(msg.createdAt);
 
+    //for figuring out if the message is from the logged in user or the counterpart. For use in CSS styling
+    const isMine = msg.senderId === auth.currentUser?.uid;
+    const messageClass = isMine ? 'message-box message-mine' : 'message-box message-other';
+
     return `
-      <p>
-        <strong>${senderName}</strong>: ${msg.text} <br> ${timeStamp}
-      </p>
+     <div class="timeStamp">
+     ${timeStamp}
+     </div>
+      <div class="${messageClass}">
+        <strong>${senderName}</strong>: ${msg.text} <br> 
+      </div>
     `;
   }).join('');
 }
 
-// What makes the messages appear on screen
+// Listen for messages in real time.
+//
+// How it works (high level):
+// 1) Build a Firestore query for chats/{chatId}/messages ordered by createdAt.
+// 2) Attach onSnapshot so Firestore pushes an initial snapshot + every later change.
+// 3) Convert snapshot docs to HTML and paint the #messages container.
+//
+// Important: onSnapshot returns an unsubscribe function. The caller stores and calls
+// that function before starting a new listener, so only one active chat listener runs.
 export function listenForMessages(chatId) {
-  // No active chat: return a no-op unsubscribe function.
+  // Guard: if chatId is missing, return a safe no-op unsubscribe function.
+  // This keeps caller code simple because it can always call "stopListening()".
   if (!chatId) return () => {};
 
-  // Increments on every snapshot callback start.
-  // Used to ignore stale async renders when newer snapshots arrive first.
+  // Snapshot callbacks are async here (we await sender-name lookups).
+  // If snapshot B starts after snapshot A, B should win.
+  // Using renderVersion solves a bug where the chat would disappear for 1 second after painting a message, and later duplicating the painted messages in the chat if sending one more message.
   let renderVersion = 0;
 
   return db.collection('chats')
@@ -255,19 +272,23 @@ export function listenForMessages(chatId) {
     .collection('messages')
     .orderBy('createdAt')
     .onSnapshot(async (snapshot) => {
-      // Marks this callback invocation as the current render attempt.
+      // Unique version for this callback invocation.
+      // Any newer callback increments renderVersion and invalidates older work.
       const versionAtStart = ++renderVersion;
 
+      // Messages are rendered into <div id="messages"> on the page.
       const messagesDiv = document.getElementById('messages');
       if (!messagesDiv) return;
 
-      // Resolve sender names before rendering message rows.
+      // Resolve sender display names (uid -> name) for all senders in this snapshot.
       const senderNames = await getSenderNamesFromSnapshot(snapshot);
 
-      // If a newer snapshot started rendering while we awaited names, skip stale paint.
+      // Race-condition guard:
+      // If a newer snapshot started while we were awaiting, skip this older render. TO AVOID FLICKER AND DUPLICATE CHATBOX
       if (versionAtStart !== renderVersion) return;
 
-      // Paint once to reduce flicker and avoid partial renders.
+      // Single DOM write for the whole snapshot to reduce flicker.
+      // This is the exact line that makes incoming messages appear visually.
       messagesDiv.innerHTML = buildMessagesHtml(snapshot, senderNames);
 
     });
