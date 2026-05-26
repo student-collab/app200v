@@ -14,7 +14,6 @@ const chatList = document.getElementById('chatList');
 const sendBtn = document.getElementById('sendBtn');
 const messageInput = document.getElementById('messageInput');
 const messages = document.getElementById('messages');
-const messagesList = document.getElementById('messagesList');
 const closeChatBtn = document.getElementById('closeChatBtn');
 
 const loadingChatsState = document.getElementById('loadingChatsState');
@@ -170,10 +169,7 @@ closeChatBtn?.addEventListener('click', async () => {
 
   if (messages) {
     messages.classList.add('hidden');
-  }
-
-  if (messagesList) {
-    messagesList.innerHTML = '';
+    messages.innerHTML = '';
   }
 
   await refreshMessagesPage();
