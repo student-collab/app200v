@@ -5,6 +5,7 @@
 }
 
 body {
+	
 	margin: 0; /*removes default browser body margin*/
 	padding: 8px 8px 16px; /*small safe spacing around page content on mobile*/
 }
@@ -99,6 +100,7 @@ body {
 	cursor: pointer;
 	font-weight: bold;
 	font-size: 15px;
+	color:#000000;
 	
 }
 

@@ -110,6 +110,7 @@ header > #moon-symbol-background{
     font-size: 14px;
     font-weight: bold;
     cursor: pointer; /* hand cursor when hovering */
+    color: #0000;
     
 }
 .editProfileBtn:hover {
@@ -135,6 +136,8 @@ header > #moon-symbol-background{
     text-align: left;
 
     margin-bottom: 5px; /*space between buttons */
+
+    color: #0000;
 }
 
 /* For tablets and larger */
