@@ -6,6 +6,7 @@ import { createChat, sendMessage, getChatsForUser, listenForMessages, getUser } 
 let currentChatId = null;
 let stopListeningToMessages = null;
 let usersById = {};
+let currentChats = [];
 
 // Cache DOM elements once so we do not query repeatedly.
 const createChatSelect = document.getElementById('createChat');
@@ -14,7 +15,11 @@ const chatList = document.getElementById('chatList');
 const sendBtn = document.getElementById('sendBtn');
 const messageInput = document.getElementById('messageInput');
 const messages = document.getElementById('messages');
-const closeChatBtn = document.getElementById('closeChatBtn');
+const chatListView = document.getElementById('chatListView');
+const chatThreadView = document.getElementById('chatThreadView');
+const profileSubheader = document.getElementById('profileSubheader');
+const subheaderTitle = document.getElementById('subheaderTitle');
+const subheaderBackText = document.getElementById('subheaderBackText');
 
 const loadingChatsState = document.getElementById('loadingChatsState');
 const noChatsActiveState = document.getElementById('noChatsActiveState');
@@ -34,9 +39,66 @@ function getChatLabel(chat) {
   return otherUid ? getUserDisplayName(otherUid) : chat.id;
 }
 
+// List mode header: generic title, no back button, normal subheader styling.
+function setHeaderAsList() {
+  if (subheaderTitle) subheaderTitle.textContent = 'Messages';
+  subheaderBackText?.classList.add('hidden');
+  profileSubheader?.classList.remove('is-back');
+}
+
+// Chat mode header: title includes the other user's name and enables back affordance.
+function setHeaderAsChat(chatId) {
+  const chat = currentChats.find(c => c.id === chatId);
+  const chatName = chat ? getChatLabel(chat) : 'Unknown';
+
+  if (subheaderTitle) subheaderTitle.textContent = `Chat with ${chatName}`;
+  subheaderBackText?.classList.remove('hidden');
+  profileSubheader?.classList.add('is-back');
+}
+
+// Default page mode: show list, hide thread, reset header to "Messages".
+function showChatListView() {
+  chatListView?.classList.remove('hidden');
+  chatThreadView?.classList.add('hidden');
+  setHeaderAsList();
+}
+
+// Safety helper: ensures there is never more than one active Firestore listener.
+function stopActiveListener() {
+  if (stopListeningToMessages) {
+    stopListeningToMessages();
+    stopListeningToMessages = null;
+  }
+}
+
+// Back navigation state transition:
+// clear selected chat, stop realtime updates for old chat, clear old thread UI, show list.
+function backToChatList() {
+  currentChatId = null;
+  stopActiveListener();
+
+  if (messages) {
+    messages.innerHTML = '';
+  }
+
+  renderChatList(currentChats);
+  showChatListView();
+}
+
+// Open-chat transition:
+// set active chat, switch UI to thread mode, update header, then start realtime listener.
+function openChat(chatId) {
+  currentChatId = chatId;
+  renderChatList(currentChats);
+  chatListView?.classList.add('hidden');
+  chatThreadView?.classList.remove('hidden');
+  setHeaderAsChat(chatId);
+  startListeningToCurrentChat();
+}
+
 // Ensures we only keep one live listener: stop old listener, start new on selected chat.
 function startListeningToCurrentChat() {
-  if (stopListeningToMessages) stopListeningToMessages();
+  stopActiveListener();
   stopListeningToMessages = listenForMessages(currentChatId);
 }
 
@@ -72,10 +134,7 @@ function renderChatList(chats) {
     if (chat.id === currentChatId) btn.classList.add('active-chat-btn');
     btn.textContent = getChatLabel(chat);
     btn.addEventListener('click', () => {
-      currentChatId = chat.id;
-      messages?.classList.remove('hidden'); //display the chatbox
-      renderChatList(chats); //to update the active-chat-btn
-      startListeningToCurrentChat();
+      openChat(chat.id);
     });
     chatList.appendChild(btn);
   });
@@ -109,18 +168,27 @@ async function refreshMessagesPage() {
   await loadUsers();
 
   const chats = await getChatsForUser(auth.currentUser.uid);
+  currentChats = chats;
 
   //if there is more than 0 chats then return hasChats TRUE
   updateChatStates(chats.length > 0);
 
   renderChatList(chats);
 
-  //if condition so we avoid listening to empty chats
-  if(chats.length > 0 && currentChatId) {
-    messages?.classList.remove('hidden');
-    startListeningToCurrentChat();
+  // If user has no chats: force list mode and exit early.
+  if (chats.length === 0) {
+    backToChatList();
+    return;
+  }
+
+  // Handles refreshes robustly: keep current chat open if it still exists,
+  // otherwise fall back to list mode.
+  const currentChatStillExists = chats.some(chat => chat.id === currentChatId);
+
+  if (currentChatId && currentChatStillExists) {
+    openChat(currentChatId);
   } else {
-    messages?.classList.add('hidden');
+    backToChatList();
   }
   
 }
@@ -146,7 +214,7 @@ createChatBtn?.addEventListener('click', async () => {
 });
 
 // Sends one message to the currently selected chat.
-sendBtn?.addEventListener('click', async () => {
+async function sendCurrentMessage() {
   if (!currentChatId || !auth.currentUser || !messageInput?.value.trim()) return;
 
   await sendMessage(currentChatId, {
@@ -156,21 +224,20 @@ sendBtn?.addEventListener('click', async () => {
   });
 
   messageInput.value = '';
+}
+
+sendBtn?.addEventListener('click', async () => {
+  await sendCurrentMessage();
 });
 
-// Closes the currently selected chat and returns to no selected chat state.
-closeChatBtn?.addEventListener('click', async () => {
-  currentChatId = null;
+// Enter sends the message; Shift+Enter is ignored for future multiline support.
+messageInput?.addEventListener('keydown', async (event) => {
+  if (event.key !== 'Enter' || event.shiftKey) return;
+  event.preventDefault();
+  await sendCurrentMessage();
+});
 
-  if (stopListeningToMessages) {
-    stopListeningToMessages();
-    stopListeningToMessages = null;
-  }
-
-  if (messages) {
-    messages.classList.add('hidden');
-    messages.innerHTML = '';
-  }
-
-  await refreshMessagesPage();
+// In chat mode, the whole subheader acts as a back control.
+profileSubheader?.addEventListener('click', () => {
+  if (!chatThreadView?.classList.contains('hidden')) backToChatList();
 });

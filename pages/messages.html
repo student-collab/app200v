@@ -27,6 +27,7 @@
 
   <div class="subheader" id="profileSubheader">
         <div class="subheader-content">
+      <span id="subheaderBackText" class="subheader-back-text hidden" aria-hidden="true">←</span>
             <h2 id="subheaderTitle">Messages</h2>
           
         </div>
@@ -35,8 +36,13 @@
   
   <div class="container">
 
-  <select id="createChat"></select>
-    <button id="createChatBtn">Create Chat</button> <br><br>
+  <div id="createChatControls">
+
+    <h3>Create chat (for testing)</h3>
+    <select id="createChat"></select>
+    <button id="createChatBtn">Create Chat</button>
+  </div>
+  <br><br>
 
     <div id="loadingChatsState">
       <p>Loading conversations...</p>
@@ -51,14 +57,18 @@
     </div>
     
     <div id="hasActiveChatsState" class="hidden">
-      <h3>Active chats</h3>
-      <div id="chatList"></div>
+      <div id="chatListView">
+        <h3>Active chats</h3>
+        <div id="chatList"></div>
+      </div>
 
-      <div id="messages" class="hidden"></div>
-      <button id="closeChatBtn" type="button">Close chat</button>
-
-      <input id="messageInput" type="text">
-      <button id="sendBtn">Send</button>
+      <div id="chatThreadView" class="hidden">
+        <div id="messages"></div>
+        <div class="composer-row">
+          <input id="messageInput" type="text" placeholder="When can I come?">
+          <button id="sendBtn">Send</button>
+        </div>
+      </div>
     </div>
 
 
