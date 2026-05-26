@@ -13,6 +13,9 @@ const createChatBtn = document.getElementById('createChatBtn');
 const chatList = document.getElementById('chatList');
 const sendBtn = document.getElementById('sendBtn');
 const messageInput = document.getElementById('messageInput');
+const messages = document.getElementById('messages');
+const messagesList = document.getElementById('messagesList');
+const closeChatBtn = document.getElementById('closeChatBtn');
 
 const loadingChatsState = document.getElementById('loadingChatsState');
 const noChatsActiveState = document.getElementById('noChatsActiveState');
@@ -71,6 +74,7 @@ function renderChatList(chats) {
     btn.textContent = getChatLabel(chat);
     btn.addEventListener('click', () => {
       currentChatId = chat.id;
+      messages?.classList.remove('hidden'); //display the chatbox
       renderChatList(chats); //to update the active-chat-btn
       startListeningToCurrentChat();
     });
@@ -110,15 +114,14 @@ async function refreshMessagesPage() {
   //if there is more than 0 chats then return hasChats TRUE
   updateChatStates(chats.length > 0);
 
-  if (!currentChatId && chats.length > 0) {
-    currentChatId = chats[0].id;
-  }
-
   renderChatList(chats);
 
   //if condition so we avoid listening to empty chats
-  if(chats.length > 0) {
+  if(chats.length > 0 && currentChatId) {
+    messages?.classList.remove('hidden');
     startListeningToCurrentChat();
+  } else {
+    messages?.classList.add('hidden');
   }
   
 }
@@ -138,7 +141,6 @@ createChatBtn?.addEventListener('click', async () => {
   const chatId = [...participants].sort().join('_');
 
   await createChat(chatId, participants);
-  currentChatId = chatId;
   await refreshMessagesPage();
 
   if (createChatSelect) createChatSelect.selectedIndex = 0;
@@ -155,4 +157,24 @@ sendBtn?.addEventListener('click', async () => {
   });
 
   messageInput.value = '';
+});
+
+// Closes the currently selected chat and returns to no selected chat state.
+closeChatBtn?.addEventListener('click', async () => {
+  currentChatId = null;
+
+  if (stopListeningToMessages) {
+    stopListeningToMessages();
+    stopListeningToMessages = null;
+  }
+
+  if (messages) {
+    messages.classList.add('hidden');
+  }
+
+  if (messagesList) {
+    messagesList.innerHTML = '';
+  }
+
+  await refreshMessagesPage();
 });
