@@ -145,6 +145,7 @@ const user = getMockUser(); //importert getter fra mockUser.js
           });
       });
    const HTMLFrag = renderTasks(dataSelect);
-      document.getElementById("myTasks").appendChild(HTMLFrag);
+      document.getElementById("oppgavelisten").appendChild(HTMLFrag);
+      lucide.createIcons();
   
  }

@@ -6,10 +6,12 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="description" content="" />
     <link rel="stylesheet" href="../CSS/profile.css">
+    <link rel="stylesheet" href="../CSS/taskList.css">
     <link rel="stylesheet" href="../CSS/main.css">
     <link rel="icon" href="../img/favicon.png">
     <script type="module" src="../JS/profile.js" defer></script>
     <script src="../JS/main.js" type = "module" defer></script>
+    <script src="https://unpkg.com/lucide@0.396.0/dist/umd/lucide.js"></script>
 </head>
 <body>
 
@@ -19,7 +21,18 @@
         <span id="subheaderIcon">&#9881</span>
     </div>
 </div>
-
+<!-- SVG som blir bruk på kort -->
+<svg style="display:none">
+    <defs>
+        <symbol id="icon-location" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" >
+            <path d="M12 2C8.7 2 6 4.7 6 8c0 5 6 14 6 14s6-9 6-14c0-3.3-2.7-6-6-6z"/>
+            <circle cx="12" cy="8" r="2"/>
+        </symbol>
+        <symbol id="icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" >
+            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+        </symbol>
+    </defs>
+</svg>
     <div id="myProfile">
 
         <div id="userInfo">
@@ -40,6 +53,7 @@
         <div id="myTasks" class = "section" style="display:none;">
             <h2>Mine oppdrag</h2>
             <p>Oppdrag du selv har postet, utførte og pågående oppdrag vises her</p>
+            <div id="oppgavelisten"></div>
         </div>
 
         <button class="nav-knapper" data-section="myReviews" data-title="Vurderinger">
