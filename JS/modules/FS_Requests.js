@@ -231,6 +231,27 @@ function formatMessageText(text = '') {
   return escapeHtml(text).replace(/\r\n|\n|\r/g, '<br>');
 }
 
+// Builds the empty-chat message: "This is the start of your conversation with x".
+async function getConversationStartText(chatId) {
+  const fallbackText = 'This is the start of your conversation.';
+
+  try {
+    const chatSnap = await db.collection('chats').doc(chatId).get();
+    if (!chatSnap.exists) return fallbackText;
+
+    const participants = chatSnap.data()?.participants || [];
+    const otherUserId = participants.find(uid => uid !== auth.currentUser?.uid);
+    if (!otherUserId) return fallbackText;
+
+    const otherUserSnap = await db.collection('users').doc(otherUserId).get();
+    const displayName = otherUserSnap.exists ? (otherUserSnap.data()?.name?.display || otherUserId) : otherUserId;
+
+    return `This is the start of your SideQuest with ${displayName}`;
+  } catch {
+    return fallbackText;
+  }
+}
+
 
 
 // Builds a uid -> displayName map for all senders present in this snapshot.
@@ -290,7 +311,7 @@ export function listenForMessages(chatId) {
   // If snapshot B starts after snapshot A, B should win.
   // Using renderVersion solves a bug where the chat would disappear for 1 second after painting a message, and later duplicating the painted messages in the chat if sending one more message.
   let renderVersion = 0;
-  let hasScrolledToLatestOnLoad = false;
+  const conversationStartTextPromise = getConversationStartText(chatId);
 
   return db.collection('chats')
     .doc(chatId)
@@ -305,6 +326,18 @@ export function listenForMessages(chatId) {
       const messagesDiv = document.getElementById('messages');
       if (!messagesDiv) return;
 
+      // Render a start-of-conversation text when the chat has no messages yet.
+      if (snapshot.empty) {
+        const conversationStartText = await conversationStartTextPromise;
+
+        // Race-condition guard after await.
+        if (versionAtStart !== renderVersion) return;
+
+        messagesDiv.innerHTML = `<div class="timeStamp">${escapeHtml(conversationStartText)}</div>`;
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        return;
+      }
+
       // Resolve sender display names (uid -> name) for all senders in this snapshot.
       const senderNames = await getSenderNamesFromSnapshot(snapshot);
 
@@ -316,11 +349,8 @@ export function listenForMessages(chatId) {
       // This is the exact line that makes incoming messages appear visually.
       messagesDiv.innerHTML = buildMessagesHtml(snapshot, senderNames);
 
-      //On initial chat load, start at the latest message instead of the top.
-      if (!hasScrolledToLatestOnLoad) {
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        hasScrolledToLatestOnLoad = true;
-      }
+      //Keep chat scroll pinned to latest message whenever snapshot updates.
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
     });
 }

@@ -15,12 +15,12 @@ body {
 	gap: 12px; /*space between each message bubble*/
 	margin: 12px 0px; /*outer spacing above and below the message area*/
 	padding: 12px; /*inner spacing inside the message area*/
-	min-height: 220px; /*keeps message area from collapsing when few messages*/
-	max-height: 60vh; /*uses more vertical space on phone screens*/
+	height: 55vh; /*fixed height so the chat box size stays constant*/
 	overflow-y: auto; /*adds vertical scroll when messages exceed max height*/
 	border: 1px solid #d7dde8; /*light border around message area*/
 	border-radius: 12px; /*rounded corners for message area*/
 	background: #ffffff; /*white background for chat content*/
+	
 }
 
 .message-box {
@@ -169,10 +169,13 @@ body {
 	line-height: 1.4;
 	white-space: pre-wrap;
 	word-break: break-word;
+	border-radius: 6px;
 }
 
 #sendBtn {
 	min-height: 40px;
 	padding: 0 14px;
 	background-color: lightblue;
+	border: solid 2px;
+	border-radius: 10px;
 }
