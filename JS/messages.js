@@ -1,12 +1,18 @@
 //Author: Viktor Eliassen
-import { auth } from '../JS/modules/dbConfig.js';
-import { createChat, sendMessage, getChatsForUser, listenForMessages, getUser } from '../JS/modules/FS_Requests.js';
+import { auth, db } from '../JS/modules/dbConfig.js';
+import { createChat, sendMessage, getChatsForUser, listenForMessages, getUser, getLatestMessageForChat } from '../JS/modules/FS_Requests.js';
 
 // Runtime state: active chat, active Firestore unsubscribe function, and cached users.
 let currentChatId = null;
 let stopListeningToMessages = null;
 let usersById = {};
 let currentChats = [];
+let latestMessageByChatId = {};
+let unreadCountByChatId = {};
+let stopListeningToChatMetaById = {};
+
+const LAST_READ_STORAGE_KEY = 'messages:lastReadByChatId';
+let lastReadAtByChatId = loadLastReadMap();
 
 // Cache DOM elements once so we do not query repeatedly.
 const createChatSelect = document.getElementById('createChat');
@@ -25,6 +31,124 @@ const loadingChatsState = document.getElementById('loadingChatsState');
 const noChatsActiveState = document.getElementById('noChatsActiveState');
 const hasActiveChatsState = document.getElementById('hasActiveChatsState');
 
+let relativeTimeIntervalId = null;
+
+function loadLastReadMap() {
+  try {
+    const rawValue = localStorage.getItem(LAST_READ_STORAGE_KEY);
+    return rawValue ? JSON.parse(rawValue) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveLastReadMap() {
+  localStorage.setItem(LAST_READ_STORAGE_KEY, JSON.stringify(lastReadAtByChatId));
+}
+
+function getTimestampMillis(createdAt) {
+  if (!createdAt) return 0;
+  if (typeof createdAt.toMillis === 'function') return createdAt.toMillis();
+  if (typeof createdAt.toDate === 'function') return createdAt.toDate().getTime();
+  return 0;
+}
+
+function formatRelativeTime(createdAt) {
+  const timestamp = getTimestampMillis(createdAt);
+  if (!timestamp) return '';
+
+  const diffMs = Math.max(0, Date.now() - timestamp);
+  const minuteMs = 60 * 1000;
+  const hourMs = 60 * minuteMs;
+  const dayMs = 24 * hourMs;
+
+  if (diffMs < minuteMs) return 'now';
+  if (diffMs < hourMs) return `${Math.floor(diffMs / minuteMs)}m ago`;
+  if (diffMs < dayMs) return `${Math.floor(diffMs / hourMs)}h ago`;
+  if (diffMs < 7 * dayMs) return `${Math.floor(diffMs / dayMs)}d ago`;
+
+  return new Date(timestamp).toLocaleDateString();
+}
+
+function getLatestMessageTimeLabel(chatId) {
+  return formatRelativeTime(latestMessageByChatId[chatId]?.createdAt);
+}
+
+function getLatestMessageTimeMillis(chatId) {
+  return getTimestampMillis(latestMessageByChatId[chatId]?.createdAt);
+}
+
+function getSortedChats(chats) {
+  return [...chats].sort((chatA, chatB) => {
+    const byNewestMessage = getLatestMessageTimeMillis(chatB.id) - getLatestMessageTimeMillis(chatA.id);
+    if (byNewestMessage !== 0) return byNewestMessage;
+
+    return getChatLabel(chatA).localeCompare(getChatLabel(chatB));
+  });
+}
+
+function markChatAsRead(chatId, latestMessage = latestMessageByChatId[chatId]) {
+  if (!chatId) return;
+
+  const latestMessageMillis = getTimestampMillis(latestMessage?.createdAt);
+  if (!latestMessageMillis && !lastReadAtByChatId[chatId]) return;
+
+  lastReadAtByChatId[chatId] = Math.max(lastReadAtByChatId[chatId] || 0, latestMessageMillis);
+  unreadCountByChatId[chatId] = 0;
+  saveLastReadMap();
+}
+
+function stopChatMetaListeners() {
+  Object.values(stopListeningToChatMetaById).forEach((stopListener) => {
+    if (typeof stopListener === 'function') stopListener();
+  });
+  stopListeningToChatMetaById = {};
+}
+
+function startChatMetaListeners(chats) {
+  stopChatMetaListeners();
+
+  chats.forEach((chat) => {
+    const stopListener = db.collection('chats')
+      .doc(chat.id)
+      .collection('messages')
+      .orderBy('createdAt')
+      .onSnapshot((snapshot) => {
+        const messagesInChat = snapshot.docs.map((doc) => doc.data());
+        const latestMessage = messagesInChat[messagesInChat.length - 1] || null;
+
+        if (latestMessage) {
+          latestMessageByChatId[chat.id] = latestMessage;
+        } else {
+          delete latestMessageByChatId[chat.id];
+        }
+
+        const lastReadAt = lastReadAtByChatId[chat.id] || 0;
+        const unreadCount = messagesInChat.filter((message) => {
+          if (message.senderId === auth.currentUser?.uid) return false;
+          return getTimestampMillis(message.createdAt) > lastReadAt;
+        }).length;
+
+        unreadCountByChatId[chat.id] = unreadCount;
+
+        if (currentChatId === chat.id) {
+          markChatAsRead(chat.id, latestMessage);
+        }
+
+        renderChatList(currentChats);
+      });
+
+    stopListeningToChatMetaById[chat.id] = stopListener;
+  });
+}
+
+function startRelativeTimeUpdates() {
+  if (relativeTimeIntervalId) return;
+  relativeTimeIntervalId = window.setInterval(() => {
+    renderChatList(currentChats);
+  }, 60 * 1000);
+}
+
 
 
 // Converts a uid to a readable name for UI labels.
@@ -34,9 +158,25 @@ function getUserDisplayName(uid) {
 }
 
 // Builds the chat button/title label from the other participant in the chat.
-function getChatLabel(chat) {
+function getChatParticipantInfo(chat) {
   const otherUid = (chat.participants || []).find(uid => uid !== auth.currentUser?.uid);
-  return otherUid ? getUserDisplayName(otherUid) : chat.id;
+  return {
+    label: otherUid ? getUserDisplayName(otherUid) : chat.id,
+    photoURL: usersById[otherUid]?.photoURL || ''
+  };
+}
+
+function getChatLabel(chat) {
+  return getChatParticipantInfo(chat).label;
+}
+
+function buildLatestMessagePreview(chatId) {
+  const latestMessage = latestMessageByChatId[chatId];
+  if (!latestMessage?.text) return 'No messages yet';
+
+  const isMine = latestMessage.senderId === auth.currentUser?.uid;
+  const prefix = isMine ? 'You: ' : '';
+  return `${prefix}${latestMessage.text}`;
 }
 
 // List mode header: generic title, no back button, normal subheader styling.
@@ -49,7 +189,7 @@ function setHeaderAsList() {
 // Chat mode header: title includes the other user's name and enables back affordance.
 function setHeaderAsChat(chatId) {
   const chat = currentChats.find(c => c.id === chatId);
-  const chatName = chat ? getChatLabel(chat) : 'Unknown';
+  const chatName = chat ? getChatParticipantInfo(chat).label : 'Unknown';
 
   if (subheaderTitle) subheaderTitle.textContent = `Chat with ${chatName}`;
   subheaderBackText?.classList.remove('hidden');
@@ -89,6 +229,7 @@ function backToChatList() {
 // set active chat, switch UI to thread mode, update header, then start realtime listener.
 function openChat(chatId) {
   currentChatId = chatId;
+  markChatAsRead(chatId);
   renderChatList(currentChats);
   chatListView?.classList.add('hidden');
   chatThreadView?.classList.remove('hidden');
@@ -99,7 +240,19 @@ function openChat(chatId) {
 // Ensures we only keep one live listener: stop old listener, start new on selected chat.
 function startListeningToCurrentChat() {
   stopActiveListener();
-  stopListeningToMessages = listenForMessages(currentChatId);
+  stopListeningToMessages = listenForMessages(currentChatId, (latestMessage) => {
+    if (!currentChatId) return;
+
+    if (latestMessage) {
+      latestMessageByChatId[currentChatId] = latestMessage;
+    } else {
+      delete latestMessageByChatId[currentChatId];
+    }
+
+    markChatAsRead(currentChatId, latestMessage);
+
+    renderChatList(currentChats);
+  });
 }
 
 // Loads users once, caches them by uid, and fills the Create Chat dropdown.
@@ -127,12 +280,49 @@ function renderChatList(chats) {
 
   chatList.innerHTML = '';
 
-  chats.forEach(chat => {
+  getSortedChats(chats).forEach(chat => {
     const btn = document.createElement('button');
+    const avatar = document.createElement('img');
+    const itemText = document.createElement('div');
+    const topRow = document.createElement('div');
+    const name = document.createElement('span');
+    const timeAgo = document.createElement('span');
+    const bottomRow = document.createElement('div');
+    const preview = document.createElement('span');
+    const unreadCount = document.createElement('span');
+    const participantInfo = getChatParticipantInfo(chat);
     btn.type = 'button';
 
     if (chat.id === currentChatId) btn.classList.add('active-chat-btn');
-    btn.textContent = getChatLabel(chat);
+
+    avatar.className = 'chat-avatar';
+    avatar.src = participantInfo.photoURL;
+    avatar.alt = '';
+
+    itemText.className = 'chat-item-text';
+    topRow.className = 'chat-top-row';
+    bottomRow.className = 'chat-bottom-row';
+    name.className = 'chat-name';
+    timeAgo.className = 'chat-time-ago';
+    preview.className = 'chat-preview';
+    unreadCount.className = 'chat-unread-count';
+
+    name.textContent = participantInfo.label;
+    timeAgo.textContent = getLatestMessageTimeLabel(chat.id);
+    preview.textContent = buildLatestMessagePreview(chat.id);
+    const unreadTotal = unreadCountByChatId[chat.id] || 0;
+    unreadCount.textContent = unreadTotal > 0 ? String(unreadTotal) : '';
+    unreadCount.classList.toggle('hidden', unreadTotal === 0);
+
+    topRow.appendChild(name);
+    topRow.appendChild(timeAgo);
+    bottomRow.appendChild(preview);
+    bottomRow.appendChild(unreadCount);
+    itemText.appendChild(topRow);
+    itemText.appendChild(bottomRow);
+    btn.appendChild(avatar);
+    btn.appendChild(itemText);
+
     btn.addEventListener('click', () => {
       openChat(chat.id);
     });
@@ -165,10 +355,23 @@ function updateChatStates(hasChats) {
 async function refreshMessagesPage() {
   if (!auth.currentUser) return;
 
+  startRelativeTimeUpdates();
+
   await loadUsers();
 
   const chats = await getChatsForUser(auth.currentUser.uid);
   currentChats = chats;
+
+  const latestMessages = await Promise.all(
+    chats.map(async (chat) => [chat.id, await getLatestMessageForChat(chat.id)])
+  );
+  latestMessageByChatId = Object.fromEntries(latestMessages);
+
+  chats.forEach((chat) => {
+    if (!latestMessageByChatId[chat.id]) unreadCountByChatId[chat.id] = 0;
+  });
+
+  startChatMetaListeners(chats);
 
   //if there is more than 0 chats then return hasChats TRUE
   updateChatStates(chats.length > 0);
@@ -195,7 +398,11 @@ async function refreshMessagesPage() {
 
 // Initialize the page only when auth state is ready.
 auth.onAuthStateChanged((user) => {
-  if (!user) return;
+  if (!user) {
+    stopActiveListener();
+    stopChatMetaListeners();
+    return;
+  }
   refreshMessagesPage();
 });
 
@@ -217,11 +424,22 @@ createChatBtn?.addEventListener('click', async () => {
 async function sendCurrentMessage() {
   if (!currentChatId || !auth.currentUser || !messageInput?.value.trim()) return;
 
+  const messageText = messageInput.value.trim();
+
   await sendMessage(currentChatId, {
-    text: messageInput.value.trim(),
+    text: messageText,
     senderId: auth.currentUser.uid,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
+
+  latestMessageByChatId[currentChatId] = {
+    text: messageText,
+    senderId: auth.currentUser.uid,
+    createdAt: firebase.firestore.Timestamp.now()
+  };
+
+  markChatAsRead(currentChatId, latestMessageByChatId[currentChatId]);
+  renderChatList(currentChats);
 
   messageInput.value = '';
   autoResizeMessageInput();

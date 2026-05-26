@@ -193,6 +193,24 @@ export async function sendMessage(chatId, message) {
     .add(message);
 }
 
+// Returns the newest message in chats/{chatId}/messages or null when chat is empty.
+export async function getLatestMessageForChat(chatId) {
+  const snap = await db.collection('chats')
+    .doc(chatId)
+    .collection('messages')
+    .orderBy('createdAt', 'desc')
+    .limit(1)
+    .get();
+
+  if (snap.empty) return null;
+
+  const latestDoc = snap.docs[0];
+  return {
+    id: latestDoc.id,
+    ...latestDoc.data()
+  };
+}
+
 // Returns all chats where the given userId is in the participants array.
 export async function getChatsForUser(userId) {
   const snap = await db.collection('chats')
@@ -302,7 +320,7 @@ function buildMessagesHtml(snapshot, senderNames) {
 //
 // Important: onSnapshot returns an unsubscribe function. The caller stores and calls
 // that function before starting a new listener, so only one active chat listener runs.
-export function listenForMessages(chatId) {
+export function listenForMessages(chatId, onLatestMessageChange = () => {}) {
   // Guard: if chatId is missing, return a safe no-op unsubscribe function.
   // This keeps caller code simple because it can always call "stopListening()".
   if (!chatId) return () => {};
@@ -328,6 +346,8 @@ export function listenForMessages(chatId) {
 
       // Render a start-of-conversation text when the chat has no messages yet.
       if (snapshot.empty) {
+        onLatestMessageChange(null);
+
         const conversationStartText = await conversationStartTextPromise;
 
         // Race-condition guard after await.
@@ -337,6 +357,9 @@ export function listenForMessages(chatId) {
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
         return;
       }
+
+      const latestMessageDoc = snapshot.docs[snapshot.docs.length - 1];
+      onLatestMessageChange(latestMessageDoc ? latestMessageDoc.data() : null);
 
       // Resolve sender display names (uid -> name) for all senders in this snapshot.
       const senderNames = await getSenderNamesFromSnapshot(snapshot);
