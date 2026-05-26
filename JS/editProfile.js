@@ -22,6 +22,9 @@ import { auth, db } from './modules/dbConfig.js';
 const profileEmailEl = document.getElementById('profileEmail');
 const profileGenderEl = document.getElementById('profileGender');
 const profileLocationEl = document.getElementById('profileLocation');
+const profileAddressEl = document.getElementById('profileAddress');
+const profileCountryEl = document.getElementById('profileCountry');
+const profileMunicipalityIdEl = document.getElementById('profileMunicipalityId');
 const profileFirstNameEl = document.getElementById('profileFirstName');
 const profileLastNameEl = document.getElementById('profileLastName');
 const profileDisplayNameEl = document.getElementById('profileDisplayName');
@@ -40,6 +43,9 @@ const useFullNameAsDisplayEl = document.getElementById('useFullNameAsDisplay');
 const editEmailEl = document.getElementById('editEmail');
 const editGenderEl = document.getElementById('editGender');
 const editLocationEl = document.getElementById('editLocation');
+const editAddressEl = document.getElementById('editAddress');
+const editCountryEl = document.getElementById('editCountry');
+const editMunicipalityIdEl = document.getElementById('editMunicipalityId');
 const editPhoneEl = document.getElementById('editPhone');
 
 // -----------------------------
@@ -112,9 +118,15 @@ function clearUnsavedChanges() {
 // - userDoc: Firestore users/{uid} object (or null)
 // - authUser: Firebase Auth user object (or null)
 function renderProfile(userDoc, authUser) {
+  const municipality = userDoc?.location?.municipality || userDoc?.location?.kommune;
+  const municipalityId = userDoc?.location?.municipalityId || userDoc?.location?.kommuneId;
+
   profileEmailEl.textContent = safeValue(userDoc?.email || authUser?.email);
   profileGenderEl.textContent = safeValue(userDoc?.gender);
-  profileLocationEl.textContent = safeValue(userDoc?.location?.municipality);
+  profileLocationEl.textContent = safeValue(municipality);
+  profileAddressEl.textContent = safeValue(userDoc?.location?.address);
+  profileCountryEl.textContent = safeValue(userDoc?.location?.country);
+  profileMunicipalityIdEl.textContent = safeValue(municipalityId);
   profileFirstNameEl.textContent = safeValue(userDoc?.name?.first);
   profileLastNameEl.textContent = safeValue(userDoc?.name?.last);
   profileDisplayNameEl.textContent = safeValue(userDoc?.name?.display || authUser?.displayName);
@@ -127,6 +139,9 @@ function renderProfile(userDoc, authUser) {
 // - userDoc: Firestore users/{uid} object (or null)
 // - authUser: Firebase Auth user object (or null)
 function fillEditForm(userDoc, authUser) {
+  const municipality = userDoc?.location?.municipality || userDoc?.location?.kommune || '';
+  const municipalityId = userDoc?.location?.municipalityId || userDoc?.location?.kommuneId || '';
+
   const firstName = userDoc?.name?.first || '';
   const lastName = userDoc?.name?.last || '';
   const fullName = buildFullName(firstName, lastName);
@@ -141,7 +156,10 @@ function fillEditForm(userDoc, authUser) {
 
   editEmailEl.value = userDoc?.email || authUser?.email || '';
   editGenderEl.value = userDoc?.gender || '';
-  editLocationEl.value = userDoc?.location?.municipality || '';
+  editAddressEl.value = userDoc?.location?.address || '';
+  editCountryEl.value = userDoc?.location?.country || '';
+  editLocationEl.value = municipality;
+  editMunicipalityIdEl.value = municipalityId;
   editPhoneEl.value = userDoc?.phone || '';
 
   syncDisplayNameInput();
@@ -157,7 +175,7 @@ function toggleEditMode(enableEdit) {
   isEditMode = enableEdit;
   profileInfoList.style.display = enableEdit ? 'none' : 'block';
   profileEditForm.style.display = enableEdit ? 'block' : 'none';
-  editInfoBtn.textContent = enableEdit ? 'Save info' : 'Edit info';
+  editInfoBtn.textContent = enableEdit ? 'Save information' : 'Edit information';
 
   if (!enableEdit) {
     clearUnsavedChanges();
@@ -171,6 +189,12 @@ function toggleEditMode(enableEdit) {
 // - true  => save succeeded
 // - false => validation failed or save failed
 async function saveProfileEdits(user) {
+  // Enforce HTML required/type rules even though save is button-driven.
+  if (!profileEditForm.reportValidity()) {
+    setStatus('Please fill in all required fields.', true);
+    return false;
+  }
+
   // Read and normalize current input values.
   const firstName = cleanValue(editFirstNameEl.value);
   const lastName = cleanValue(editLastNameEl.value);
@@ -180,15 +204,13 @@ async function saveProfileEdits(user) {
     : cleanValue(editDisplayNameEl.value);
   const email = cleanValue(editEmailEl.value);
   const gender = cleanValue(editGenderEl.value);
+  const address = cleanValue(editAddressEl.value);
+  const country = cleanValue(editCountryEl.value);
   const municipality = cleanValue(editLocationEl.value);
+  const municipalityId = cleanValue(editMunicipalityIdEl.value);
   const phone = cleanValue(editPhoneEl.value);
 
   // Basic validation before writing to database.
-  if (!firstName || !lastName) {
-    setStatus('First name and last name are required.', true);
-    return false;
-  }
-
   if (!displayName) {
     setStatus('Display name cannot be empty.', true);
     return false;
@@ -213,6 +235,9 @@ async function saveProfileEdits(user) {
           useFullNameAsDisplay
         },
         location: {
+          address,
+          country,
+          municipalityId,
           municipality: municipality
         },
         meta: {
@@ -319,5 +344,8 @@ useFullNameAsDisplayEl.addEventListener('change', markUnsavedChanges);
 editDisplayNameEl.addEventListener('input', markUnsavedChanges);
 editEmailEl.addEventListener('input', markUnsavedChanges);
 editGenderEl.addEventListener('change', markUnsavedChanges);
+editAddressEl.addEventListener('input', markUnsavedChanges);
+editCountryEl.addEventListener('input', markUnsavedChanges);
 editLocationEl.addEventListener('input', markUnsavedChanges);
+editMunicipalityIdEl.addEventListener('input', markUnsavedChanges);
 editPhoneEl.addEventListener('input', markUnsavedChanges);

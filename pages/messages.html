@@ -1,4 +1,5 @@
 
+<!--Author: Viktor Eliassen-->
 <!DOCTYPE html>
 
 <html lang="en">
@@ -23,36 +24,55 @@
 </head>
 
 <body>
-  <h1>Messages</h1>
-  <p>Nothing here yet</p>
-  <h2>Runar kaprer siden!</h2>
-  <p>Jeg trenger en side for å eksperimentere med database. Låner denne</p>
+
+  <div class="subheader" id="profileSubheader">
+        <div class="subheader-content">
+      <span id="subheaderBackText" class="subheader-back-text hidden" aria-hidden="true">←</span>
+            <h2 id="subheaderTitle">Messages</h2>
+          
+        </div>
+    </div>
+  
+  
+  <div class="container">
+
+  <div id="createChatControls">
+
+    <h3>Create chat (for testing)</h3>
+    <select id="createChat"></select>
+    <button id="createChatBtn">Create Chat</button>
+  </div>
+  <br><br>
+
+    <div id="loadingChatsState">
+      <p>Loading conversations...</p>
+    </div>
+
+    <div id="noChatsActiveState" class ="hidden">
+      <svg id="icon-messagesOnSite" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <h3>No conversations yet</h3>
+      <p>Contact a tasker from a job listing to start chatting</p>
+    </div>
+    
+    <div id="hasActiveChatsState" class="hidden">
+      <div id="chatListView">
+        <h3>Active chats</h3>
+        <div id="chatList"></div>
+      </div>
+
+      <div id="chatThreadView" class="hidden">
+        <div id="messages"></div>
+        <div class="inputRow">
+          <textarea id="messageInput" rows="1" placeholder="When can I come?"></textarea>
+          <button id="sendBtn">Send</button>
+        </div>
+      </div>
+    </div>
 
 
-  <p>Utgangspukt for beregning av avstander:<br> <strong>Sentrum Tønsberg</strong></p>
-  
-  
-<form>
 
-  <label for="lat">lat:</label>
-  <input id="lat" value="59.272349982043586" type="text" readonly>
-  <label for="lng">lng: </label>
-  <input id="lng" value = "10.417871475219727" type="text" readonly><br>
-  <span>Avstand i kilometer</span><br>
-
-  <input type="radio" id="option1" name="distance" value="5" checked>
-  <label for="option1">5</label>
-  
-  <input type="radio" id="option2" name="distance" value="10">
-  <label for="option2">10</label>
-  
-  <input type="radio" id="option3" name="distance" value="20">
-  <label for="option3">20</label><br>
-  
-  <button type="button" id="hent-oppgaver"> Hent oppgaver</button>
-  
-</form>   
-  <div id="showtask">
     
   </div>
   <nav id="replaceNav">
@@ -63,6 +83,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script type="module" src="js/messages.js"></script>
 </body>
 
 </html>

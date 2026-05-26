@@ -1,0 +1,181 @@
+/*Author: Viktor Eliassen */
+
+.active-chat-btn {
+	background: #2e7d32;
+}
+
+body {
+	margin: 0; /*removes default browser body margin*/
+	padding: 8px 8px 16px; /*small safe spacing around page content on mobile*/
+}
+
+#messages {
+	display: flex; /*makes message area use flex layout*/
+	flex-direction: column; /*stacks messages vertically*/
+	gap: 12px; /*space between each message bubble*/
+	margin: 12px 0px; /*outer spacing above and below the message area*/
+	padding: 12px; /*inner spacing inside the message area*/
+	height: 55vh; /*fixed height so the chat box size stays constant*/
+	overflow-y: auto; /*adds vertical scroll when messages exceed max height*/
+	border: 1px solid #d7dde8; /*light border around message area*/
+	border-radius: 12px; /*rounded corners for message area*/
+	background: #ffffff; /*white background for chat content*/
+	
+}
+
+.message-box {
+
+	padding: 5px 10px; /*spacing between text and chatbox*/
+	border: 1px solid rgb(135, 134, 134); /*color of border*/
+	border-radius: 8px; /*intensity of border edge turn radius*/
+	max-width: 250px;/*max width of the message box before it starts a new line*/
+	overflow-wrap: break-word; /*forces long unbroken messages, for example DDDDDDDDDDDDDDDDDDD to wrap inside the box*/
+}
+
+.message-text {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
+.message-mine {
+
+	align-self:flex-end; /*places my messages to the right*/
+	background-color: rgb(167, 192, 231); /*background color for my messages*/
+}
+
+.message-other {
+	
+	align-self:flex-start; /*places other user's messages to the left*/
+	background-color: rgb(232, 232, 232); /*background color for other user's messages*/
+}
+
+.container {
+	width: 100%; /*full width for mobile*/
+	max-width: 480px; /*keeps comfortable reading width on larger phones*/
+	margin: 8px auto; /*centers the panel horizontally*/
+	padding: 12px; /*inner spacing inside the panel*/
+	/*border: 1px solid #d7dde8; */ /*panel border*/
+	/*border-radius: 12px; */ /*rounded panel corners*/
+	/*background: #f9fbff; */ /*panel background color*/
+	/*box-shadow: 0 6px 18px rgba(20, 40, 80, 0.08); */ /*soft shadow for depth*/
+   
+}
+
+#icon-messagesOnSite {
+	width: 56px;
+	height: 56px;
+	display: block;
+	margin: 0 auto 10px;
+}
+
+
+.timeStamp {
+	text-align: center; /*align the timestamp text in the center*/
+}
+
+#noChatsActiveState, #loadingChatsState {
+	text-align:center;
+}
+
+#chatList {
+
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	padding: 10px;
+	border: 1px solid;
+	border-radius: 8px;
+	gap: 8px;
+	
+
+}
+
+#chatList button {
+	width: 100%;
+	padding: 30px;
+	text-align: left;
+	border: 1px solid #000000;
+	border-radius: 8px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 15px;
+	
+}
+
+
+
+
+/*for the subheader "Messages". Straight copied from userprofile.css*/
+.subheader {
+    width: 100%;
+    
+}
+
+.subheader-content {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1rem 0;
+    display: flex;
+	justify-content: flex-start;
+    align-items: center;
+	gap: 0.6rem;
+    border-top: 2px solid #ddd;
+    border-bottom: 2px solid #ddd;
+}
+
+.subheader-content h2 {
+	margin: 0;
+}
+
+.subheader-back-text {
+	margin-left: 1rem;
+	font-size: 20px;
+	line-height: 1;
+	font-weight: 600;
+}
+
+.subheader.is-back {
+    cursor: pointer;
+}
+
+.subheader.is-back .subheader-content {
+    justify-content: flex-start;
+    gap: 0.6rem;
+}
+
+.subheader.is-back #subheaderIcon {
+    order: -1;
+    margin-left: 1rem;
+}
+
+.subheader.is-back #subheaderTitle {
+    margin-left: 0;
+}
+
+.inputRow {
+	display: flex;
+	gap: 8px;
+	align-items: flex-end;
+	
+}
+
+#messageInput {
+	flex: 1;
+	min-height: 40px;
+	max-height: 140px;
+	padding: 8px 10px;
+	resize: none;
+	overflow-y: hidden;
+	line-height: 1.4;
+	white-space: pre-wrap;
+	word-break: break-word;
+	border-radius: 6px;
+}
+
+#sendBtn {
+	min-height: 40px;
+	padding: 0 14px;
+	background-color: lightblue;
+	border: solid 2px;
+	border-radius: 10px;
+}

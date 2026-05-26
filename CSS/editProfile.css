@@ -1,0 +1,70 @@
+/*author: Viktor Eliassen */
+.main {
+    width: 100%;
+    text-align: left;
+    background-color:white;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 420px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.sectionHeader{
+
+    font-size: 1.30em;
+    font-weight: 700;
+    margin: 1em 0 1em 0;
+    border-bottom: 2px solid #ddd;
+}
+
+.editInfoBtn {
+    background-color: lightblue;
+    padding: 10px 25px;
+    border: none; /* no black border line */
+    border-radius: 12px; /* rounded corners */
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer; /* hand cursor when hovering */
+    
+}
+ 
+#profileInfoList {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+#profileEditForm input, select{
+width: 70%;
+padding: 9px 12px;
+border: 1px solid #cfd6e0;
+border-radius: 10px;
+background-color: #f9fbff;
+color: #1f2a37;
+font-size: 16px;
+margin-top: 5px;
+margin-bottom: 6px;
+transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+#editDisplayName:disabled {
+background-color: #cbcccd; /*Disabled field background color*/
+color: #22262a; /*Disabled text color*/
+border-color: #d8dee8; /*Disabled border color*/
+cursor: not-allowed;
+box-shadow: none;
+opacity: 0.8; /*Fades the whole field slightl */
+}
+
+/* Keep checkbox normal and aligned left with text */
+#profileEditForm label[for="useFullNameAsDisplay"] {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+#profileEditForm input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}

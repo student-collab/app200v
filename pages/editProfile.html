@@ -1,3 +1,4 @@
+<!--Author: Viktor Eliassen-->
 <!DOCTYPE html>
 
 <html lang="en">
@@ -13,6 +14,7 @@
   <meta name="description" content="" />
   <link rel="stylesheet" href="../CSS/userProfile.css">
   <link rel="stylesheet" href="../CSS/main.css">
+  <link rel="stylesheet" href="../CSS/editProfile.css">
   <script src="../JS/main.js" type = "module" defer></script>
   <link rel="icon" href="../img/favicon.png">
 
@@ -21,7 +23,7 @@
 </head>
 
 <body>
-
+  <!--TOP HEADER: EDIT PROFILE <- -->
   <div class="subheader is-back" id="profileSubheader">
         <div class="subheader-content">
             <h2 id="subheaderTitle">Edit Profile</h2>
@@ -29,29 +31,44 @@
         </div>
     </div>
 
-   
+   <div class="main">
 
-  <h3>Profile information</h3>
+  <h2>Profile information</h2>
+
 
   <ul id="profileInfoList">
+    <div class="sectionHeader">Contact info</div>
+    <li><strong>Email:</strong> <span id="profileEmail">Loading...</span></li><br>
+    <li><strong>Phone number:</strong> <span id="profilePhone">Loading...</span></li><br>
+    <div class="sectionHeader">About you</div>
     <li><strong>Display Name:</strong> <span id="profileDisplayName">Loading...</span></li><br>
     <li><strong>First Name:</strong> <span id="profileFirstName">Loading...</span></li><br>
     <li><strong>Last Name:</strong> <span id="profileLastName">Loading...</span></li><br>
-    <li><strong>Email:</strong> <span id="profileEmail">Loading...</span></li><br>
     <li><strong>Gender:</strong> <span id="profileGender">Loading...</span></li><br>
-    <li><strong>Location:</strong> <span id="profileLocation">Loading...</span></li><br>
-    <li><strong>Phone:</strong> <span id="profilePhone">Loading...</span></li><br>
+    <div class="sectionHeader">Location</div>
+    <li><strong>Address:</strong> <span id="profileAddress">Loading...</span></li><br>
+    <li><strong>City:</strong> <span id="profileLocation">Loading...</span></li><br>
+    <li><strong>Postal code:</strong> <span id="profileMunicipalityId">Loading...</span></li><br>
+     <li><strong>Country:</strong> <span id="profileCountry">Loading...</span></li><br>
+    
   </ul>
 
 
   <!--This is shown after clicking Edit Info-->
   <form id="profileEditForm" style="display:none;">
+    <div class="sectionHeader">Contact info</div>
+     <label for="editEmail"><strong>Email:</strong></label><br>
+    <input type="email" id="editEmail" maxlength="120" required>   *<br><br>
 
+     <label for="editPhone"><strong>Phone:</strong></label><br>
+    <input type="text" id="editPhone" maxlength="40" required>   *<br>
+
+    <div class="sectionHeader">About you</div>
     <label for="editDisplayName"><strong>Display Name:</strong></label><br>
-    <input type="text" id="editDisplayName" maxlength="120"><br>
+    <input type="text" id="editDisplayName" maxlength="120" required>   *<br>
     <label for="useFullNameAsDisplay">
       <input type="checkbox" id="useFullNameAsDisplay">
-      Use first name + last name as display name
+      Use real name as display name
     </label><br><br>
 
     <label for="editFirstName"><strong>First Name:</strong></label><br>
@@ -62,26 +79,37 @@
 
     
 
-    <label for="editEmail"><strong>Email:</strong></label><br>
-    <input type="email" id="editEmail" maxlength="120"><br><br>
+   
 
     <label for="editGender"><strong>Gender:</strong></label><br>
-    <select id="editGender" name="gender">
+    <select id="editGender" name="gender" required>
+      <option value="" disabled>Select gender</option>
       <option value="Male">Male</option>
       <option value="Female">Female</option>
-    </select><br><br>
+    </select>   *<br><br> 
 
-    <label for="editLocation"><strong>Location:</strong></label><br>
+    <div class="sectionHeader">Location</div>
+    <label for="editAddress"><strong>Address:</strong></label><br>
+    <input type="text" id="editAddress" maxlength="180"><br><br>
+
+    <label for="editLocation"><strong>City:</strong></label><br>
     <input type="text" id="editLocation" maxlength="120"><br><br>
 
-    <label for="editPhone"><strong>Phone:</strong></label><br>
-    <input type="text" id="editPhone" maxlength="40"><br>
+    <label for="editMunicipalityId"><strong>Postal Code:</strong></label><br>
+    <input type="text" id="editMunicipalityId" maxlength="40"><br><br>
+
+    <label for="editCountry"><strong>Country:</strong></label><br>
+    <input type="text" id="editCountry" maxlength="120"><br><br>
+
+   <h4>(*) are required</h4>
   </form>
 
-  <p id="formStatus" aria-live="polite"></p>
-  <button id="editInfoBtn" class="editInfo" type="button">Edit info</button>
-
   
+
+  <p id="formStatus" aria-live="polite"></p>
+  <button id="editInfoBtn" class="editInfoBtn" type="button">Edit information</button>
+
+  </div>
   
   <nav id="replaceNav">
               Blir erstattet av main.js  

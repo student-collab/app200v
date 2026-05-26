@@ -1,110 +1,258 @@
+//Author: Viktor Eliassen
+import { auth } from '../JS/modules/dbConfig.js';
+import { createChat, sendMessage, getChatsForUser, listenForMessages, getUser } from '../JS/modules/FS_Requests.js';
 
-import { db} from '../JS/modules/dbConfig.js'; 
+// Runtime state: active chat, active Firestore unsubscribe function, and cached users.
+let currentChatId = null;
+let stopListeningToMessages = null;
+let usersById = {};
+let currentChats = [];
 
-window.addEventListener('load', ()=>{
-    const fetch = document.getElementById('hent-oppgaver');
-    fetch.addEventListener('click', fetchData);
-    
+// Cache DOM elements once so we do not query repeatedly.
+const createChatSelect = document.getElementById('createChat');
+const createChatBtn = document.getElementById('createChatBtn');
+const chatList = document.getElementById('chatList');
+const sendBtn = document.getElementById('sendBtn');
+const messageInput = document.getElementById('messageInput');
+const messages = document.getElementById('messages');
+const chatListView = document.getElementById('chatListView');
+const chatThreadView = document.getElementById('chatThreadView');
+const profileSubheader = document.getElementById('profileSubheader');
+const subheaderTitle = document.getElementById('subheaderTitle');
+const subheaderBackText = document.getElementById('subheaderBackText');
+
+const loadingChatsState = document.getElementById('loadingChatsState');
+const noChatsActiveState = document.getElementById('noChatsActiveState');
+const hasActiveChatsState = document.getElementById('hasActiveChatsState');
+
+
+
+// Converts a uid to a readable name for UI labels.
+function getUserDisplayName(uid) {
+  if (uid === auth.currentUser?.uid) return 'You';
+  return usersById[uid]?.name?.display || uid;
+}
+
+// Builds the chat button/title label from the other participant in the chat.
+function getChatLabel(chat) {
+  const otherUid = (chat.participants || []).find(uid => uid !== auth.currentUser?.uid);
+  return otherUid ? getUserDisplayName(otherUid) : chat.id;
+}
+
+// List mode header: generic title, no back button, normal subheader styling.
+function setHeaderAsList() {
+  if (subheaderTitle) subheaderTitle.textContent = 'Messages';
+  subheaderBackText?.classList.add('hidden');
+  profileSubheader?.classList.remove('is-back');
+}
+
+// Chat mode header: title includes the other user's name and enables back affordance.
+function setHeaderAsChat(chatId) {
+  const chat = currentChats.find(c => c.id === chatId);
+  const chatName = chat ? getChatLabel(chat) : 'Unknown';
+
+  if (subheaderTitle) subheaderTitle.textContent = `Chat with ${chatName}`;
+  subheaderBackText?.classList.remove('hidden');
+  profileSubheader?.classList.add('is-back');
+}
+
+// Default page mode: show list, hide thread, reset header to "Messages".
+function showChatListView() {
+  chatListView?.classList.remove('hidden');
+  chatThreadView?.classList.add('hidden');
+  setHeaderAsList();
+}
+
+// Safety helper: ensures there is never more than one active Firestore listener.
+function stopActiveListener() {
+  if (stopListeningToMessages) {
+    stopListeningToMessages();
+    stopListeningToMessages = null;
+  }
+}
+
+// Back navigation state transition:
+// clear selected chat, stop realtime updates for old chat, clear old thread UI, show list.
+function backToChatList() {
+  currentChatId = null;
+  stopActiveListener();
+
+  if (messages) {
+    messages.innerHTML = '';
+  }
+
+  renderChatList(currentChats);
+  showChatListView();
+}
+
+// Open-chat transition:
+// set active chat, switch UI to thread mode, update header, then start realtime listener.
+function openChat(chatId) {
+  currentChatId = chatId;
+  renderChatList(currentChats);
+  chatListView?.classList.add('hidden');
+  chatThreadView?.classList.remove('hidden');
+  setHeaderAsChat(chatId);
+  startListeningToCurrentChat();
+}
+
+// Ensures we only keep one live listener: stop old listener, start new on selected chat.
+function startListeningToCurrentChat() {
+  stopActiveListener();
+  stopListeningToMessages = listenForMessages(currentChatId);
+}
+
+// Loads users once, caches them by uid, and fills the Create Chat dropdown.
+async function loadUsers() {
+  if (!auth.currentUser || !createChatSelect) return;
+
+  const users = await getUser();
+  usersById = Object.fromEntries(users.map(user => [user.id, user]));
+
+  createChatSelect.innerHTML = '';
+
+  users
+    .filter(user => user.id !== auth.currentUser.uid)
+    .forEach(user => {
+      const option = document.createElement('option');
+      option.value = user.id;
+      option.textContent = user.name?.display || user.id;
+      createChatSelect.appendChild(option);
+    });
+}
+
+// Draws active chat buttons for changing between active chats. Clicking a button selects the chat and starts message listening.
+function renderChatList(chats) {
+  if (!chatList) return;
+
+  chatList.innerHTML = '';
+
+  chats.forEach(chat => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+
+    if (chat.id === currentChatId) btn.classList.add('active-chat-btn');
+    btn.textContent = getChatLabel(chat);
+    btn.addEventListener('click', () => {
+      openChat(chat.id);
+    });
+    chatList.appendChild(btn);
+  });
+}
+
+//updates which UI state is visible depending on whether the user is part of a chat.
+function updateChatStates(hasChats) {
+  
+  //always hide the loading state once chat data has finished loading. ? means only continue if this value exists
+  loadingChatsState?.classList.add('hidden');
+
+  //if user has atleast one chat
+  if (hasChats) {
+    //show active chats selection
+    hasActiveChatsState?.classList.remove('hidden');
+    //hide "no chats" empty state section
+    noChatsActiveState?.classList.add('hidden');
+  } else {
+    //hide active chats section because there are no active chats
+    hasActiveChatsState?.classList.add('hidden');
+
+    //show the empty state message for users without chats
+    noChatsActiveState?.classList.remove('hidden');
+  }
+}
+
+// Main page refresh: load users, load chats, select default chat, render UI, start listener.
+async function refreshMessagesPage() {
+  if (!auth.currentUser) return;
+
+  await loadUsers();
+
+  const chats = await getChatsForUser(auth.currentUser.uid);
+  currentChats = chats;
+
+  //if there is more than 0 chats then return hasChats TRUE
+  updateChatStates(chats.length > 0);
+
+  renderChatList(chats);
+
+  // If user has no chats: force list mode and exit early.
+  if (chats.length === 0) {
+    backToChatList();
+    return;
+  }
+
+  // Handles refreshes robustly: keep current chat open if it still exists,
+  // otherwise fall back to list mode.
+  const currentChatStillExists = chats.some(chat => chat.id === currentChatId);
+
+  if (currentChatId && currentChatStillExists) {
+    openChat(currentChatId);
+  } else {
+    backToChatList();
+  }
+  
+}
+
+// Initialize the page only when auth state is ready.
+auth.onAuthStateChanged((user) => {
+  if (!user) return;
+  refreshMessagesPage();
 });
 
-async function fetchData (){
-    // Henter verdiene fra skjermen
-    const taskLat = parseFloat(document.getElementById('lat').value);
-    const taskLng = parseFloat(document.getElementById('lng').value);
-    const taskRadius = parseFloat(getRadius());
-    // byttes til midlertidig hardkoding
+// Creates a chat with selected user, then refreshes list/title/listener state.
+createChatBtn?.addEventListener('click', async () => {
+  const otherUserId = createChatSelect?.value;
+  if (!otherUserId || !auth.currentUser) return;
 
-    console.log('getBounding: Lat: ' + taskLat + " Lng: " + taskLng + " Radius: " + taskRadius);
-    const myTasks = await getTasksByDistance(taskLat, taskLng, taskRadius);
-    // Lager en liste og en li for hver tittel
-    // Her kommer prepRender inn 
-    let list = document.createElement('ul');
-    myTasks.forEach(task=>{
-        let title = document.createElement('li');
-        title.textContent = task.title +  " distance: " + (Math.floor(task.distance*10))/10 ?? "Ukjent" ;
-        list.appendChild (title);
+  const participants = [auth.currentUser.uid, otherUserId];
+  const chatId = [...participants].sort().join('_');
 
-    });
-    const showTasks = document.getElementById('showtask');
-    showTasks.innerHTML = "Tittel og avstand fra Tønsberg sentrum "
-    showTasks.appendChild(list);
-    
-    
+  await createChat(chatId, participants);
+  await refreshMessagesPage();
+
+  if (createChatSelect) createChatSelect.selectedIndex = 0;
+});
+
+// Sends one message to the currently selected chat.
+async function sendCurrentMessage() {
+  if (!currentChatId || !auth.currentUser || !messageInput?.value.trim()) return;
+
+  await sendMessage(currentChatId, {
+    text: messageInput.value.trim(),
+    senderId: auth.currentUser.uid,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  messageInput.value = '';
+  autoResizeMessageInput();
 }
 
-/* * * * * * * * * * * * * * * *
- *                             *
- *      Hjelpefunksjoner       *   
- *                             *
- * * * * * * * * * * * * * * * */
+function autoResizeMessageInput() {
+  if (!messageInput) return;
 
-function getBoundingBox(lat, lng, radiusKm) {
-    const latOffset = radiusKm / 111;
-    const lngOffset = radiusKm / (111 * Math.cos(lat * Math.PI / 180));
+  const maxHeight = 140;
+  messageInput.style.height = 'auto';
 
-    return {
-        minLat: lat - latOffset,
-        maxLat: lat + latOffset,
-        minLng: lng - lngOffset,
-        maxLng: lng + lngOffset
-    };
+  const nextHeight = Math.min(messageInput.scrollHeight, maxHeight);
+  messageInput.style.height = `${nextHeight}px`;
+  messageInput.style.overflowY = messageInput.scrollHeight > maxHeight ? 'auto' : 'hidden';
 }
 
-function getRadius (){
-    const optionButtons = document.getElementsByName('distance');
+sendBtn?.addEventListener('click', async () => {
+  await sendCurrentMessage();
+});
 
-    for (let i = 0; i < optionButtons.length; i++) {
-        if (optionButtons[i].checked) {
-            return optionButtons[i].value
-        }
-    }   
-}
+// Enter sends the message; Shift+Enter inserts a newline in the textarea.
+messageInput?.addEventListener('keydown', async (event) => {
+  if (event.key !== 'Enter' || event.shiftKey) return;
+  event.preventDefault();
+  await sendCurrentMessage();
+});
 
-function haversine(lat1, lng1, lat2, lng2) {
-    const R = 6371; // Earth radius in km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLng = (lng2 - lng1) * Math.PI / 180;
+messageInput?.addEventListener('input', autoResizeMessageInput);
+autoResizeMessageInput();
 
-    const a = Math.sin(dLat / 2) ** 2 +
-              Math.cos(lat1 * Math.PI / 180) *
-              Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLng / 2) ** 2;
-
-    return R * 2 * Math.asin(Math.sqrt(a)); // returns km
-}
-
-/** * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-*                                                           *
-*   getTasksByDistance bruker så mange hjelpefunksjoner     *
-*   Er bare nyttig for oppgavelisten                        *
-*                                                           *
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-
-const MAX_RADIUS = 20; // Justeres til å være høyeste brukervalg
-
-let cachedTasks = null; // For å unngå ekstra spørringer ved bytte av avstand
-
-async function getTasksByDistance(userLat, userLng, radiusKm) {
-
-    if(!cachedTasks){
-        const box = getBoundingBox(userLat, userLng, MAX_RADIUS);
-        const snap = await db.collection('tasks')
-        .where('location.latitude', '>=', box.minLat)
-        .where('location.latitude', '<=', box.maxLat)
-        .get();
-        cachedTasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    }
-    const box = getBoundingBox(userLat, userLng, radiusKm);
-    return cachedTasks
-        .filter(task => {
-            const lng = task.location.longitude;
-            return lng >= box.minLng && lng <= box.maxLng;
-        })
-        .map(task => ({
-            ...task,
-            distance: haversine(userLat, userLng, task.location.latitude, task.location.longitude)
-        }))
-        .filter(task => task.distance <= radiusKm)   // trim the box corners
-        .sort((a, b) => a.distance - b.distance);
-}
+// In chat mode, the whole subheader acts as a back control.
+profileSubheader?.addEventListener('click', () => {
+  if (!chatThreadView?.classList.contains('hidden')) backToChatList();
+});
