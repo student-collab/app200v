@@ -1,6 +1,7 @@
 import { auth } from '../JS/modules/dbConfig.js';
 import { getMockUser } from '../JS/modules/mockUser.js';
 import { getUserTasks } from '../JS/modules/FS_Requests.js';
+import { renderTasks } from '../JS/modules/renderTasks.js';
 
 
 const userInfo = document.getElementById('userInfo');
@@ -16,8 +17,6 @@ const buttons = sectionWrap.querySelectorAll(".nav-knapper");
       const section = document.getElementById(btn.dataset.section);
       showSection(section, btn.dataset.title);
   });
-
-
 
 // Tar HTML-element og tittel som argument.
 // Viser section som er mottatt
@@ -131,6 +130,21 @@ const user = getMockUser(); //importert getter fra mockUser.js
       profilePhoto.src = user.photoURL?user.photoURL:placeholderPhoto; 
  }
  async function initUserTaskData (){
-  const taskData = await getUserTasks(user.uid);
-  console.info(JSON.stringify(taskData));
+      const taskData = await getUserTasks(user.uid);
+      let dataSelect = [];
+      taskData.forEach(task => {
+            dataSelect.push({   
+              "id":task.id,
+              "title":task.title,
+              "pris":task.pris,
+              "kommune":task.location.kommune,
+              "kategori":task.category,
+              "rating":task.rating,
+              "urgent":task.urgent,
+              "distance":0.0 // komme tilbake til - 
+          });
+      });
+   const HTMLFrag = renderTasks(dataSelect);
+      document.getElementById("myTasks").appendChild(HTMLFrag);
+  
  }

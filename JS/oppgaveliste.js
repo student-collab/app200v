@@ -1,5 +1,7 @@
 import {db} from '../JS/modules/dbConfig.js'; 
+import { renderTasks } from '../JS/modules/renderTasks.js'; 
 import { headerReady } from './main.js';
+
 
 const MAX_RADIUS = 20; // Justeres til å være høyeste brukervalg
 const userLat = 59.272349982043586;
@@ -44,50 +46,6 @@ function contentLoad () {
         taskLoaderDistanceFilter(avstand);
     }
 }
-// Forskjellige kategorier for alle kategoriene
-const CATEGORY_ICONS = {
-    'Hage':         'shovel',        
-    'IT & Teknikk': 'monitor',
-    'Rengjøring':   'sparkles',
-    'Flytting':     'truck',
-    'Montering':    'wrench',
-    'Transport':    'package',
-    'Undervisning': 'book-open',
-    'Maling':       'paint-roller',  
-    'Rydding':      'trash-2',
-    'Annet':        'circle-help',
-};
-/* * * * * *  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *      Lager klassenavn som blir brukt på forskjellige kategorier      *
- * * * * * *  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-function lagerKlasser(text) {
-    return text
-    .toLowerCase()
-    // erstatter norske spesialtegn og '&'
-    .replace(/[øæå&]/g, (match) => {
-        if (match === 'ø') return 'o';
-        if (match === 'æ') return 'ae';
-        if (match === 'å') return 'a';
-        return ''; // Fjerner &
-    })
-    // Spesialtegn erstattes med '-'
-    .replace(/[^a-z0-9]+/g, '-')
-    // Fjerner '-' fra start og slutt
-    .replace(/^-+|-+$/g, '');
-}   
-    /*  
-            Oppretter nytt objekt CSS_slugs. 
-            Nøklene er kategoriene, nøklene, fra CATEGORY_ICONS
-            Verdiene er kategorinavn behandlet av lagerKlasser 
-    */
-
-const CSS_slugs = Object.fromEntries(
-    Object.keys(CATEGORY_ICONS).map(cat => [cat, lagerKlasser(cat)])
-);
-
-// console.table(CSS_slugs); // brukes for å manuelt kopiere CSS-klassene fra konsoll-terminal
-
 
 let mainInfo = []; // For info som skal vises på skjermen
 let nearbyTasks = 0;
@@ -131,7 +89,7 @@ async function taskLoader () {
         const snap = await db.collection('tasks').get();
         const tasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         tasks.forEach(task => prepRender(task));
-        renderTasks();
+        insertHTML();
         console.log("Rendering");
     } catch (err) {
         console.error("Feil ved henting av oppgaver:", err);
@@ -188,7 +146,7 @@ async function taskLoaderDistanceFilter (taskRadius = MAX_RADIUS){
         return tasksWithinRadius;                                // tasksWithinRadius returneres med den nye oppgaven lagt til == filtrerte ikke bort oppgaven
     }, []); // [] == initial verdi for tasksWithinRadius
     newMainInfo.forEach ((task)=> prepRender(task));  
-    renderTasks();
+    insertHTML();
 
     } catch (err) {
         console.error("Feil ved henting av oppgaver:", err);
@@ -228,98 +186,22 @@ function haversine(lat1, lng1, lat2, lng2) {
 /* * * * * *  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *      Genererer HTML for informasjon som skal vises på skjerm         *
  * * * * * *  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-function renderTasks() {
+function insertHTML() {
     const insertInto = document.getElementById('oppgavelisten');
     if (!insertInto) {
-    console.error("Mangler element 'oppgavelisten'");
-    return;
+        console.error("Mangler element 'oppgavelisten'");
+        return;
     }
     if (mainInfo.length === 0) {
         insertInto.innerHTML = '<p>Ingen oppgaver funnet i dette området.</p>';
         return;
     }
-    const myDocFrag = document.createDocumentFragment();
-    
     document.getElementById('nearby-tasks').textContent = nearbyTasks;
-    mainInfo.sort((a, b) => a.distance - b.distance).forEach(task => {
-      
-/*
-Hvert kort består av:
-        - ytre wrap (yWrap) med id=task-<nr> og class=tasak
-        - indre wrap (iWrap)for alt untatt kategorimarkør
-            - H2 overskrift
-            - info wrap (infWrap) for flex
-                -span
-                    -SVG
-                    -tekst
-                -span
-                    -SVG
-                    -tekst
-                -span
-                    -tekst
-        - kategorimarkør (bilde/icon med farge)
 
-
-*/
-
-        /// --- To wrap for skille mellom bilde og resten ---
-        const yWrap = document.createElement('a');
-        yWrap.id = `task-${task.id}`;
-        yWrap.className = 'task';
-        yWrap.href=`/pages/postedTaskDetail.html?id=${task.id}`;
-
-        
-        const iWrap = document.createElement('div');
-        iWrap.className = 'task__main';
-
-        // --- Overskrift ---
-        const title = document.createElement('h2');
-        title.className = 'task__title';
-        title.textContent = task.title;
-
-        // --- Info wrap - flexbox ---
-        const infWrap = document.createElement('div');
-        infWrap.className = 'task__info';
-        const location = document.createElement('span');
-        location.className = 'task__location';
-        location.innerHTML = '<svg width="1em" height="1em"><use href="#icon-location"/></svg>';
-        location.append(task.kommune + ' ' + task.distance + ' km');
-
-        const rating = document.createElement('span');
-        rating.className = 'task__rating';
-        rating.innerHTML = '<svg width="1em" height="1em"><use href="#icon-star"/></svg>';
-        rating.append(task.rating ?? '–');
-
-        const price = document.createElement('span');
-        price.className = 'task__price';
-        price.textContent = `${task.pris} kr`;
- 
-       // --- Icon ---
-        const iconCategory = document.createElement('i');
-        iconCategory.dataset.lucide = CATEGORY_ICONS[task.kategori] ?? 'circle-help';
-        iconCategory.className = `task__img ${CSS_slugs[task.kategori]}`;
-        
-        let iconUrgent = null;
-        if (task.urgent){
-            iconUrgent = document.createElement('i');
-            iconUrgent.dataset.lucide = 'circle-alert';
-            iconUrgent.className = 'icon-urgent';
-        }
-
-        // --- Setter sammen ---
-        infWrap.append(location, rating, price);
-        iWrap.appendChild(title);
-        iWrap.appendChild(infWrap);
-        yWrap.appendChild(iWrap);
-                
-        if (iconUrgent) {
-            yWrap.appendChild(iconUrgent);
-        }   
-        yWrap.appendChild(iconCategory);
-        myDocFrag.appendChild(yWrap);
-    });
-    insertInto.innerHTML = "";
-    insertInto.appendChild(myDocFrag);
+    const insertReadyHTMLFragment = renderTasks(mainInfo);
+    
+        insertInto.innerHTML = "";
+    insertInto.appendChild(insertReadyHTMLFragment);
     lucide.createIcons();
 }
 /* * * * * * * * * * * * * * * * * * * * * * * *
@@ -353,7 +235,7 @@ function adjustSearchField(){
         const headerGone = currentScrollY > headerHeight;
         searchBar.style.top = headerGone ? '0' : headerHeight + 'px';
         searchBar.classList.toggle('search--hidden', currentScrollY > lastScrollY);
-        console.log(headerGone);
+        //console.log(headerGone);
         lastScrollY = currentScrollY;
     });
     
