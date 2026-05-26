@@ -1,7 +1,7 @@
 /* * * * * * * * * *
  *  task element   *
  * * * * * * * * * */
- 
+ #oppgavelisten{text-align: left;}
  #oppgavelisten>a{
     text-decoration: none;
  }
