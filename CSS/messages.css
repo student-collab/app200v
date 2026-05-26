@@ -7,7 +7,7 @@
 body {
 	
 	margin: 0; /*removes default browser body margin*/
-	padding: 8px 8px 16px; /*small safe spacing around page content on mobile*/
+	padding: 8px 8px 150px; /*bottom padding accounts for fixed bottom navigation bar*/
 }
 
 #messages {
