@@ -215,6 +215,22 @@ function formatMessageTime(createdAt) {
   return createdAt?.toDate ? createdAt.toDate().toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : 'Sending..'; //datestyle short to avoid displaying seconds
 }
 
+// Replacing these symbols with text ensures that users can't run code (HTML/JS injection) using the chatbox input. This is a huge security risk so that's why we're doing this:
+function escapeHtml(text = '') {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+    //g makes all characters get replaced, not only the first
+}
+
+// Preserves line breaks from textarea input in rendered chat bubbles.
+function formatMessageText(text = '') {
+  return escapeHtml(text).replace(/\r\n|\n|\r/g, '<br>');
+}
+
 
 
 // Builds a uid -> displayName map for all senders present in this snapshot.
@@ -237,8 +253,9 @@ async function getSenderNamesFromSnapshot(snapshot) {
 function buildMessagesHtml(snapshot, senderNames) {
   return snapshot.docs.map((doc) => {
     const msg = doc.data();
-    const senderName = senderNames[msg.senderId] || msg.senderId;
+    const senderName = escapeHtml(senderNames[msg.senderId] || msg.senderId || 'Unknown');
     const timeStamp = formatMessageTime(msg.createdAt);
+    const messageText = formatMessageText(msg.text || '');
 
     //for figuring out if the message is from the logged in user or the counterpart. For use in CSS styling
     const isMine = msg.senderId === auth.currentUser?.uid;
@@ -249,7 +266,7 @@ function buildMessagesHtml(snapshot, senderNames) {
      ${timeStamp}
      </div>
       <div class="${messageClass}">
-        <strong>${senderName}</strong>: ${msg.text} <br> 
+        <strong>${senderName}</strong>: <span class="message-text">${messageText}</span>
       </div>
     `;
   }).join('');
@@ -273,6 +290,7 @@ export function listenForMessages(chatId) {
   // If snapshot B starts after snapshot A, B should win.
   // Using renderVersion solves a bug where the chat would disappear for 1 second after painting a message, and later duplicating the painted messages in the chat if sending one more message.
   let renderVersion = 0;
+  let hasScrolledToLatestOnLoad = false;
 
   return db.collection('chats')
     .doc(chatId)
@@ -297,6 +315,12 @@ export function listenForMessages(chatId) {
       // Single DOM write for the whole snapshot to reduce flicker.
       // This is the exact line that makes incoming messages appear visually.
       messagesDiv.innerHTML = buildMessagesHtml(snapshot, senderNames);
+
+      //On initial chat load, start at the latest message instead of the top.
+      if (!hasScrolledToLatestOnLoad) {
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        hasScrolledToLatestOnLoad = true;
+      }
 
     });
 }

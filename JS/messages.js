@@ -224,18 +224,33 @@ async function sendCurrentMessage() {
   });
 
   messageInput.value = '';
+  autoResizeMessageInput();
+}
+
+function autoResizeMessageInput() {
+  if (!messageInput) return;
+
+  const maxHeight = 140;
+  messageInput.style.height = 'auto';
+
+  const nextHeight = Math.min(messageInput.scrollHeight, maxHeight);
+  messageInput.style.height = `${nextHeight}px`;
+  messageInput.style.overflowY = messageInput.scrollHeight > maxHeight ? 'auto' : 'hidden';
 }
 
 sendBtn?.addEventListener('click', async () => {
   await sendCurrentMessage();
 });
 
-// Enter sends the message; Shift+Enter is ignored for future multiline support.
+// Enter sends the message; Shift+Enter inserts a newline in the textarea.
 messageInput?.addEventListener('keydown', async (event) => {
   if (event.key !== 'Enter' || event.shiftKey) return;
   event.preventDefault();
   await sendCurrentMessage();
 });
+
+messageInput?.addEventListener('input', autoResizeMessageInput);
+autoResizeMessageInput();
 
 // In chat mode, the whole subheader acts as a back control.
 profileSubheader?.addEventListener('click', () => {

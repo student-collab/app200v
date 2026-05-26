@@ -32,6 +32,11 @@ body {
 	overflow-wrap: break-word; /*forces long unbroken messages, for example DDDDDDDDDDDDDDDDDDD to wrap inside the box*/
 }
 
+.message-text {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
 .message-mine {
 
 	align-self:flex-end; /*places my messages to the right*/
@@ -147,19 +152,27 @@ body {
     margin-left: 0;
 }
 
-.composer-row {
+.inputRow {
 	display: flex;
 	gap: 8px;
-	align-items: center;
+	align-items: flex-end;
+	
 }
 
 #messageInput {
 	flex: 1;
 	min-height: 40px;
+	max-height: 140px;
 	padding: 8px 10px;
+	resize: none;
+	overflow-y: hidden;
+	line-height: 1.4;
+	white-space: pre-wrap;
+	word-break: break-word;
 }
 
 #sendBtn {
 	min-height: 40px;
 	padding: 0 14px;
+	background-color: lightblue;
 }
