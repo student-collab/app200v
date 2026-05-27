@@ -1,6 +1,7 @@
 
-// importerer funksjonen som skal brukes
-  import {getTask} from './modules/FS_Requests.js';
+// importerer funksjonene som skal brukes
+  import {getTask, createChat} from './modules/FS_Requests.js';
+  import {auth} from './modules/dbConfig.js';
 
 
   /*
@@ -21,7 +22,7 @@
     getTask(id).then((res)=>{ 
           const show = document.getElementById('temp-show');
           const dataString =  JSON.stringify(res,null,2);
-          show.textContent = dataString.replace(/,\n/g, '\n').replace(/,\s*(?=\])/g, '\n');;
+          //show.textContent = dataString.replace(/,\n/g, '\n').replace(/,\s*(?=\])/g, '\n');;
           
           renderTask(res);
     });
@@ -87,12 +88,35 @@ function renderTask(task) {
         <p>${task.description}</p>
       </div>
 
+      <div class="button-row">
+
+        <button class="saveTask-btn">❤️ Save task</button> 
+        <button class="contact-btn">💬 Contact Poster</button> 
+        
+      </div>
       
-     <button class="saveTask-btn">❤️ Save task</button>
+      <div class="accept-btn">
+      <button class="saveTask-btn">✅ Accept task</button>
+      </div>
       
-    <button class="contact-btn">💬 Contact Poster</button>
+    
 
     </div>
   
   `;
+
+  //Creates a chat with between the logged in user and the poster of the task
+  const contactBtn = document.querySelector('.contact-btn');
+  contactBtn?.addEventListener('click', async () => {
+    const currentUserId = auth.currentUser?.uid;
+    const posterId = task?.createdBy?.uid || task?.creatorId;
+
+    if (!currentUserId || !posterId || currentUserId === posterId) return;
+
+    const participants = [currentUserId, posterId];
+    const chatId = [...participants].sort().join('_');
+
+    await createChat(chatId, participants);
+    window.location.href = `./messagesChat.html?chatId=${encodeURIComponent(chatId)}`;
+  });
 }
