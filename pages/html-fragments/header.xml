@@ -21,7 +21,7 @@
         </svg>
       </div>
       <span id = "usr-status">Logg inn</span>
-      <div id="login-screen" class="hidde22n" data-role="login-panel">
+      <div id="login-screen" class="hidden" data-role="login-panel">
       <div id="loading-animation">
       <span class="dot1">Loading</span>
       <div class="dot" id="dot_1"></div>

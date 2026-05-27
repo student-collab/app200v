@@ -13,6 +13,11 @@
   window.addEventListener('load' , ()=>{
     // Leser id ut av URL-en
     const id = new URLSearchParams(window.location.search).get('id');
+    if (!id) {
+        // Rediger 'other-page.html' til ønsket side
+        window.location.href = '/pages/oppgaveliste.html';
+        return; // Stans videre kjøring av koden
+    }
     getTask(id).then((res)=>{ 
           const show = document.getElementById('temp-show');
           const dataString =  JSON.stringify(res,null,2);
