@@ -18,7 +18,76 @@
           const dataString =  JSON.stringify(res,null,2);
           show.textContent = dataString.replace(/,\n/g, '\n').replace(/,\s*(?=\])/g, '\n');;
           
+          renderTask(res);
     });
         
         console.log(id);
     });    
+
+
+function renderTask(task) {
+
+  const app = document.getElementById("app");
+
+  app.innerHTML = `
+  
+        <a class="header-link" href="oppgaveliste.html">
+     <div class="header">   
+          <h2>← ${task.title}</h2>    
+     </div>
+     </a>
+
+    <div class="container">
+
+      <div class="image-box">
+       <img src="${task.images}" alt="Task image">
+      </div>
+
+      <div class="title-row">
+        <h1>${task.title}</h1>
+        <div class="rating">
+          ⭐ ${task.rating}
+        </div>
+        
+      </div>
+
+      <div class="creator-row">
+      <h4> by: ${task.createdBy?.uid} </h4>
+      </div>
+
+      
+      <div class="tags">
+        <span class="tag">
+          📍 ${task.location.kommune}
+        </span>
+
+        <span class="tag">
+          🏷 ${task.category}
+        </span>
+
+        <span class="tag price">
+          ${task.pris} kr
+        </span>
+      </div>
+
+      <div class="status">
+        ${task.status}
+      </div>
+
+      
+
+      <div class="section">
+        <h3>Task Description</h3>
+
+        <p>${task.description}</p>
+      </div>
+
+      
+     <button class="saveTask-btn">❤️ Save task</button>
+      
+    <button class="contact-btn">💬 Contact Poster</button>
+
+    </div>
+  
+  `;
+}
