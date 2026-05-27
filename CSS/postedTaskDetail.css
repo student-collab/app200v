@@ -12,6 +12,13 @@ body {
   color: #1a1a1a;
 }
 
+.header-link,
+.header-link:visited {
+  display: block;
+  color: inherit;
+  text-decoration: none; /*to make it not look like a standard browser link*/
+}
+
 /* Header */
 .header {
   display: flex;
@@ -42,10 +49,18 @@ body {
   height: 180px;
   background: #dcdde1;
   border-radius: 16px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 20px;
+}
+
+.image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .image-icon {
@@ -130,6 +145,23 @@ body {
   cursor: pointer;
 }
 
+/* Button */
+.saveTask-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(90deg, #6c5ce7, #5a4bcf);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 .contact-btn:hover {
   opacity: 0.9;
+}
+
+.creator-row {
+  margin-bottom: 15px;
 }
