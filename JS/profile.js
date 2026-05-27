@@ -1,6 +1,6 @@
 import { auth } from '../JS/modules/dbConfig.js';
 import { getMockUser } from '../JS/modules/mockUser.js';
-import { getUserTasks } from '../JS/modules/FS_Requests.js';
+import { getUserTasks, getUsersSavedTasks } from '../JS/modules/FS_Requests.js';
 import { renderTasks } from '../JS/modules/renderTasks.js';
 
 
@@ -110,9 +110,14 @@ const user = getMockUser(); //importert getter fra mockUser.js
  addEventListener("DOMContentLoaded", () => { 
     initUserData();
     initUserTaskData();
+    usersSaved();
 
  })
-
+/**
+ * 
+ * Kan brukes senere også, setter inn info om brukeren 
+ * 
+ */
  function initUserData (){
       const welcomeElement = document.getElementById('loadUsername');
       const profilePhoto = document.getElementById('profile-photo');
@@ -129,23 +134,129 @@ const user = getMockUser(); //importert getter fra mockUser.js
       //Det er litt sent å spørre om bruker her? Kunne nektet tilgang uten bruker...
       profilePhoto.src = user.photoURL?user.photoURL:placeholderPhoto; 
  }
- async function initUserTaskData (){
-      const taskData = await getUserTasks(user.uid);
-      let dataSelect = [];
-      taskData.forEach(task => {
-            dataSelect.push({   
-              "id":task.id,
-              "title":task.title,
-              "pris":task.pris,
-              "kommune":task.location.kommune,
-              "kategori":task.category,
-              "rating":task.rating,
-              "urgent":task.urgent,
-              "distance":0.0 // komme tilbake til - 
-          });
+ /**
+  * 
+  * Henter ut oppgaver laget av brukeren
+  * 
+  */
+ function filterData(taskData){
+
+   let dataSelect = [];
+   taskData.forEach(task => {
+     dataSelect.push({   
+       "id":task.id,
+       "title":task.title,
+       "pris":task.pris,
+       "kommune":task.location.kommune,
+       "kategori":task.category,
+       "rating":task.rating,
+       "urgent":task.urgent,
+       "distance":0.0 // komme tilbake til - 
       });
+    });
+    return dataSelect;
+  }
+ async function initUserTaskData (){
+   const taskData = await getUserTasks(user.uid);
+   const dataSelect = filterData(taskData);
    const HTMLFrag = renderTasks(dataSelect);
-      document.getElementById("oppgavelisten").appendChild(HTMLFrag);
-      lucide.createIcons();
+   document.getElementById("own-tasks").appendChild(HTMLFrag);
+   lucide.createIcons();
   
  }
+/**
+ * 
+ * Henter ut oppgaver brukeren har lagret
+ * 
+ * 
+ */
+
+async function usersSaved(){
+  const taskData = await getUsersSavedTasks(user.uid);
+  const dataSelect = filterData(taskData);
+  const HTMLFrag = renderTasks(dataSelect);
+  document.getElementById("saved-tasks").appendChild(HTMLFrag);
+  lucide.createIcons();
+}
+
+ /*
+
+{
+    "id":"2wv9ojnAg0gBGR0OikPf",
+    "provider":"password",
+    "stats":{ "tasksCompleted":2,
+              "tasksPosted":4,
+              "tasksInProgress":2,
+              "averageRating":4.8
+            },
+    "savedTaskIds":[],
+    "email":"ioana.ylmaz36@hotmail.com",
+    "emailVerified":false,
+    "photoURL":"https://api.dicebear.com/7.x/thumbs/svg?seed=ioana.ylmaz36",
+    "meta":{  "createdAt":  { "seconds":1767772039,
+                              "nanoseconds":66000000
+                            },
+              "updatedAt":{ "seconds":1767772039,
+                            "nanoseconds":66000000
+                          },
+              "lastLoginAt":{ "seconds":1775050101,
+                              "nanoseconds":968000000
+                            }
+            },
+    "privacy":{ "gdprConsentDate":{ "seconds":1767772039,
+                                    "nanoseconds":66000000
+                                  },
+                "deletionRequestedAt":null,
+                "marketingConsent":true,
+                "gdprConsent":true
+              },
+    "phone":"+4780498588",
+    "preferences":{ "timezone":"Europe/Oslo",
+                    "theme":"system",
+                    "language":"nb",
+                    "notifications":{ "inApp":true,
+                                      "email":false
+                                    }
+                  },
+    "name":{  "first":"Ioana",
+              "last":"Yılmaz",
+              "display":"Ioana Y."
+            },
+    "gender":"male",
+    "location":{  "municipalityId":"OS-0803",
+                  "lat":61.08619490192435,
+                  "country":"NO",
+                  "address":"Prinsens gate 41",
+                  "lng":10.650729113183855,
+                  "municipality":"Sagene"
+                }
+}
+
+users with saved tasks: 
+'0P3jGGgGxXlBv3OjgUgp', 
+'0SbKZGBjvSmPwJ0nCXXy', 
+'0U8uI6Hii7pzuquBEblY', 
+'0gKyh67NOEvtuzHL329V', 
+'1KKYm6McqxsTOngPgkz9'
+
+[{  "id":"0P3jGGgGxXlBv3OjgUgp",
+    "displayName":"Haruto S.",
+    "email":"haruto.silva6@gmail.com"
+  },
+  { "id":"0SbKZGBjvSmPwJ0nCXXy",
+    "displayName":"Fang D.",
+    "email":"fang.demir131@protonmail.com"
+  },
+  { "id":"0U8uI6Hii7pzuquBEblY",
+    "displayName":"Morgan K.",
+    "email":"morgan.kowalski133@hotmail.com"
+  },
+  { "id":"0gKyh67NOEvtuzHL329V",
+    "displayName":"Axel M.",
+    "email":"axel.mohammed51@protonmail.com"
+  },
+  { "id":"1KKYm6McqxsTOngPgkz9",
+    "displayName":"Ana P.",
+    "email":"ana.pham122@yahoo.com"
+  }]
+  */

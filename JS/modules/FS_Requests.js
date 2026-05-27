@@ -71,11 +71,22 @@ import-syntaks:
 async function getUser() {
   
         const querySnapshot = await db.collection('users').get();
-        
+
         return querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data()
         }));
+}
+
+async function getUsersSavedTasks(uid){
+const userDoc = await db.collection('users').doc(uid).get();
+const savedTaskIds = userDoc.data().savedTaskIds;
+
+if (!savedTaskIds?.length) return [];
+const snapshot = await db.collection('tasks')
+  .where(firebase.firestore.FieldPath.documentId(), 'in', savedTaskIds)
+  .get();
+return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
 async function getUserTasks(createdByUID) {
  const snap = await db.collection('tasks')
@@ -166,7 +177,7 @@ export async function readFSdb(path = 'collection/document') {
   }
 }
 
-export { getUserTasks, getUser, getTask, setTask, updateTask, deleteTask, clearField};
+export {getUsersSavedTasks, getUserTasks, getUser, getTask, setTask, updateTask, deleteTask, clearField};
 
 //Oppretter eller oppdaterer en bruker i 'users' collection i Firestore
 export async function setUser(userId, data) { //userId= Firebase Authenticator ID

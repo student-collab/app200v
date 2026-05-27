@@ -9,6 +9,7 @@ const userLng = 10.417871475219727; // Skal hentes fra innlogget bruker
 /*
 lat:59.272349982043586; lng:10.417871475219727; // Skal hentes 
 */
+
 window.addEventListener('load', ()=>{ 
     document.querySelectorAll('.segment-btn').forEach(btn => {
         btn.addEventListener('click', function(){
@@ -88,12 +89,13 @@ async function taskLoader () {
         console.log("Fetching tasks from FireStore");
         const snap = await db.collection('tasks').get();
         const tasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        console.info(JSON.stringify(tasks[0]));
         tasks.forEach(task => prepRender(task));
         insertHTML();
         console.log("Rendering");
     } catch (err) {
         console.error("Feil ved henting av oppgaver:", err);
-        document.getElementById('oppgavelisten').innerHTML =
+        document.getElementById('oppgavelisten-org').innerHTML =
             '<p style="padding:2em;color:#c00;">Kunne ' 
             + 'ikke laste oppgaver. Sjekk internettforbindelsen og prøv igjen.</p>';
     }
@@ -150,7 +152,7 @@ async function taskLoaderDistanceFilter (taskRadius = MAX_RADIUS){
 
     } catch (err) {
         console.error("Feil ved henting av oppgaver:", err);
-        document.getElementById('oppgavelisten').innerHTML =
+        document.getElementById('oppgavelisten-org').innerHTML =
             '<p style="padding:2em;color:#c00;">Kunne '
             +'ikke laste oppgaver. Sjekk internettforbindelsen og prøv igjen.</p>';
     }
@@ -187,7 +189,7 @@ function haversine(lat1, lng1, lat2, lng2) {
  *      Genererer HTML for informasjon som skal vises på skjerm         *
  * * * * * *  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 function insertHTML() {
-    const insertInto = document.getElementById('oppgavelisten');
+    const insertInto = document.getElementById('oppgavelisten-org');
     if (!insertInto) {
         console.error("Mangler element 'oppgavelisten'");
         return;
@@ -223,7 +225,7 @@ function adjustSearchField(){
     searchBar.style.top = headerHeight + 'px';
     headerHeight -= 10;
     
-    const oppgavelisten = document.getElementById('oppgavelisten');
+    const oppgavelisten = document.getElementById('oppgavelisten-org');
     oppgavelisten.style.paddingTop = searchHeight + 'px';
 
     let lastScrollY = 0;
