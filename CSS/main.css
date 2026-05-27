@@ -202,12 +202,15 @@ overflow-x: auto;
  * * * * * * * * * * * * */
 #footer-menu{
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
     padding: 8px 0;
     border-top: 1px solid #e0e0e0;
     position: fixed;
     bottom: 0;
+    left: 0;
+    right: 0;
+
     width: 100%;
     background-color:var(--bg-color);
     z-index: 10;
@@ -219,9 +222,12 @@ overflow-x: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+    justify-content: center;
+    flex: 1 1 0; /*makes each item grow to fill equal space*/
   gap: 3px;
   cursor: pointer;
   color: #333;
+    text-align: center;
 }
 .nav-item span {
 
