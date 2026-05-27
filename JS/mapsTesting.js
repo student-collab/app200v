@@ -1,5 +1,6 @@
 import {getValgteKommuner} from './kommunevelger.js';
 import {auth, db} from './modules/dbConfig.js';
+import {generateFictiveTasks} from './tempTaskSeed.js';
 import {getUser, getTask,
         setTask,
         updateTask,
@@ -363,190 +364,22 @@ const imageURLs = [
  * 
  * 
  */
-async function generateFictiveTasks() {
 
-  const titles = [
-    "Fix broken fence", "Paint house exterior", "Repair roof leak",
-    "Clean gutters", "Landscape garden", "Fix plumbing issue",
-    "Replace windows", "Repair deck", "Paint interior walls",
-    "Install new door", "Fix electrical outlet", "Repair driveway",
-    "Clean chimney", "Seal foundation cracks", "Replace siding"
-  ];
-
-  const descriptions = [
-    "Urgent maintenance needed",
-    "Regular maintenance task",
-    "Customer reported issue",
-    "Preventive maintenance",
-    "Emergency repair needed",
-    "Scheduled maintenance",
-    "Follow-up from previous visit"
-  ];
-
-  const communes = [
-    "Oslo", "Bergen", "Trondheim", "Stavanger", "Kristiansand",
-    "Tromsø", "Fredrikstad", "Sandnes", "Drammen", "Skien"
-  ];
-
-  const tags = [
-    "urgent", "maintenance", "repair", "electrical", "plumbing",
-    "carpentry", "painting", "landscaping", "roofing", "inspection"
-  ];
-
-  const realUsers =  await getUser();
-
-  const categories = ["Hage", "IT & Teknikk", "Rengjøring", "Flytting", "Montering", "Transport", "Undervisning", "Maling", "Rydding", "Annet"];
-
-
-/*  
-    For at vi skal få treff fra forskjellige distanser, så vi ser at koden fungerer, 
-    er referansepunkt (59.27, 10.42 = Tønsberg) brukt for å generere oppdrag innenfor forskjellige 
-    avstander fra refereansepunktet.
-
-*/
-const communesByZone = {
-  5: [
-    { name: "Tønsberg sentrum"        , latitude: 59.2723, longitude: 10.4179 },
-    { name: "Sem"                     , latitude: 59.2950, longitude: 10.3800 },
-    { name: "Teie (Nøtterøy)"        , latitude: 59.2450, longitude: 10.4050 },
-    { name: "Vallø"                   , latitude: 59.2500, longitude: 10.4700 },
-    { name: "Borgheim"                , latitude: 59.2300, longitude: 10.3900 },
-    { name: "Eik"                     , latitude: 59.2850, longitude: 10.4500 },
-    { name: "Byskogen"                , latitude: 59.2600, longitude: 10.4300 },
-  ],
-  10: [
-    { name: "Stokke"                  , latitude: 59.2200, longitude: 10.2950 },
-    { name: "Skoppum"                 , latitude: 59.3300, longitude: 10.3500 },
-    { name: "Åsgårdstrand"            , latitude: 59.3450, longitude: 10.4650 },
-    { name: "Nøtterøy sør"           , latitude: 59.1950, longitude: 10.4200 },
-    { name: "Re (Revetal)"            , latitude: 59.2900, longitude: 10.2700 },
-    { name: "Borre"                   , latitude: 59.3700, longitude: 10.4500 },
-    { name: "Smørbukk"               , latitude: 59.2400, longitude: 10.5100 },
-  ],
-  20: [
-    { name: "Sandefjord"              , latitude: 59.1310, longitude: 10.2167 },
-    { name: "Horten"                  , latitude: 59.4144, longitude: 10.4817 },
-    { name: "Holmestrand"             , latitude: 59.4900, longitude: 10.3200 },
-    { name: "Tjøme"                   , latitude: 59.1200, longitude: 10.4100 },
-    { name: "Andebu"                  , latitude: 59.2000, longitude: 10.1600 },
-    { name: "Stokke (ytre)"          , latitude: 59.1700, longitude: 10.2900 },
-    { name: "Sande"                   , latitude: 59.5900, longitude: 10.2200 },
-    { name: "Hvasser"                 , latitude: 59.1050, longitude: 10.4600 },
-    { name: "Ramnes"                  , latitude: 59.3300, longitude: 10.1900 },
-  ],
-  200: [
-    { name: "Oslo"                    , latitude: 59.9139, longitude: 10.7522 },
-    { name: "Drammen"                 , latitude: 59.7440, longitude: 10.2045 },
-    { name: "Skien"                   , latitude: 59.2090, longitude:  9.6100 },
-    { name: "Bergen"                  , latitude: 60.3913, longitude:  5.3221 },
-    { name: "Trondheim"               , latitude: 63.4305, longitude: 10.3951 },
-    { name: "Stavanger"               , latitude: 58.9700, longitude:  5.7331 },
-    { name: "Kristiansand"            , latitude: 58.1467, longitude:  7.9956 },
-    { name: "Tromsø"                  , latitude: 69.6489, longitude: 18.9551 },
-  ],
-};
-function getLocationWithCoords(zone) {
-  const zones = [5, 10, 20, 200];
-  if (zone === undefined) zone = zones[Math.floor(Math.random() * zones.length)];
-  const pool   = communesByZone[zone];
-  const chosen = pool[Math.floor(Math.random() * pool.length)];
-  const coords = random3km(chosen.latitude, chosen.longitude, 3);
-  return {
-    kommune:   chosen.name,
-    latitude:  coords.latitude,
-    longitude: coords.longitude,
-  };
-}
-
-/* random3km finner tilfeldig koordinater innenfor en radius av 3km fra baseLat, baseLon. */ 
-function random3km(baseLat, baseLon ) {
-  const radiusKm = 3;
-  const earthRadiusKm = 6371;
-
-  // 1. Random distance with uniform distribution (avoid clustering in center)
-  // If we just did random * radius, points would cluster in the middle.
-  const r = radiusKm * Math.sqrt(Math.random());
-
-  // 2. Random angle (0 to 360 degrees)
-  const theta = Math.random() * 2 * Math.PI;
-
-  // 3. Convert distance to degrees
-  // Latitude is constant: ~111.32 km per degree
-  const latOffset = (r / 111.32) * Math.cos(theta);
-  
-  // Longitude varies by latitude: ~111.32 * cos(lat) km per degree
-  const lonOffset = (r / (111.32 * Math.cos(baseLat * Math.PI / 180))) * Math.sin(theta);
-
-  return {
-    latitude: baseLat + latOffset,
-    longitude: baseLon + lonOffset
-  };
-}
-
-  function generateEmail(uid) { return `${uid}@example.com`; }
-
-  function getRandomTags() {
-    const numTags = Math.floor(Math.random() * 3) + 1;
-    const selectedTags = [];
-    for (let i = 0; i < numTags; i++) {
-      selectedTags.push(tags[Math.floor(Math.random() * tags.length)]);
-    }
-    return [...new Set(selectedTags)];
-  }
-  function buildPayload(location) {
-    const randomUser = realUsers[Math.floor(Math.random() * realUsers.length)];
-    return {
-      title:       titles[Math.floor(Math.random() * titles.length)],
-      description: descriptions[Math.floor(Math.random() * descriptions.length)],
-      status:      "open",
-      pris:        Math.floor(Math.random() * 99) * 100 + 100,
-      category:    categories[Math.floor(Math.random() * categories.length)],
-      urgent:      Math.random() < 0.2,
-      meta: {
-        created: firebase.firestore.FieldValue.serverTimestamp(),
-        tags:    getRandomTags()
-      },
-       createdBy: {
-        uid:   randomUser.id,
-        ePost: randomUser.email
-      },
-      assignee: { uid: "", ePost: "" },
-      location,
-      images: [ imageURLs[Math.floor(Math.random() * imageURLs.length)] ],
-      rating: Math.floor(Math.random() * 6) + 1
-    };
-  }
-  
-  const tasks = [];
-  // Guarantee at least one task per zone
-  for (const zone of [5, 10, 20, 200]) {
-    const location = getLocationWithCoords(zone); // pass zone as argument
-    tasks.push(buildPayload(location));
-  }
-
-  // Fill remaining 46 randomly
-  
-  for (let i = 0; i < 46; i++) {
-    const location = getLocationWithCoords(); // picks zone randomly as before
-    tasks.push(buildPayload(location));
-  }
-
-  
-  return tasks;
-  
-}
 async function createAllFictiveTasks() {
   const tasks = await generateFictiveTasks();
-  for (let i = 0; i < tasks.length; i++) {
+  const numTask = tasks.length;
+
+  for (let i = 0; i < numTask; i++) {
     try {
       const docID = await setTask("", tasks[i]);
-      console.log(`Task ${i + 1}/50 created with ID: ${docID}`);
+      console.log(`Task ${i + 1}/${numTask} created with ID: ${docID}`);
     } catch (error) {
       console.error(`Failed to create task ${i + 1}:`, error);
     }
   }
 
   console.log("All 50 fictive tasks created!");
+  console.info(JSON.stringify(tasks[0]));
 }
 //Lager 50 oppgaver til databasen
         //createAllFictiveTasks();

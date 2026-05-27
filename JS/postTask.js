@@ -4,6 +4,7 @@ import {getUser, setTask} from './modules/FS_Requests.js';
 import { getDroppedFiles, clearDroppedFiles } from './modules/postTask-fileDrop.js';
 
 window.addEventListener('load', ()=>{
+
     /* ----------- midlertidig test-knapp ---------------------------- */
     const temTest = document.getElementById('se-oppgave-JSON');
     temTest.addEventListener('click',async ()=> hentEksempel());

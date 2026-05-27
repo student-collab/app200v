@@ -30,13 +30,70 @@
         console.log(id);
     });    
 
+/*
+{
+"id":"s0npiQ5uDwNHGhRMMWN2",
+"meta":{  "created":{ "seconds":1779533150,
+                      "nanoseconds":34000000
+                    },
+          "tags":["inspection","electrical"]
+        },
+"assignee":{  "ePost":"",
+              "uid":""
+            },
+"title":"Replace windows",
+"rating":6,
+"category":"Annet",
+"images":["https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/deer54x54.png?alt=media&token=60f2af4e-ca14-4b97-a218-12e424919be0"],
+"createdBy":{ "ePost":"haruto.silva6@gmail.com",
+              "uid":"0P3jGGgGxXlBv3OjgUgp"
+              "diplayName": "Haruto A" 
+            },
+"description":"Preventive maintenance",
+"pris":8400,
+"status":"open",
+"urgent":false,
+"location":{  "latitude":59.275996358855956,
+              "kommune":"Tønsberg sentrum",
+              "longitude":10.418037575238904
+            },
+}
+HERE
 
+{ "id":"S9IoZ6jTJ51NXN66ltLd",
+  "category":"IT & Teknikk",
+  "title":"Clean gutters",
+  "rating":5,
+  "description":"Urgent maintenance needed",
+  "createdBy":{ "ePost":"hassan.wisniewski11@protonmail.com",
+                "displayName":{ "last":"Wiśniewski",
+                                "display":"Hassan W.",
+                                "first":"Hassan"
+                              },
+                "uid":"ucMoGcXDFpGDCnDi2qIs"
+              },
+  "meta":{  "created":{ "seconds":1779904812,
+                        "nanoseconds":13000000
+                      },
+            "tags":["plumbing"]
+          },
+  "pris":2700,
+  "assignee":{  "ePost":"",
+                "uid":""
+              },
+  "images":["https://firebasestorage.googleapis.com/v0/b/app200v-team11.firebasestorage.app/o/white-taskFeed.png?alt=media&token=83f96899-c370-4bf1-9cc1-f441996d783d"],
+  "urgent":false,
+  "status":"open",
+  "location":{  "kommune":"Eik",
+                "latitude":59.26784751304342,
+                "longitude":10.44675867244244
+              }
+  }
+*/
 function renderTask(task) {
-
+console.log(JSON.stringify(task));
   const app = document.getElementById("app");
-
-  app.innerHTML = `
-  
+  const appInnerHTML =`
         <a class="header-link" href="oppgaveliste.html">
      <div class="header">   
           <h2>← ${task.title}</h2>    
@@ -104,6 +161,10 @@ function renderTask(task) {
     </div>
   
   `;
+  app.innerHTML = appInnerHTML;
+const saveTask = document.getElementById("saveTask-btn");
+console.info(saveTask);
+saveTask.addEventListener('click', ()=>{ console.log("Klikk")})
 
   //Creates a chat with between the logged in user and the poster of the task
   const contactBtn = document.querySelector('.contact-btn');
