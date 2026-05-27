@@ -8,20 +8,11 @@
     <link rel="stylesheet" href="../CSS/userProfile.css">
     <link rel="stylesheet" href="../CSS/main.css">
     <link rel="icon" href="../img/favicon.png">
+     <script type="module" src="../JS/userProfile.js"></script>
+    <script type="module" src="../JS/main.js"  defer></script>
 </head>
 <body>
-    <!-- Header med SideQuest logo og månesymbol -->
-    <!--<header>
-        <div id="logo-header">
-            <img style="width:25px; height:25px;" src="../img/testSize/SQ.png" alt="Logo: SQ">
-            <h1>SideQuest</h1>
-        </div>
-        <div id="moon-symbol-background">
-            <span>&#9789;</span>
-        </div>
-    </header>
--->
-
+   
     <div class="subheader" id="profileSubheader">
         <div class="subheader-content">
             <h2 id="subheaderTitle">My Profile</h2>
@@ -29,7 +20,6 @@
         </div>
     </div>
 
-    <!-- <div class="container"> -->
 
     <div id="myProfile">
 
@@ -114,32 +104,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
-    <!-- Internal script for Firebase config and auth -->
-    <script type="module">
-        import { auth } from '../JS/modules/dbConfig.js';
 
-        //Loads the logged in user's name and profile picture
-        auth.onAuthStateChanged((user) => {
-            const welcomeElement = document.getElementById('loadUsername');
-            const profilePhoto = document.getElementById('profile-photo');
-
-            if (user) {
-                welcomeElement.textContent = `${user.displayName || 'User'}`;
-
-                if (user.photoURL) {
-                    profilePhoto.src = user.photoURL;
-                } else {
-                    profilePhoto.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHBhdGggZD0iTTYwIDBjMzMuMTQ4IDAgNjAgMjYuODUyIDYwIDYwUzE5My4xNDggMTIwIDE2MCAxMjBIMTBjLTMzLjE0OCAwLTYwLTI2Ljg1Mi02MC02MFMxNi44NTIgMCA2MCAweiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iNTAiIHI9IjE4IiBmaWxsPSIjZGRkZGRkIi8+PGNpcmNsZSBjeD0iNjAiIGN5PSI4MCIgcj0iMjAiIGZpbGw9IiNkZGQiLz48L3N2Zz4=';
-                }
-            } else {
-                welcomeElement.textContent = 'Please log in to see your profile.';
-                profilePhoto.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHBhdGggZD0iTTYwIDBjMzMuMTQ4IDAgNjAgMjYuODUyIDYwIDYwUzE5My4xNDggMTIwIDE2MCAxMjBIMTBjLTMzLjE0OCAwLTYwLTI2Ljg1Mi02MC02MFMxNi44NTIgMCA2MCAweiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iNTAiIHI9IjE4IiBmaWxsPSIjZGRkZGRkIi8+PGNpcmNsZSBjeD0iNjAiIGN5PSI4MCIgcj0iMjAiIGZpbGw9IiNkZGQiLz48L3N2Zz4=';
-            }
-        });
-    </script>
-
-    <script type="module" src="../JS/userProfile.js"></script>
-    <script src="../JS/main.js" type = "module" defer></script>
+   
 </body>
 </html>
 

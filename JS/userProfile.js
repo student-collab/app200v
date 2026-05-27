@@ -1,3 +1,4 @@
+import { auth } from '../JS/modules/dbConfig.js';
 
 const userInfo = document.getElementById('userInfo');
 const subheaderTitle = document.getElementById('subheaderTitle');
@@ -12,6 +13,29 @@ const buttons = sectionWrap.querySelectorAll(".profileNavigationBtn");
       const section = document.getElementById(btn.dataset.section);
       showSection(section, btn.dataset.title);
   });
+
+
+
+
+//Loads the logged in user's name and profile picture
+auth.onAuthStateChanged((user) => {
+  const welcomeElement = document.getElementById('loadUsername');
+  const profilePhoto = document.getElementById('profile-photo');
+
+  if (user) {
+    welcomeElement.textContent = `${user.displayName || 'User'}`;
+
+    if (user.photoURL) {
+      profilePhoto.src = user.photoURL;
+    } else {
+      profilePhoto.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHBhdGggZD0iTTYwIDBjMzMuMTQ4IDAgNjAgMjYuODUyIDYwIDYwUzE5My4xNDggMTIwIDE2MCAxMjBIMTBjLTMzLjE0OCAwLTYwLTI2Ljg1Mi02MC02MFMxNi44NTIgMCA2MCAweiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iNTAiIHI9IjE4IiBmaWxsPSIjZGRkZGRkIi8+PGNpcmNsZSBjeD0iNjAiIGN5PSI4MCIgcj0iMjAiIGZpbGw9IiNkZGQiLz48L3N2Zz4=';
+    }
+  } else {
+    welcomeElement.textContent = 'Please log in to see your profile.';
+    profilePhoto.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHBhdGggZD0iTTYwIDBjMzMuMTQ4IDAgNjAgMjYuODUyIDYwIDYwUzE5My4xNDggMTIwIDE2MCAxMjBIMTBjLTMzLjE0OCAwLTYwLTI2Ljg1Mi02MC02MFMxNi44NTIgMCA2MCAweiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iNTAiIHI9IjE4IiBmaWxsPSIjZGRkZGRkIi8+PGNpcmNsZSBjeD0iNjAiIGN5PSI4MCIgcj0iMjAiIGZpbGw9IiNkZGQiLz48L3N2Zz4=';
+  }
+});
+
 
 // Tar HTML-element og tittel som argument.
 // Viser section som er mottatt
