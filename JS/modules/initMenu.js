@@ -1,4 +1,4 @@
-import { registerWithEmail, loginWithGoogle, signOut, signIn} from './dbConfig.js';
+import { loginWithGoogle, signOut, signIn} from './dbConfig.js';
 import{showLoginUI} from '/JS/main.js';
 
 /**
@@ -128,25 +128,9 @@ if (signOutBtn) {
 }
 
 
-registerBtn.addEventListener('click', async () => {
-  
-    if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-    }
-
-
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
- 
-   try {
-    await registerWithEmail(email, password);
-    // user is now signed in but unverified
-    } catch (error) {
-        console.log("Got error: " + error.message)
-        console.error(error);
-    }
-
+registerBtn.addEventListener('click', (event) => {
+  event.preventDefault(); //cancels browser's default action for this event
+  window.location.href = '/pages/register.html';
 });
 
 
