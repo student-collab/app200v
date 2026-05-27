@@ -1,3 +1,205 @@
-#hero-wrap{
-    height: 100vh;
+/* ===========================
+   KNAPPER
+   =========================== */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 20px;
+  font-size: 1rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn--primary {
+  background-color: var(--font-color-main);
+  color: var(--bg-color);
+}
+
+.btn--secondary {
+  background-color: var(--backgroundcolor-form-fields);
+  color: var(--font-color-main);
+  border: 1px solid var(--bordercolor-form-fields);
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--font-color-main);
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+/* ===========================
+   TITTEL (øverst)
+   =========================== */
+#landingpage {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1.5rem 2rem;
+  background-color: var(--bg-color);
+}
+
+#landingpage-content {
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+#landingpage-logo {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--font-color-main);
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+#landingpage-title {
+  font-size: 2rem;
+  line-height: 1.25;
+  color: var(--font-color-main);
+  margin: 0;
+}
+
+/* ===========================
+   LOGG INN
+   =========================== */
+#login-section {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background-color: var(--backgroundcolor-form-fields);
+  border-top: 1px solid var(--bordercolor-form-fields);
+  border-bottom: 1px solid var(--bordercolor-form-fields);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#login-section p {
+  font-size: 0.9rem;
+  color: var(--font-color-forms);
+  margin: 0;
+}
+
+/* ===========================
+   SE HVA ANDRE HAR LAGT UT
+   =========================== */
+#browse-section {
+  padding: 3rem 1.5rem;
+  background-color: var(--bg-color);
+  text-align: center;
+}
+
+.section-title {
+  font-size: 1.4rem;
+  color: var(--font-color-main);
+  margin: 0 0 1.5rem 0;
+}
+
+#browse-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+}
+
+.browse-card {
+  background-color: var(--backgroundcolor-form-fields);
+  border: 1px solid var(--bordercolor-form-fields);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  text-align: left;
+}
+
+.browse-card-category {
+  font-size: 0.8rem;
+  color: var(--font-color-forms);
+  margin: 0 0 0.25rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.browse-card h3 {
+  font-size: 1rem;
+  color: var(--font-color-main);
+  margin: 0 0 0.5rem 0;
+}
+
+.browse-card-location {
+  font-size: 0.85rem;
+  color: var(--font-color-forms);
+  margin: 0;
+}
+
+/* ===========================
+   VURDERINGER
+   =========================== */
+#reviews-section {
+  padding: 3rem 1.5rem;
+  background-color: var(--backgroundcolor-form-fields);
+  text-align: center;
+  border-top: 1px solid var(--bordercolor-form-fields);
+}
+
+#reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.review-card {
+  background-color: var(--bg-color);
+  border: 1px solid var(--bordercolor-form-fields);
+  border-radius: 12px;
+  padding: 1.25rem;
+  text-align: left;
+}
+
+.review-stars {
+  color: #f5c832;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.review-card p {
+  font-size: 0.95rem;
+  color: var(--font-color-main);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.5;
+}
+
+.review-author {
+  font-size: 0.85rem;
+  color: var(--font-color-forms);
+}
+
+/* ===========================
+   OM SIDEQUEST (bunn)
+   =========================== */
+#about-section {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background-color: var(--bg-color);
+  border-top: 1px solid var(--bordercolor-form-fields);
+}
+
+#about-text {
+  font-size: 0.85rem;
+  color: var(--font-color-forms);
+  max-width: 420px;
+  margin: 0 auto;
+  line-height: 1.6;
 }
