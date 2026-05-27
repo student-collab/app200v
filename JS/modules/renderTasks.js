@@ -167,6 +167,10 @@ Hvert kort består av:
         const price = document.createElement('span');
         price.className = 'task__price';
         price.textContent = `${task.pris} kr`;
+
+        const viewTask = document.createElement('span');
+        viewTask.className = 'task__view-btn';
+        viewTask.textContent = 'View Task >';
  
        // --- Icon ---
         const iconCategory = document.createElement('i');
@@ -184,6 +188,7 @@ Hvert kort består av:
         infWrap.append(location, rating, price);
         iWrap.appendChild(title);
         iWrap.appendChild(infWrap);
+        iWrap.appendChild(viewTask);
         yWrap.appendChild(iWrap);
                 
         if (iconUrgent) {

@@ -1,7 +1,7 @@
 /* * * * * * * * * *
  *  task element   *
  * * * * * * * * * */
- .oppgavelisten{text-align: left;}
+ .oppgavelisten{text-align: left; padding: 0 1rem;}
  .oppgavelisten>a{
     text-decoration: none;
  }
@@ -10,16 +10,19 @@
 { color:inherit;}
  
 .task{
-     padding:0 2em 0 2em;
+     padding:1rem;
      display: flex;
      justify-content: space-between;
      background-color: white;
+     border: solid 1px #e5e5e5;
      border-radius: 10px;
      margin-bottom: 1em;
+     
     }
-    
+
 .task__title {
-    margin-bottom:0;
+    margin: 0 0 0.35em 0; /* top right bottom left */
+
 }
 .task__info{
     display: flex;
@@ -31,7 +34,7 @@
 }
 .task__info svg{
     align-self: center;
-    margin-right:.5em;
+    margin-right:.2em;
 }
 .task__rating svg {color:#F2DA7C;}
 
@@ -44,6 +47,20 @@
 .task__price { 
     
     font-weight: bold;
+}
+
+.task__view-btn {
+  display: inline-block;
+  margin-top: 0.75em;
+  padding: 0.4em 0.9em;
+  border: 1px solid #d8d8d8;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 550;
+  
+  color: white;
+  background: linear-gradient(90deg, #6c5ce7, #5a4bcf);
+  
 }
 
 .task__img { 
