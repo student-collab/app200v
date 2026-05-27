@@ -87,7 +87,7 @@ function renderTask(task) {
       
 
       <div class="section">
-        <h3>Task Description</h3>
+        <h3>ABOUT THIS TASK</h3>
 
         <p>${task.description}</p>
       </div>
