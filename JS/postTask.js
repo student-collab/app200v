@@ -31,11 +31,15 @@ window.addEventListener('load', ()=>{
           #3 Hvis brukeren velger mindre en minimum: juster til minimum
     */
     slider.oninput = function() { output.value = this.value;}                           //#1
-    output.oninput = function() {
+    
+        output.addEventListener('focusout', () => {
         if (Number(output.value) > Number(slider.max)) {output.value = slider.max;}     //#2
         if (Number(output.value) < Number(slider.min)) {output.value = slider.min;}     //#3
         if (slider.value != output.value) { slider.value = output.value;}
-    }
+    
+});   
+    
+    
     // Når brukeren endrer tallet vises det større fordi det interesserer brukeren i øyeblikket
     function bigOutputDuringSlide (){output.classList.add("sliderActive")}
     function normalOutput (){output.classList.remove("sliderActive")}
@@ -64,7 +68,14 @@ async function postingTask (){
         payload.meta.tags    = [];
   
         const imageFiles = getDroppedFiles();
-        const docID = await setTask("", payload, imageFiles);
+        // const docID = await setTask("", payload, imageFiles); // silent fail
+        let docID;
+        try {
+        docID = await setTask("", payload, imageFiles);
+        console.info("Ferdig, ID:", docID);
+    } catch (err) {
+        console.error("setTask feilet:", err); 
+    }
         
         console.info(imageFiles);
         console.info ("Sent");
