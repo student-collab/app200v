@@ -162,6 +162,16 @@
   transition: all 0.2s ease;
 }
 
+.task__img--photo {
+  width: 4.25rem;
+  height: 4.25rem;
+  padding: 0;
+  border-radius: 0.5rem;
+  border: solid 1px #e5e5e5;
+  background: none;
+  object-fit: cover;
+}
+
 .task__img:hover,
 .task__img:active {
   opacity: 0.9;

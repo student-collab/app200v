@@ -65,6 +65,7 @@ function prepRender (task) {
         kategori: task.category,
         rating: task.rating,
         urgent:task.urgent,
+        images: task.images ?? [],
         distance: distanceRounded
     }
      if (mainInfo.length === 0 && false){ 

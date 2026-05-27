@@ -172,10 +172,22 @@ Hvert kort består av:
         viewTask.className = 'task__view-btn';
         viewTask.textContent = 'View Task >';
  
-       // --- Icon ---
-        const iconCategory = document.createElement('i');
-        iconCategory.dataset.lucide = CATEGORY_ICONS[task.kategori] ?? 'circle-help';
-        iconCategory.className = `task__img ${CSS_slugs[task.kategori]}`;
+       // --- Bilde/ikon: bruk opplastet bilde hvis tilgjengelig, ellers kategoriikon ---
+        const firstImage = Array.isArray(task.images) ? task.images[0] : null;
+        let mediaElement;
+
+        if (firstImage) {
+            const taskImage = document.createElement('img');
+            taskImage.src = firstImage;
+            taskImage.alt = task.title || 'Task image';
+            taskImage.className = 'task__img task__img--photo';
+            mediaElement = taskImage;
+        } else {
+            const iconCategory = document.createElement('i');
+            iconCategory.dataset.lucide = CATEGORY_ICONS[task.kategori] ?? 'circle-help';
+            iconCategory.className = `task__img ${CSS_slugs[task.kategori]}`;
+            mediaElement = iconCategory;
+        }
         
         let iconUrgent = null;
         if (task.urgent){
@@ -194,7 +206,7 @@ Hvert kort består av:
         if (iconUrgent) {
             yWrap.appendChild(iconUrgent);
         }   
-        yWrap.appendChild(iconCategory);
+        yWrap.appendChild(mediaElement);
         myDocFrag.appendChild(yWrap);
     });
     return myDocFrag;
