@@ -16,7 +16,7 @@
     getTask(id).then((res)=>{ 
           const show = document.getElementById('temp-show');
           const dataString =  JSON.stringify(res,null,2);
-          show.textContent = dataString.replace(/,\n/g, '\n').replace(/,\s*(?=\])/g, '\n');;
+          //show.textContent = dataString.replace(/,\n/g, '\n').replace(/,\s*(?=\])/g, '\n');;
           
           renderTask(res);
     });
@@ -82,10 +82,18 @@ function renderTask(task) {
         <p>${task.description}</p>
       </div>
 
+      <div class="button-row">
+
+        <button class="saveTask-btn">❤️ Save task</button> 
+        <button class="contact-btn">💬 Contact Poster</button> 
+        
+      </div>
       
-     <button class="saveTask-btn">❤️ Save task</button>
+      <div class="accept-btn">
+      <button class="saveTask-btn">✅ Accept task</button>
+      </div>
       
-    <button class="contact-btn">💬 Contact Poster</button>
+    
 
     </div>
   
