@@ -1,4 +1,4 @@
-//Author: Viktor Eliassen
+//Author: Viktor Eliassen. Reverted back to this version because it came uncontrollable.
 import { auth } from '../JS/modules/dbConfig.js';
 import { createChat, sendMessage, getChatsForUser, listenForMessages, getUser } from '../JS/modules/FS_Requests.js';
 
