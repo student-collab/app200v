@@ -18,7 +18,23 @@
   <section id="landingpage">
     <div id="landingpage-content">
       <h2 id="landingpage-logo">SideQuest</h2>
-      <h1 id="landingpage-title">Finn hjelp til småjobber og oppdrag i hele Norge</h1>
+      <h1 id="landingpage-title">Finn hjelp — eller tjen penger på det du er god på</h1>
+    </div>
+  </section>
+
+  <!-- STATISTIKK -->
+  <section id="stats-section">
+    <div class="stat-item">
+      <span class="stat-number">1 200+</span>
+      <span class="stat-label">Oppdrag lagt ut</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">800+</span>
+      <span class="stat-label">Registrerte brukere</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">Gratis</span>
+      <span class="stat-label">Å registrere seg</span>
     </div>
   </section>
 
@@ -51,6 +67,47 @@
     <a href="pages/oppgaveliste.html" class="btn btn--secondary">Se alle oppgaver</a>
   </section>
 
+  <!-- SLIK FUNGERER DET -->
+  <section id="how-section">
+    <h2 class="section-title">Slik fungerer det</h2>
+    <div id="how-tabs">
+      <button class="how-tab how-tab--active" data-tab="poster">Jeg trenger hjelp</button>
+      <button class="how-tab" data-tab="helper">Jeg vil ta jobber</button>
+    </div>
+    <div id="how-steps">
+      <div class="how-step" data-panel="poster">
+        <span class="how-icon">📋</span>
+        <h3>1. Legg ut oppdraget</h3>
+        <p>Beskriv hva du trenger hjelp til — tar bare ett minutt.</p>
+      </div>
+      <div class="how-step" data-panel="poster">
+        <span class="how-icon">🤝</span>
+        <h3>2. Motta tilbud</h3>
+        <p>Lokale hjelpere tar kontakt og gir deg tilbud.</p>
+      </div>
+      <div class="how-step" data-panel="poster">
+        <span class="how-icon">✅</span>
+        <h3>3. Få jobben gjort</h3>
+        <p>Velg hvem du vil ha, og få oppdraget fullført.</p>
+      </div>
+      <div class="how-step how-step--hidden" data-panel="helper">
+        <span class="how-icon">🔍</span>
+        <h3>1. Bla gjennom oppdrag</h3>
+        <p>Se ledige jobber nær deg innen kategorier du mestrer.</p>
+      </div>
+      <div class="how-step how-step--hidden" data-panel="helper">
+        <span class="how-icon">📩</span>
+        <h3>2. Send en forespørsel</h3>
+        <p>Ta kontakt med den som la ut oppdraget og avtal betingelser.</p>
+      </div>
+      <div class="how-step how-step--hidden" data-panel="helper">
+        <span class="how-icon">💰</span>
+        <h3>3. Tjen penger</h3>
+        <p>Fullfør jobben og bygg deg et godt rykte på plattformen.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- VURDERINGER -->
   <section id="reviews-section">
     <h2 class="section-title">Vurderinger</h2>
@@ -73,6 +130,13 @@
     </div>
   </section>
 
+  <!-- CTA -->
+  <section id="cta-section">
+    <h2 id="cta-title">Klar til å komme i gang?</h2>
+    <p id="cta-sub">Trenger du hjelp, eller vil du tjene litt ekstra? Registrer deg gratis og kom i gang i dag.</p>
+    <button class="btn btn--primary" data-landing-login>Start i dag</button>
+  </section>
+
   <!-- OM SIDEQUEST -->
   <section id="about-section">
     <p id="about-text">SideQuest er en plattform som kobler folk som trenger hjelp med småjobber og oppdrag med folk som vil hjelpe — enkelt, raskt og lokalt.</p>
@@ -83,6 +147,17 @@
   </nav>
 
   <script>
+    document.querySelectorAll('.how-tab').forEach(tab => {
+      tab.addEventListener('click', function () {
+        const target = this.dataset.tab;
+        document.querySelectorAll('.how-tab').forEach(t => t.classList.remove('how-tab--active'));
+        this.classList.add('how-tab--active');
+        document.querySelectorAll('.how-step').forEach(step => {
+          step.classList.toggle('how-step--hidden', step.dataset.panel !== target);
+        });
+      });
+    });
+
     document.addEventListener('click', function (e) {
       const btn = e.target.closest('[data-landing-login]');
       if (!btn) return;
