@@ -1,0 +1,114 @@
+<!--Author: Viktor Eliassen-->
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <title>Register</title>
+
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <meta name="description" content="" />
+  <link rel="stylesheet" href="../CSS/userProfile.css">
+  <link rel="stylesheet" href="../CSS/main.css">
+  <link rel="stylesheet" href="../CSS/editProfile.css">
+  <script src="../JS/main.js" type = "module" defer></script>
+  <script src="../JS/register.js" type = "module" defer></script>
+  <link rel="icon" href="../img/favicon.png">
+
+  
+
+</head>
+
+<body>
+  <!--TOP HEADER: EDIT PROFILE <- -->
+  <div class="subheader is-back" id="profileSubheader">
+        <div class="subheader-content">
+            <h2 id="subheaderTitle">Register</h2>
+           <span id="subheaderIcon">←</span>
+        </div>
+    </div>
+
+   <div class="main">
+
+  <h2>Profile information</h2>
+
+
+
+
+
+  <!--This is shown after clicking Edit Info-->
+  <form id="profileEditForm">
+    <div class="sectionHeader">Contact info</div>
+     <label for="editEmail"><strong>Email:</strong></label><br>
+    <input type="email" id="editEmail" maxlength="120" required>   *<br><br>
+
+    <label for="editPassword"><strong>Password:</strong></label><br>
+    <input type="password" id="editPassword" minlength="6" maxlength="120" required autocomplete="new-password">   *<br><br>
+
+     <label for="editPhone"><strong>Phone:</strong></label><br>
+    <input type="text" id="editPhone" maxlength="40" required>   *<br>
+
+    <div class="sectionHeader">About you</div>
+    <label for="editDisplayName"><strong>Display Name:</strong></label><br>
+    <input type="text" id="editDisplayName" maxlength="120" required>   *<br>
+    <label for="useFullNameAsDisplay">
+      <input type="checkbox" id="useFullNameAsDisplay">
+      Use real name as display name
+    </label><br><br>
+
+    <label for="editFirstName"><strong>First Name:</strong></label><br>
+    <input type="text" id="editFirstName" maxlength="80"><br><br>
+
+    <label for="editLastName"><strong>Last Name:</strong></label><br>
+    <input type="text" id="editLastName" maxlength="80"><br><br>
+
+    
+
+   
+
+    <label for="editGender"><strong>Gender:</strong></label><br>
+    <select id="editGender" name="gender" required>
+      <option value="" disabled>Select gender</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+    </select>   *<br><br> 
+
+    <div class="sectionHeader">Location</div>
+    <label for="editAddress"><strong>Address:</strong></label><br>
+    <input type="text" id="editAddress" maxlength="180"><br><br>
+
+    <label for="editLocation"><strong>City:</strong></label><br>
+    <input type="text" id="editLocation" maxlength="120"><br><br>
+
+    <label for="editMunicipalityId"><strong>Postal Code:</strong></label><br>
+    <input type="text" id="editMunicipalityId" maxlength="40"><br><br>
+
+    <label for="editCountry"><strong>Country:</strong></label><br>
+    <input type="text" id="editCountry" maxlength="120"><br><br>
+
+   <h4>(*) are required</h4>
+  </form>
+
+  
+
+  <p id="formStatus" aria-live="polite"></p>
+  <button id="editInfoBtn" class="editInfoBtn" type="submit" form="profileEditForm">Register</button>
+
+  </div>
+  
+  <nav id="replaceNav">
+              Blir erstattet av main.js  
+            </nav>
+  
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+</body>
+
+</html>
+

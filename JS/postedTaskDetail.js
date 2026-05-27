@@ -115,7 +115,7 @@ console.log(JSON.stringify(task));
       </div>
 
       <div class="creator-row">
-      <h4> by: ${task.createdBy?.uid} </h4>
+      <h4> by: ${task.createdBy?.displayName} </h4>
       </div>
 
       
