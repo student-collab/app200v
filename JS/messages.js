@@ -1,10 +1,8 @@
-//Author: Viktor Eliassen
+//Author: Viktor Eliassen. SCRIPT FOR MESSAGES PAGE THAT SHOWS LIST OF CONVERSATIONS
 import { auth } from '../JS/modules/dbConfig.js';
-import { createChat, sendMessage, getChatsForUser, listenForMessages, getUser } from '../JS/modules/FS_Requests.js';
+import { createChat, getChatsForUser, getUser } from '../JS/modules/FS_Requests.js';
 
-// Runtime state: active chat, active Firestore unsubscribe function, and cached users.
-let currentChatId = null;
-let stopListeningToMessages = null;
+// Runtime state: cached users and loaded chats.
 let usersById = {};
 let currentChats = [];
 
@@ -12,14 +10,8 @@ let currentChats = [];
 const createChatSelect = document.getElementById('createChat');
 const createChatBtn = document.getElementById('createChatBtn');
 const chatList = document.getElementById('chatList');
-const sendBtn = document.getElementById('sendBtn');
-const messageInput = document.getElementById('messageInput');
-const messages = document.getElementById('messages');
-const chatListView = document.getElementById('chatListView');
-const chatThreadView = document.getElementById('chatThreadView');
 const profileSubheader = document.getElementById('profileSubheader');
 const subheaderTitle = document.getElementById('subheaderTitle');
-const subheaderBackText = document.getElementById('subheaderBackText');
 
 const loadingChatsState = document.getElementById('loadingChatsState');
 const noChatsActiveState = document.getElementById('noChatsActiveState');
@@ -37,69 +29,6 @@ function getUserDisplayName(uid) {
 function getChatLabel(chat) {
   const otherUid = (chat.participants || []).find(uid => uid !== auth.currentUser?.uid);
   return otherUid ? getUserDisplayName(otherUid) : chat.id;
-}
-
-// List mode header: generic title, no back button, normal subheader styling.
-function setHeaderAsList() {
-  if (subheaderTitle) subheaderTitle.textContent = 'Messages';
-  subheaderBackText?.classList.add('hidden');
-  profileSubheader?.classList.remove('is-back');
-}
-
-// Chat mode header: title includes the other user's name and enables back affordance.
-function setHeaderAsChat(chatId) {
-  const chat = currentChats.find(c => c.id === chatId);
-  const chatName = chat ? getChatLabel(chat) : 'Unknown';
-
-  if (subheaderTitle) subheaderTitle.textContent = `Chat with ${chatName}`;
-  subheaderBackText?.classList.remove('hidden');
-  profileSubheader?.classList.add('is-back');
-}
-
-// Default page mode: show list, hide thread, reset header to "Messages".
-function showChatListView() {
-  chatListView?.classList.remove('hidden');
-  chatThreadView?.classList.add('hidden');
-  setHeaderAsList();
-}
-
-// Safety helper: ensures there is never more than one active Firestore listener.
-function stopActiveListener() {
-  if (stopListeningToMessages) {
-    stopListeningToMessages();
-    stopListeningToMessages = null;
-  }
-}
-
-// Back navigation state transition:
-// clear selected chat, stop realtime updates for old chat, clear old thread UI, show list.
-function backToChatList() {
-  currentChatId = null;
-  stopActiveListener();
-
-  if (messages) {
-    messages.innerHTML = '';
-  }
-
-  renderChatList(currentChats);
-  showChatListView();
-}
-
-// Open-chat transition:
-// set active chat, switch UI to thread mode, update header, then start realtime listener.
-function openChat(chatId) {
-  currentChatId = chatId;
-  renderChatList(currentChats);
-  chatListView?.classList.add('hidden');
-  chatThreadView?.classList.remove('hidden');
-  setHeaderAsChat(chatId);
-  startListeningToCurrentChat();
-}
-
-// Ensures we only keep one live listener: stop old listener, start new on selected chat.
-function startListeningToCurrentChat() {
-  stopActiveListener();
-  stopListeningToMessages = listenForMessages(currentChatId);
 }
 
 // Loads users once, caches them by uid, and fills the Create Chat dropdown.
@@ -121,22 +50,18 @@ async function loadUsers() {
     });
 }
 
-// Draws active chat buttons for changing between active chats. Clicking a button selects the chat and starts message listening.
+// Draws active chat links. Each link opens a dedicated chat page.
 function renderChatList(chats) {
   if (!chatList) return;
 
   chatList.innerHTML = '';
 
   chats.forEach(chat => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-
-    if (chat.id === currentChatId) btn.classList.add('active-chat-btn');
-    btn.textContent = getChatLabel(chat);
-    btn.addEventListener('click', () => {
-      openChat(chat.id);
-    });
-    chatList.appendChild(btn);
+    const link = document.createElement('a');
+    link.className = 'chat-list-link';
+    link.href = `./messagesChat.html?chatId=${encodeURIComponent(chat.id)}`;
+    link.textContent = getChatLabel(chat);
+    chatList.appendChild(link);
   });
 }
 
@@ -165,6 +90,9 @@ function updateChatStates(hasChats) {
 async function refreshMessagesPage() {
   if (!auth.currentUser) return;
 
+  if (subheaderTitle) subheaderTitle.textContent = 'Messages';
+  profileSubheader?.classList.remove('is-back');
+
   await loadUsers();
 
   const chats = await getChatsForUser(auth.currentUser.uid);
@@ -174,23 +102,6 @@ async function refreshMessagesPage() {
   updateChatStates(chats.length > 0);
 
   renderChatList(chats);
-
-  // If user has no chats: force list mode and exit early.
-  if (chats.length === 0) {
-    backToChatList();
-    return;
-  }
-
-  // Handles refreshes robustly: keep current chat open if it still exists,
-  // otherwise fall back to list mode.
-  const currentChatStillExists = chats.some(chat => chat.id === currentChatId);
-
-  if (currentChatId && currentChatStillExists) {
-    openChat(currentChatId);
-  } else {
-    backToChatList();
-  }
-  
 }
 
 // Initialize the page only when auth state is ready.
@@ -211,48 +122,4 @@ createChatBtn?.addEventListener('click', async () => {
   await refreshMessagesPage();
 
   if (createChatSelect) createChatSelect.selectedIndex = 0;
-});
-
-// Sends one message to the currently selected chat.
-async function sendCurrentMessage() {
-  if (!currentChatId || !auth.currentUser || !messageInput?.value.trim()) return;
-
-  await sendMessage(currentChatId, {
-    text: messageInput.value.trim(),
-    senderId: auth.currentUser.uid,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
-
-  messageInput.value = '';
-  autoResizeMessageInput();
-}
-
-function autoResizeMessageInput() {
-  if (!messageInput) return;
-
-  const maxHeight = 140;
-  messageInput.style.height = 'auto';
-
-  const nextHeight = Math.min(messageInput.scrollHeight, maxHeight);
-  messageInput.style.height = `${nextHeight}px`;
-  messageInput.style.overflowY = messageInput.scrollHeight > maxHeight ? 'auto' : 'hidden';
-}
-
-sendBtn?.addEventListener('click', async () => {
-  await sendCurrentMessage();
-});
-
-// Enter sends the message; Shift+Enter inserts a newline in the textarea.
-messageInput?.addEventListener('keydown', async (event) => {
-  if (event.key !== 'Enter' || event.shiftKey) return;
-  event.preventDefault();
-  await sendCurrentMessage();
-});
-
-messageInput?.addEventListener('input', autoResizeMessageInput);
-autoResizeMessageInput();
-
-// In chat mode, the whole subheader acts as a back control.
-profileSubheader?.addEventListener('click', () => {
-  if (!chatThreadView?.classList.contains('hidden')) backToChatList();
 });

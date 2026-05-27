@@ -1,0 +1,53 @@
+<!--Author: Viktor Eliassen-->
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <title>TeamWork</title>
+
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <meta name="description" content="" />
+  <link rel="stylesheet" href="../CSS/main.css">
+  <link rel="stylesheet" href="../CSS/messages.css">
+  <script src="../JS/main.js" type="module" defer></script>
+  <script src="../JS/messagesChat.js" type="module" defer></script>
+  <link rel="icon" href="../img/favicon.png">
+
+</head>
+
+<body>
+
+  <div class="subheader is-back" id="profileSubheader">
+    <div class="subheader-content">
+      <span id="subheaderBackText" class="subheader-back-text" aria-hidden="true">←</span>
+      <h2 id="subheaderTitle">Chat</h2>
+    </div>
+  </div>
+
+  <div class="container">
+    <p id="chatStatus" class="hidden"></p>
+
+    <div id="messages"></div>
+
+    <div class="inputRow">
+      <textarea id="messageInput" rows="1" placeholder="When can I come?"></textarea>
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+
+  <nav id="replaceNav">
+    Blir erstattet av main.js
+  </nav>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+</body>
+
+</html>
