@@ -95,6 +95,35 @@ header > div#logo-header > img{
  *      Login screen         *
  * * * * * * * * * * * * * * */
 .hidden{visibility: hidden; position: absolute;}
+/* Login loading animation */
+#loading-animation{
+    display:none;
+}
+#loading-animation.loading-active{
+display:flex;
+background-color: rgba(255, 255, 255, 0.7);;
+position: absolute;
+align-items: flex-end;
+left:50%;
+top: 50%;
+transform: translate(-50%, -50%);
+}
+.dot {
+  width: 6px; height: 6px; background: #34576e;
+  border-radius: 50%;
+  animation: bounce 1.2s infinite ease-in-out;
+}
+#dot_1{ animation-delay: 0s; margin-left:5px;}
+#dot_2{ animation-delay: 0.2s; }
+#dot_3{ animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+
+/* Login form*/
 #login-screen > #auth-form{
     margin: 2em ;
     display:flex;

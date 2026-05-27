@@ -12,48 +12,74 @@ import{showLoginUI} from '/JS/main.js';
  */
 
 export function initMenu(){
-    
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                         *
+ *  Finnes menyen? ellers avbryt                           *
+ *                                                         * 
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */    
         const NAV_MENU = document.getElementById("footer-menu");
         if (!NAV_MENU) {
                                 console.error('main navbar missing');
                                 return;
         }
     
-/* ------------------------------ login funksjonalitet  --------------------------------- */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                       *
+ *  Finnes også log-in-screen? - ellers avbryt           *
+ *                                                       * 
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * */    
+
+
  const LOGIN_SCREEN = document.getElementById("auth-form");
         if (!LOGIN_SCREEN) {
                                 console.error('login form not found!');
                                 return;
         }
-
-
-const signInBtn = document.getElementById("login-Btn");
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *  Elementer brukt i JavaScript: form, knapper, input   *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * */    
+const form = document.getElementById('auth-form');
+const signInBtn = document.getElementById('login-Btn');
 const ratherGoogleSignIn = document.getElementById('btn-google');
-const signOutBtn = document.getElementById("sign-out");
+const signOutBtn = document.getElementById('sign-out');
 const registerBtn  = document.getElementById('btn-register');
 const eyeSymbol = document.getElementById('toggle-password');
-const input = document.getElementById('password');
-const clearFields = document.getElementById("clear-fields");
+const passwordInputField = document.getElementById('password');
+const emailInputField = document.getElementById('email');
+const clearFields = document.getElementById('clear-fields');
 const eyeStroke = document.getElementById('eye-stroke');
-
+const loadAnim = document.getElementById('loading-animation');
 ratherGoogleSignIn.addEventListener('click', () =>  loginWithGoogle());
 
-ratherGoogleSignIn.addEventListener('click', (e) => {
-  e.preventDefault(); 
-  loginWithGoogle();
-});
+/* * * * * * * * * * * * * * * * * * * * * * * * * *
+ *   Deaktiverer input og knapp, viser animasjon.  *
+ * * * * * * * * * * * * * * * * * * * * * * * * * */
+function showLoading(){
+  loadAnim.classList.add('loading-active');
+  emailInputField.disabled=true;
+  passwordInputField.disabled=true;
+  registerBtn.disabled=true;
+  setTimeout(() => { 
+    emailInputField.disabled=false;
+    passwordInputField.disabled=false;
+    registerBtn.disabled=false;
+    loadAnim.classList.remove('loading-active');
+  }, 2000);
+}
 
 signInBtn.addEventListener('click', async ()=>{
-    
+  
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
+  if (!(email || password)){form.reportValidity(); return;}
+  showLoading(); 
+
   try {
-        await signIn(email, password);
+await signIn(email, password);
       } catch (error) {
             console.log("Got error: " + error.message)
             console.error(error);
       }
-    
 });
 
 clearFields.addEventListener('click', ()=> LOGIN_SCREEN.reset());
@@ -69,15 +95,19 @@ eyeSymbol.addEventListener('touchstart', (e) => {
 });
 eyeSymbol.addEventListener('touchend', hideUsrInput);
 
+ratherGoogleSignIn.addEventListener('click', (e) => {
+  e.preventDefault(); 
+  loginWithGoogle();
+});
 
 
 function hideUsrInput () {
-  input.type = 'password';
+  passwordInputField.type = 'password';
   eyeStroke.classList.remove('eye-open');
 }
 
 function showUsrInput () {
-  input.type = 'text';
+  passwordInputField.type = 'text';
   eyeStroke.classList.add('eye-open');
   
 }
@@ -99,7 +129,7 @@ if (signOutBtn) {
 
 
 registerBtn.addEventListener('click', async () => {
-  const form = document.getElementById('auth-form');
+  
     if (!form.checkValidity()) {
         form.reportValidity();
         return;
