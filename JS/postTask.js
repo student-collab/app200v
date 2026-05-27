@@ -32,11 +32,14 @@ window.addEventListener('load', ()=>{
     */
     slider.oninput = function() { output.value = this.value;}                           //#1
     
-    output.onblur  = () => {
+    output.addEventListener('focusout', () => {
         if (Number(output.value) > Number(slider.max)) {output.value = slider.max;}     //#2
         if (Number(output.value) < Number(slider.min)) {output.value = slider.min;}     //#3
         if (slider.value != output.value) { slider.value = output.value;}
-    }
+    
+});   
+    
+    
     // Når brukeren endrer tallet vises det større fordi det interesserer brukeren i øyeblikket
     function bigOutputDuringSlide (){output.classList.add("sliderActive")}
     function normalOutput (){output.classList.remove("sliderActive")}
