@@ -1,6 +1,7 @@
 
-// importerer funksjonen som skal brukes
-  import {getTask} from './modules/FS_Requests.js';
+// importerer funksjonene som skal brukes
+  import {getTask, createChat} from './modules/FS_Requests.js';
+  import {auth} from './modules/dbConfig.js';
 
 
   /*
@@ -98,4 +99,19 @@ function renderTask(task) {
     </div>
   
   `;
+
+  //Creates a chat with between the logged in user and the poster of the task
+  const contactBtn = document.querySelector('.contact-btn');
+  contactBtn?.addEventListener('click', async () => {
+    const currentUserId = auth.currentUser?.uid;
+    const posterId = task?.createdBy?.uid || task?.creatorId;
+
+    if (!currentUserId || !posterId || currentUserId === posterId) return;
+
+    const participants = [currentUserId, posterId];
+    const chatId = [...participants].sort().join('_');
+
+    await createChat(chatId, participants);
+    window.location.href = `./messagesChat.html?chatId=${encodeURIComponent(chatId)}`;
+  });
 }
