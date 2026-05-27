@@ -97,6 +97,17 @@ async function getUserTasks(createdByUID) {
     ...doc.data()
   }));
 }
+async function getSavedTaskIds(uid) {
+  const doc = await db.collection('users').doc(uid).get();
+
+  if (!doc.exists) {
+    console.warn('User not found:', uid);
+    return [];
+  }
+
+  return doc.data().savedTaskIds ?? [];
+}
+
 async function getTask(taskId = "") {
     if(taskId == ""){
         console.log("getTask without taskId");
@@ -177,7 +188,7 @@ export async function readFSdb(path = 'collection/document') {
   }
 }
 
-export {getUsersSavedTasks, getUserTasks, getUser, getTask, setTask, updateTask, deleteTask, clearField};
+export {getSavedTaskIds, getUsersSavedTasks, getUserTasks, getUser, getTask, setTask, updateTask, deleteTask, clearField};
 
 //Oppretter eller oppdaterer en bruker i 'users' collection i Firestore
 export async function setUser(userId, data) { //userId= Firebase Authenticator ID
