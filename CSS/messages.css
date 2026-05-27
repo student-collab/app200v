@@ -93,10 +93,7 @@ body {
 
 #chatList button {
 	width: 100%;
-	padding: 14px;
-	display: flex;
-	align-items: center;
-	gap: 10px;
+	padding: 30px;
 	text-align: left;
 	border: 1px solid #000000;
 	border-radius: 8px;
@@ -105,67 +102,6 @@ body {
 	font-size: 15px;
 	color:#000000;
 	
-}
-
-.chat-item-text {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	min-width: 0;
-	flex: 1;
-}
-
-.chat-top-row,
-.chat-bottom-row {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 10px;
-}
-
-.chat-name {
-	font-weight: 700;
-	line-height: 1.2;
-}
-
-.chat-time-ago {
-	font-size: 12px;
-	font-weight: 500;
-	color: #4b5563;
-	white-space: nowrap;
-}
-
-.chat-preview {
-	font-size: 13px;
-	font-weight: 400;
-	color: #333333;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	flex: 1;
-}
-
-.chat-unread-count {
-	min-width: 22px;
-	height: 22px;
-	padding: 0 6px;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 999px;
-	background: #1d4ed8;
-	color: #ffffff;
-	font-size: 12px;
-	font-weight: 700;
-	line-height: 1;
-}
-
-.chat-avatar {
-	width: 48px;
-	height: 48px;
-	border-radius: 50%;
-	object-fit: cover;
-	flex-shrink: 0;
 }
 
 
