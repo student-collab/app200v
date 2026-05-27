@@ -32,7 +32,7 @@ window.addEventListener('load', ()=>{
     */
     slider.oninput = function() { output.value = this.value;}                           //#1
     
-    output.addEventListener('focusout', () => {
+        output.addEventListener('focusout', () => {
         if (Number(output.value) > Number(slider.max)) {output.value = slider.max;}     //#2
         if (Number(output.value) < Number(slider.min)) {output.value = slider.min;}     //#3
         if (slider.value != output.value) { slider.value = output.value;}
