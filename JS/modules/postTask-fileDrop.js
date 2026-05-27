@@ -9,15 +9,7 @@ export function getDroppedFiles() { return files; }
 /* ── sletter fil-listen ───────────────────────── */
 export function clearDroppedFiles() { files = []; render(); }
 
-
-window.addEventListener('load', ()=>{  
-  const zone    = document.getElementById('file-drop');
-  const input   = document.getElementById('file-drop__input');
-  const list    = document.getElementById('file-drop__list');
-  const status  = document.getElementById('file-drop__status');
-
-
-
+let zone, input, list, status;
 
 /* ── Hjelpere ─────────────────────────────────────────────────── */
 function fmtSize(b) {
@@ -75,6 +67,13 @@ function addFiles(incoming) {
   render();
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  zone   = document.getElementById('file-drop');
+  input  = document.getElementById('file-drop__input');
+  list   = document.getElementById('file-drop__list');
+  status = document.getElementById('file-drop__status');
+
+  // all the event listeners go here, unchanged
 
 
 /* ── Drag & drop ──────────────────────────────────────────────── */
