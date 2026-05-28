@@ -97,8 +97,35 @@ async function injectNav(){
           }
 
           locationDOM.parentNode.replaceChild(fragment, locationDOM);
+          markCurrentNavItem();
       }
   console.log("inserted menu");
+}
+
+function markCurrentNavItem() {
+  const navLinks = document.querySelectorAll('#footer-menu a.nav-item');
+  if (!navLinks.length) return;
+
+  const normalizePath = (path) => (path || '/').replace(/\/+$/, '').toLowerCase() || '/';
+  const currentPath = normalizePath(window.location.pathname);
+  const currentFileName = currentPath.split('/').pop() || '';
+  const aliases = new Set(['', 'index.html', 'index']);
+
+  navLinks.forEach((link) => {
+    const linkPath = normalizePath(link.getAttribute('href'));
+    const linkFileName = linkPath.split('/').pop() || '';
+
+    const isMatch = currentPath === linkPath ||
+      (aliases.has(currentFileName) && linkFileName === 'oppgaveliste.html');
+
+    if (isMatch) {
+      link.setAttribute('aria-current', 'page');
+      link.classList.add('is-active');
+    } else {
+      link.removeAttribute('aria-current');
+      link.classList.remove('is-active');
+    }
+  });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

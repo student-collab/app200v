@@ -49,7 +49,7 @@
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-messages"/></svg>
     <span>Messages</span>
   </a>
-  <a class="nav-item" href="/pages/userProfile.html" aria-current="page">
+  <a class="nav-item" href="/pages/userProfile.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-profile"/></svg>
     <span>Profile</span>
   </a>
