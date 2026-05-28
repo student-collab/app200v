@@ -142,8 +142,7 @@ body {
 	justify-content: flex-start;
     align-items: center;
 	gap: 0.6rem;
-    border-top: 2px solid #ddd;
-    border-bottom: 2px solid #ddd;
+    border-bottom: 2px solid rgb(229, 229, 229);
 }
 
 .subheader-content h2 {

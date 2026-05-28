@@ -78,8 +78,8 @@ body{
 header{
     display:flex;
     justify-content: space-between;
-    border-bottom: 2px solid var(--border-color);
-    margin-bottom: 2em;
+    border-bottom: 2px solid rgb(229, 229, 229);
+  
 }
 header div#logo-header{
     display:flex;

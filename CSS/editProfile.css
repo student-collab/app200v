@@ -15,7 +15,7 @@
     font-size: 1.30em;
     font-weight: 700;
     margin: 1em 0 1em 0;
-    border-bottom: 2px solid #ddd;
+    border-bottom: 2px solid rgb(229, 229, 229);
 }
 
 .editInfoBtn {

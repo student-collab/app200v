@@ -19,7 +19,7 @@ body {
 header{
     display:flex;
     justify-content: space-between;
-    border-bottom: 2px solid #ddd;
+    border-bottom: 2px solid rgb(229, 229, 229);
 }
 header div#logo-header{
     display:flex;
