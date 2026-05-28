@@ -15,12 +15,12 @@ const buttons = sectionWrap.querySelectorAll(".nav-knapper");
       const btn = e.target.closest('[data-section]');
       if (!btn) return;
       const section = document.getElementById(btn.dataset.section);
-      showSection(section, btn.dataset.title);
+      showSection(section, btn.dataset.title, btn);
   });
 
 // Tar HTML-element og tittel som argument.
 // Viser section som er mottatt
-function showSection(section, title) {
+function showSection(section, title, activeButton) {
   
   // Skjuler alle sections, for sikkerhetsskyld, alle er skjult i utgangspunktet
   // Fint å jobbe med under kode utviklingen
@@ -29,8 +29,10 @@ function showSection(section, title) {
     view.style.border = '2px solid coral';
   });
   
-  // Skjuler alle section knapper
-  // buttons.forEach(btn => btn.style.display = 'none');
+  // Skjuler alle section knapper siden subheaderen allerede viser aktiv side
+  buttons.forEach(btn => {
+    btn.style.display = 'none';
+  });
   // Skjuler userInfo
     userInfo.style.display = 'none';
     section.style.display = 'block';
@@ -43,7 +45,7 @@ function showProfile() {
     sections.forEach(view => view.style.display = 'none');
     userInfo.style.display = 'block';
     buttons.forEach(btn =>btn.style.display = 'flex');
-    subheaderTitle.textContent = 'My Profile';
+    subheaderTitle.textContent = 'Brukerprofil';
     subheaderIcon.innerHTML = '&#9881';
     profileSubheader.classList.remove('is-back');
 }  
