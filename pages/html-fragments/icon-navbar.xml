@@ -35,23 +35,23 @@
 <nav id="footer-menu" aria-label="Main navigation">
   <a class="nav-item" href="/pages/oppgaveliste.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-home"/></svg>
-    <span>Feed</span>
+    <span>Jobber</span>
   </a>
   <a class="nav-item" href="/pages/notifications.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-notifications"/></svg>
-    <span>Notifications</span>
+    <span>Varsler</span>
   </a>
   <a class="nav-item" href="/pages/post-task.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-post"/></svg>
-    <span>Post</span>
+    <span>Opprett</span>
   </a>
   <a class="nav-item" href="/pages/messages.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-messages"/></svg>
-    <span>Messages</span>
+    <span>Meldinger</span>
   </a>
   <a class="nav-item" href="/pages/userProfile.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-profile"/></svg>
-    <span>Profile</span>
+    <span>Profil</span>
   </a>
 
   <!--Devinfo midlertidig slide start-->
