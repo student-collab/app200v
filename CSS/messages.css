@@ -31,6 +31,7 @@ body {
 	border-radius: 8px; /*intensity of border edge turn radius*/
 	max-width: 250px;/*max width of the message box before it starts a new line*/
 	overflow-wrap: break-word; /*forces long unbroken messages, for example DDDDDDDDDDDDDDDDDDD to wrap inside the box*/
+	
 }
 
 .message-text {
@@ -192,12 +193,17 @@ body {
 	white-space: pre-wrap;
 	word-break: break-word;
 	border-radius: 6px;
+	font-family: inherit;
+	
 }
 
 #sendBtn {
 	min-height: 40px;
 	padding: 0 14px;
-	background-color: lightblue;
+	background-color: #6c5ce7;
+	color: white;
 	border: solid 2px;
 	border-radius: 10px;
+	font-family: inherit;
+	font-weight: 500;
 }
