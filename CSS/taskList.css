@@ -59,7 +59,7 @@
   font-weight: 550;
   
   color: white;
-  background: linear-gradient(90deg, #6c5ce7, #5a4bcf);
+  background: var(--button-main-color);
   
 }
 

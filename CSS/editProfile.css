@@ -19,7 +19,7 @@
 }
 
 .editInfoBtn {
-    background-color: #6c5ce7;
+    background-color: var(--button-main-color);
     color: white;
     padding: 10px 25px;
     border: none; /* no black border line */

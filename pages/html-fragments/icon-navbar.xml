@@ -35,7 +35,7 @@
 <nav id="footer-menu" aria-label="Main navigation">
   <a class="nav-item" href="/pages/oppgaveliste.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-home"/></svg>
-    <span>Jobber</span>
+    <span>Oppdrag</span>
   </a>
   <a class="nav-item" href="/pages/notifications.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-notifications"/></svg>

@@ -1,6 +1,6 @@
   <header id = "inserted-header">
     <div id = "logo-header">
-      <img style = "width:25px; height:25px;" src="/img/testSize/SQ.png" alt="Logo: SQ" >
+      <img style = "width:25px; height:25px;" src="/img/testSize/sq-greenNew.png" alt="Logo: SQ" >
       <h1>SideQuest</h1>
     </div>
     <div id="login-clickable"  data-role="login-trigger">
