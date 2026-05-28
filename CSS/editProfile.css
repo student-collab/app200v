@@ -19,12 +19,14 @@
 }
 
 .editInfoBtn {
-    background-color: lightblue;
+    background-color: #6c5ce7;
+    color: white;
     padding: 10px 25px;
     border: none; /* no black border line */
     border-radius: 12px; /* rounded corners */
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 500;
+    font-family: inherit;
     cursor: pointer; /* hand cursor when hovering */
     
 }
@@ -33,6 +35,28 @@
     list-style: none;
     padding-left: 0;
     margin: 0;
+}
+
+#profileInfoList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+#profileInfoList li:last-child {
+    border-bottom: none;
+}
+
+#profileInfoList li strong {
+    color: #888;
+    font-weight: 400;
+}
+
+#profileInfoList li span {
+    font-weight: 600;
+    text-align: right;
 }
 
 #profileEditForm input, select{

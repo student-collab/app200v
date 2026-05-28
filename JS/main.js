@@ -102,6 +102,7 @@ async function injectNav(){
   console.log("inserted menu");
 }
 
+//For marking the current active bottom nav-bar page we are on so we can paint it purple
 function markCurrentNavItem() {
   const navLinks = document.querySelectorAll('#footer-menu a.nav-item');
   if (!navLinks.length) return;
