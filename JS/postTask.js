@@ -2,6 +2,7 @@ import {auth} from './modules/dbConfig.js';
 
 import {getUser, setTask} from './modules/FS_Requests.js'; 
 import { getDroppedFiles, clearDroppedFiles } from './modules/postTask-fileDrop.js';
+import { insertMap, getPinnedLoacationData } from './modules/insertGoogleMaps.js';
 
 window.addEventListener('load', ()=>{
 
@@ -43,63 +44,65 @@ window.addEventListener('load', ()=>{
     function normalOutput (){output.classList.remove("sliderActive")}
 })
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     * 
-     * 
-     * 
-     * 
-     * 
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-
     let payload = {}; 
 async function postingTask (){
-/* * * * * * * * * * * * * * * * * * *
- *  Sjekker at alle felt er utfylt   *
- * * * * * * * * * * * * * * * * * * */
-        const FORM = document.getElementById('form__post-task');
-        if (!FORM.checkValidity()) {
-            FORM.reportValidity(); 
-            return; // Stopper hvis skjema ikke er fylt
-        }
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *  Henter brukerens id, avbryter hvis ikke funnet     *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * */
         const user = auth.currentUser;
         if (!user) return;
-        payload.createdBy = { uid: user.uid, ePost: user.email };
 
-/* * * * * * * * * * * * * * * * * * * * * * * * *
- *  Definering av payload, objekt for sending    *
- * * * * * * * * * * * * * * * * * * * * * * * * */
-
-payload ={
-        title: "", description: "", status: "open", pris: 0,
-        category:"",
-        meta: {},
-        assignee: { uid: "", ePost: "" },
-        createdBy: { uid: "", ePost: "" },
-        location: { kommune: "", longitude: 0, latitude: 0 },
-        urgent: false,
-        images: []
-    };
-/* * * * * * * * * * * * * * * * * * * *
- *  Manuell innsamling av formdata     *
- * * * * * * * * * * * * * * * * * * * */
-        const valgtPris = document.getElementById("viser-pris").value;
-        payload.pris = Number(valgtPris);
-        payload.title       = document.getElementById("task-title").value;
-        payload.description = document.getElementById("beskrivelse").value;
-        payload.category    = document.getElementById("kategori").value;
-        payload.urgent      = document.getElementById("urg-toggle-btn").checked;
-        payload.location.address = "not storing adress - rather the coordinates";
-        payload.meta.created = firebase.firestore.FieldValue.serverTimestamp();
-        payload.meta.tags    = [];
-  
+/* * * * * * * * * * * * * * * * * * *
+ *  Sjekker at alle felt er utfylt   *
+ * * * * * * * * * * * * * * * * * * */
+        const FORM = document.getElementById('form__post-task');
+        if (!FORM.checkValidity()){
+            FORM.reportValidity(); 
+            return; // Stopper hvis skjema ikke er fylt
+        }
+        
+        /* * * * * * * * * * * * * * * * * * * * * * * * *
+        *  Definering av payload, objekt for sending    *
+        * * * * * * * * * * * * * * * * * * * * * * * * */
+       
+       payload ={
+           status:"open", 
+           urgent:false,
+           title: "", 
+           category:"", 
+           description: "", 
+           pris: 0,
+           createdBy: { displayName:"", uid: "", ePost: "" },
+           created:0,
+           assignee: { pendingRequest:[], uid: "", ePost: "" },
+           location: { kommune: "", longitude: 0, latitude: 0 },
+           urgent: false,
+           images: []
+        };    
+        /* * * * * * * * * * * * * * * * * * * *
+        *  Manuell innsamling av formdata     *
+        * * * * * * * * * * * * * * * * * * * */
+       const valgtPris = document.getElementById("viser-pris").value;
+       // Status skal være "open"
+       payload.urgent      = document.getElementById("urg-toggle-btn").checked;
+       payload.title       = document.getElementById("task-title").value;
+       payload.category    = document.getElementById("kategori").value;
+       payload.description = document.getElementById("beskrivelse").value;
+       payload.pris = Number(valgtPris);
+       payload.createdBy = { displayName:user.displayName, uid: user.uid, ePost: user.email };
+       payload.created = firebase.firestore.FieldValue.serverTimestamp();
+       //asignee skal være tom
+       payload.location = getPinnedLoacationData();
+        /**
+        *       Bilder sendes separat til setTask 
+        *       Først lagres bilder i storage bucket, en url returneres.
+        *       Den returnerte url-en føyes til payload
+        */
         const imageFiles = getDroppedFiles(); // postTask-fileDrop.js 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *  Opplasting til Firebase, skjer i FS_requests.js    *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
+        *  Opplasting til Firebase, skjer i FS_requests.js    *
+        * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        console.log(JSON.stringify(payload));
         docID = await setTask("", payload, imageFiles);
         console.info("Ferdig, ID:", docID);
         // Sletter intern fil-liste og tømmer den synlige fil-listen
@@ -107,25 +110,10 @@ payload ={
         
     }
     
-    
-/* Alt som har med kart kan flyttes ut  */
-/*
-
-Det er ikke ønskelig med kart på oppretting av profil.
-Hvi kartet kun brukes når brukeren post en task...
-Da kan den være en modul knyttet inn her med import. 
-
-Hvis den skal brukes flere steder bør den være standalone 
-
-Spøsrmål: Skal jeg linke den inn i HTML 
-
-*/
 auth.onAuthStateChanged((user)=>{
 
                 if (user) {
                     insertMap();
-                    payload.assignee.ePost = user.email;
-                    payload.assignee.uid = user.uid;
                 }
                 else {
                     // User is not signed in
@@ -135,107 +123,6 @@ auth.onAuthStateChanged((user)=>{
 
     });
 
-    
-function insertMap() {
-    var MY_API_KEY = "AIzaSyB-CC4QtLrD-HD9_63IQFhNroyE8pnOOQY";
-    const APILoader = document.createElement("script");
-    APILoader.src = "https://maps.googleapis.com/maps/api/js?key=" + MY_API_KEY + "&callback=initMap";
-    document.head.appendChild(APILoader);
-
-}
-
 
   
-window.initMap = function() {
-    // Define Norway's bounding box
-    const norwayBounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(57.96, 4.75),    // Southwest corner
-        new google.maps.LatLng(71.19, 31.29)    // Northeast corner
-    );
-
-    const mapProp = {
-        center: new google.maps.LatLng(59.3678,10.4438),  
-        /* rundkjøringen ved USN Bakkenteigen 59.36784716115497 10.44389835143527 */
-        zoom: 10,
-        restriction: {
-            latLngBounds: norwayBounds,
-            strictBounds: true
-        }
-    };
-    const map = new google.maps.Map(document.getElementById("map-sidebar"), mapProp);
-    const geocoder = new google.maps.Geocoder();
-
-    google.maps.event.addListener(map, 'click', function(event) {
-        var lat = event.latLng.lat();
-        var lng = event.latLng.lng();
-        console.log('Clicked Coordinates:', lat, lng);
-        placePin(lat, lng);
-        reverseGeocode(lat, lng)
-        .then(selectedLocation => fillForm(lat, lng, selectedLocation))
-        .catch(error => console.error(error));
-        
-    });
-
-    
-    function placePin(lat, lng){
-    console.log("placePin");
-    if (window._taskMarker) window._taskMarker.setMap(null);
-    window._taskMarker = new google.maps.Marker({
-        position: { lat, lng },
-        map,
-    });
-    }
-    function reverseGeocode(lat, lng) {
-        return new Promise((resolve, reject) => {
-            console.log("reverseGeocode");
-            geocoder.geocode({ location: { lat, lng } }, (results, status) => {
-                if (status !== "OK" || !results) {
-                    console.error("Reverse geocode failed:", status);
-                    reject(new Error("Reverse geocode failed: " + status));
-                    return;
-                }
-                const components = results[0].address_components;
-                
-                let selectedLocation = {
-                    lat,
-                    lng,
-                    address: results[0].formatted_address,
-                    municipality: extractComponent(components, "administrative_area_level_2")
-                                || extractComponent(components, "locality")
-                                || extractComponent(components, "administrative_area_level_1"),
-                    county: extractComponent(components, "administrative_area_level_1"),
-                };
-
-
-
-                resolve(selectedLocation); 
-            });
-        });
-    }
-    function extractComponent(components, type) {
-                    const match = components.find((c) => c.types.includes(type));
-                    return match ? match.long_name : null;
-                }
-    function fillForm(lat, lng, selectedLocation){
-        console.info(selectedLocation);
-        console.log("lat: " + lat + " lng: " + lng);
-
-        const kommuneInput = document.getElementById("kommune");
-        const userLocation = (selectedLocation.address) ?? "";
-        kommuneInput.value = userLocation + " " + selectedLocation.municipality + " kommune" ;
-        payload.location.kommune = selectedLocation.municipality;
-        payload.location.latitude = lat;
-        payload.location.longitude = lng;
-        
-      
-    }
-    
-
-}
-
-/*
-export function getPayload() {
-  return payload;
-}
-  */
  
