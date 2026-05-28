@@ -245,7 +245,7 @@ showLoginInfo2.textContent = "Brukerid: " + user.uid;
 showLoginInfo3.textContent = "e-post: " + user.email;
 inlogInfo.classList.remove('hidden');
 console.log("ShowLogOut");
-  userStatus.textContent = "Innlogget";
+  userStatus.textContent = user.displayName ?? "Innlogget";
   logInForm.classList.add('hidden');
   
 }

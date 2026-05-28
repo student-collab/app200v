@@ -149,14 +149,21 @@ header > #login-clickable{
     border:2px solid #c2c3c7;
     border-radius: 10px;
     transition: all 150ms ease-in ;
+    font-weight: 500;
 }
 #login-screen button{
     border-radius: 20px;
     border: 1px solid var(--bordercolor-form-fields);
     background-color: var(--backgroundcolor-form-fields);
+    padding: 12px;
+    font-family: inherit;
+    font-weight: bold;
 }
 #login-screen input{
     border: 2px solid var(--bordercolor-form-fields);
+    border-radius: 5px;
+    padding: 12px;
+    font-family: inherit;
 }
 #login-screen.hidden{
 transform: translateY(-250px);
