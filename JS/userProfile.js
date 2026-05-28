@@ -190,6 +190,11 @@ function clearTaskContainers() {
   document.getElementById("saved-tasks")?.replaceChildren();
 }
 
+const editProfileButton = document.querySelector('.editProfileBtn');
+editProfileButton?.addEventListener('click', () => {
+  window.location.href = 'editProfile.html';
+});
+
  /*
 
 {

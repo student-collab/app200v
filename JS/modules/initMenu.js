@@ -1,4 +1,4 @@
-import { loginWithGoogle, signOut, signIn} from './dbConfig.js';
+import { loginWithGoogle, signOut, signIn, db } from './dbConfig.js';
 import{showLoginUI} from '/JS/main.js';
 
 /**
@@ -49,7 +49,21 @@ const emailInputField = document.getElementById('email');
 const clearFields = document.getElementById('clear-fields');
 const eyeStroke = document.getElementById('eye-stroke');
 const loadAnim = document.getElementById('loading-animation');
-ratherGoogleSignIn.addEventListener('click', () =>  loginWithGoogle());
+
+// Google sign-in does auth only.
+// We also need a profile document in users/{uid} for the app to work.
+// If users/{uid} is missing, send the user to register page in
+// "complete profile" mode instead of leaving them half-registered.
+async function signInWithGoogleAndRoute() {
+  const user = await loginWithGoogle();
+  if (!user) return;
+
+  // Firebase UID is used as document id in users collection.
+  const userDoc = await db.collection('users').doc(user.uid).get();
+  if (!userDoc.exists) {
+    window.location.href = '/pages/register.html?completeProfile=1';
+  }
+}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * *
  *   Deaktiverer input og knapp, viser animasjon.  *
@@ -95,9 +109,15 @@ eyeSymbol.addEventListener('touchstart', (e) => {
 });
 eyeSymbol.addEventListener('touchend', hideUsrInput);
 
-ratherGoogleSignIn.addEventListener('click', (e) => {
+ratherGoogleSignIn.addEventListener('click', async (e) => {
   e.preventDefault(); 
-  loginWithGoogle();
+  try {
+    // Single entry point for Google login + profile existence check.
+    await signInWithGoogleAndRoute();
+  } catch (error) {
+    console.log('Google sign-in failed:', error?.message || error);
+    console.error(error);
+  }
 });
 
 
