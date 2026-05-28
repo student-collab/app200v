@@ -26,87 +26,93 @@
   <!--TOP HEADER: EDIT PROFILE <- -->
   <div class="subheader is-back" id="profileSubheader">
         <div class="subheader-content">
-            <h2 id="subheaderTitle">Edit Profile</h2>
+            <h2 id="subheaderTitle">Rediger profil</h2>
            <span id="subheaderIcon">←</span>
         </div>
     </div>
 
    <div class="main">
 
-  <h2>Profile information</h2>
+  <h2>Profilinformasjon</h2>
 
 
   <ul id="profileInfoList">
-    <div class="sectionHeader">Contact info</div>
-    <li><strong>Email</strong> <span id="profileEmail">Loading...</span></li>
-    <li><strong>Phone number</strong> <span id="profilePhone">Loading...</span></li>
-    <div class="sectionHeader">About you</div>
-    <li><strong>Display Name</strong> <span id="profileDisplayName">Loading...</span></li>
-    <li><strong>First Name</strong> <span id="profileFirstName">Loading...</span></li>
-    <li><strong>Last Name</strong> <span id="profileLastName">Loading...</span></li>
-    <li><strong>Gender</strong> <span id="profileGender">Loading...</span></li>
-    <div class="sectionHeader">Location</div>
-    <li><strong>Address</strong> <span id="profileAddress">Loading...</span></li>
-    <li><strong>City</strong> <span id="profileLocation">Loading...</span></li>
-    <li><strong>Postal code</strong> <span id="profileMunicipalityId">Loading...</span></li>
-    <li><strong>Country</strong> <span id="profileCountry">Loading...</span></li>
+    <div class="sectionHeader">Kontaktinfo</div>
+    <li><strong>E-post</strong> <span id="profileEmail">Loading...</span></li>
+    <li><strong>Telefonnummer</strong> <span id="profilePhone">Loading...</span></li>
+    <div class="sectionHeader">Om deg</div>
+    <li><strong>Visningsnavn</strong> <span id="profileDisplayName">Loading...</span></li>
+    <li><strong>Fornavn</strong> <span id="profileFirstName">Loading...</span></li>
+    <li><strong>Etternavn</strong> <span id="profileLastName">Loading...</span></li>
+    <li><strong>Kjønn</strong> <span id="profileGender">Loading...</span></li>
+    <div class="sectionHeader">Sted</div>
+    <li><strong>Adresse</strong> <span id="profileAddress">Loading...</span></li>
+    <li><strong>By</strong> <span id="profileLocation">Loading...</span></li>
+    <li><strong>Postnummer</strong> <span id="profileMunicipalityId">Loading...</span></li>
+    <li><strong>Land</strong> <span id="profileCountry">Loading...</span></li>
   </ul>
 
 
   <!--This is shown after clicking Edit Info-->
   <form id="profileEditForm" style="display:none;">
-    <div class="sectionHeader">Contact info</div>
-     <label for="editEmail"><strong>Email:</strong></label><br>
+    
+
+    <div class="sectionHeader">Kontaktinfo</div>
+     <label for="editEmail"><strong>E-post:</strong></label><br>
     <input type="email" id="editEmail" maxlength="120" required>   *<br><br>
 
-     <label for="editPhone"><strong>Phone:</strong></label><br>
+     <label for="editPhone"><strong>Telefonnummer:</strong></label><br>
     <input type="text" id="editPhone" maxlength="40" required>   *<br>
 
-    <div class="sectionHeader">About you</div>
-    <label for="editDisplayName"><strong>Display Name:</strong></label><br>
+    <div class="sectionHeader">Om deg</div>
+    <label for="editDisplayName"><strong>Visningsnavn:</strong></label><br>
     <input type="text" id="editDisplayName" maxlength="120" required>   *<br>
     <label for="useFullNameAsDisplay">
       <input type="checkbox" id="useFullNameAsDisplay">
-      Use real name as display name
+      Brukt ekte navn som visningsnavn
     </label><br><br>
 
-    <label for="editFirstName"><strong>First Name:</strong></label><br>
+    <label for="editFirstName"><strong>Fornavn:</strong></label><br>
     <input type="text" id="editFirstName" maxlength="80"><br><br>
 
-    <label for="editLastName"><strong>Last Name:</strong></label><br>
+    <label for="editLastName"><strong>Etternavn:</strong></label><br>
     <input type="text" id="editLastName" maxlength="80"><br><br>
 
     
 
    
 
-    <label for="editGender"><strong>Gender:</strong></label><br>
+    <label for="editGender"><strong>Kjønn:</strong></label><br>
     <select id="editGender" name="gender" required>
-      <option value="" disabled>Select gender</option>
-      <option value="Male">Male</option>
-      <option value="Female">Female</option>
+      <option value="" disabled>Velg kjønn</option>
+      <option value="Male">Mann</option>
+      <option value="Female">Kvinne</option>
     </select>   *<br><br> 
 
-    <div class="sectionHeader">Location</div>
-    <label for="editAddress"><strong>Address:</strong></label><br>
+    <label for="editProfilePhoto"><strong>Profilbilde:</strong></label><br>
+    <input type="file" id="editProfilePhoto" accept="image/*"><br><br>
+    
+
+    <div class="sectionHeader">Sted</div>
+    <label for="editAddress"><strong>Adresse:</strong></label><br>
     <input type="text" id="editAddress" maxlength="180"><br><br>
 
-    <label for="editLocation"><strong>City:</strong></label><br>
+    <label for="editLocation"><strong>By:</strong></label><br>
     <input type="text" id="editLocation" maxlength="120"><br><br>
 
-    <label for="editMunicipalityId"><strong>Postal Code:</strong></label><br>
+    <label for="editMunicipalityId"><strong>Postnummer:</strong></label><br>
     <input type="text" id="editMunicipalityId" maxlength="40"><br><br>
 
-    <label for="editCountry"><strong>Country:</strong></label><br>
+    <label for="editCountry"><strong>Land</strong></label><br>
     <input type="text" id="editCountry" maxlength="120"><br><br>
 
-   <h4>(*) are required</h4>
+   <h4>(*) er påkrevd</h4>
   </form>
 
   
 
   <p id="formStatus" aria-live="polite"></p>
-  <button id="editInfoBtn" class="editInfoBtn" type="button">Edit information</button>
+  <button id="editInfoBtn" class="editInfoBtn" type="button">Gjør endringer</button>
 
   </div>
   
