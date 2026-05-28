@@ -23,6 +23,7 @@ function fmtSize(b) {
 function showStatus(msg) {
   status.textContent = msg;
   status.classList.toggle('visible', !!msg);
+  // !!'' == false => skjuler status alt anent vil vises status
 }
 
 function render() {

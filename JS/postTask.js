@@ -5,9 +5,6 @@ import { getDroppedFiles, clearDroppedFiles } from './modules/postTask-fileDrop.
 
 window.addEventListener('load', ()=>{
 
-    /* ----------- midlertidig test-knapp ---------------------------- */
-    const temTest = document.getElementById('se-oppgave-JSON');
-    temTest.addEventListener('click',async ()=> hentEksempel());
     /* ----------- post-task-knappen ---------------------------- */
     const submitButton = document.getElementById("btn-post-task");
     submitButton.addEventListener('click',async ()=> postingTask());
@@ -46,18 +43,49 @@ window.addEventListener('load', ()=>{
     function normalOutput (){output.classList.remove("sliderActive")}
 })
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * 
+     * 
+     * 
+     * 
+     * 
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+
+    let payload = {}; 
 async function postingTask (){
-    console.log("submit");
+/* * * * * * * * * * * * * * * * * * *
+ *  Sjekker at alle felt er utfylt   *
+ * * * * * * * * * * * * * * * * * * */
         const FORM = document.getElementById('form__post-task');
         if (!FORM.checkValidity()) {
             FORM.reportValidity(); 
             return; // Stopper hvis skjema ikke er fylt
         }
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *  Henter brukerens id, avbryter hvis ikke funnet     *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * */
         const user = auth.currentUser;
         if (!user) return;
         payload.createdBy = { uid: user.uid, ePost: user.email };
 
+/* * * * * * * * * * * * * * * * * * * * * * * * *
+ *  Definering av payload, objekt for sending    *
+ * * * * * * * * * * * * * * * * * * * * * * * * */
+
+payload ={
+        title: "", description: "", status: "open", pris: 0,
+        category:"",
+        meta: {},
+        assignee: { uid: "", ePost: "" },
+        createdBy: { uid: "", ePost: "" },
+        location: { kommune: "", longitude: 0, latitude: 0 },
+        urgent: false,
+        images: []
+    };
+/* * * * * * * * * * * * * * * * * * * *
+ *  Manuell innsamling av formdata     *
+ * * * * * * * * * * * * * * * * * * * */
         const valgtPris = document.getElementById("viser-pris").value;
         payload.pris = Number(valgtPris);
         payload.title       = document.getElementById("task-title").value;
@@ -68,41 +96,36 @@ async function postingTask (){
         payload.meta.created = firebase.firestore.FieldValue.serverTimestamp();
         payload.meta.tags    = [];
   
-        const imageFiles = getDroppedFiles();
-        // const docID = await setTask("", payload, imageFiles); // silent fail
-        let docID;
-        try {
+        const imageFiles = getDroppedFiles(); // postTask-fileDrop.js 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *  Opplasting til Firebase, skjer i FS_requests.js    *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * */
         docID = await setTask("", payload, imageFiles);
         console.info("Ferdig, ID:", docID);
-    } catch (err) {
-        console.error("setTask feilet:", err); 
-    }
-        
-        console.info(imageFiles);
-        console.info ("Sent");
-        console.info ("ID: " + docID);
-        // Tømmer listen over valgte filer og fjerner data fra forrige opplasting
-        clearDroppedFiles();
+        // Sletter intern fil-liste og tømmer den synlige fil-listen
+        clearDroppedFiles(); 
         
     }
     
-    let payload =  {
-        title: "", description: "", status: "open", pris: 0,
-        category:"",
-        meta: {},
-        assignee: { uid: "", ePost: "" },
-        createdBy: { uid: "", ePost: "" },
-        location: { kommune: "", longitude: 0, latitude: 0 },
-        urgent: false,
-        images: []
-    };
     
+/* Alt som har med kart kan flyttes ut  */
+/*
 
+Det er ikke ønskelig med kart på oppretting av profil.
+Hvi kartet kun brukes når brukeren post en task...
+Da kan den være en modul knyttet inn her med import. 
+
+Hvis den skal brukes flere steder bør den være standalone 
+
+Spøsrmål: Skal jeg linke den inn i HTML 
+
+*/
 auth.onAuthStateChanged((user)=>{
 
                 if (user) {
                     insertMap();
-                    insertUser(user);
+                    payload.assignee.ePost = user.email;
+                    payload.assignee.uid = user.uid;
                 }
                 else {
                     // User is not signed in
@@ -120,13 +143,7 @@ function insertMap() {
     document.head.appendChild(APILoader);
 
 }
-function insertUser(user){
-   
-      
-      payload.assignee.ePost = user.email;
-      payload.assignee.uid = user.uid;
-    
-}
+
 
   
 window.initMap = function() {
@@ -215,10 +232,7 @@ window.initMap = function() {
     
 
 }
-async function hentEksempel(){
-    const fetchedUsers = await getUser();
-    console.info(JSON.stringify(fetchedUsers[0]));
-}
+
 /*
 export function getPayload() {
   return payload;
