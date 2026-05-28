@@ -1,4 +1,4 @@
-import { getMockUser } from '../JS/modules/mockUser.js';
+// import { getMockUser } from '../JS/modules/mockUser.js';
 // importerer funksjonene som skal brukes
   import {getSavedTaskIds, getTask, createChat} from './modules/FS_Requests.js';
   import {auth, db} from './modules/dbConfig.js';
@@ -114,9 +114,15 @@ function renderTask(task) {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 const saveTask = document.getElementById("save-task");
 saveTask.addEventListener('click', async ()=>{ 
-  const user = getMockUser();
-  
-  const savedTaskIds = await getSavedTaskIds(user.uid);
+  // const user = getMockUser(); Har kommentert ut bruken til mockusers slik at d funker med ekte brukere
+  const currentUserId = auth.currentUser?.uid;
+  if (!currentUserId) {
+    console.log('Ingen innlogget bruker.');
+    return;
+  }
+
+  // const savedTaskIds = await getSavedTaskIds(user.uid);
+  const savedTaskIds = await getSavedTaskIds(currentUserId);
   
   if (savedTaskIds.includes(task.id)){
 
@@ -124,7 +130,8 @@ saveTask.addEventListener('click', async ()=>{
 
   }
   else{
-  await db.collection('users').doc(user.uid).update({
+  // await db.collection('users').doc(user.uid).update({
+  await db.collection('users').doc(currentUserId).update({
               savedTaskIds: firebase.firestore.FieldValue.arrayUnion(task.id)
       });
   }
