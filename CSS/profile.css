@@ -86,9 +86,33 @@ body {
     width: 100%; /* stretches the button to full width of the container */
     border: 2px solid  rgb(229, 229, 229);
     border-radius: 12px; /* rounded corners */
-    font-weight: bold;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 500;
     cursor: pointer; /* hand cursor when hovering */
     margin-bottom: 5px; /*space between buttons */
+}
+
+.button-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.button-icon {
+    width: 20px;
+    height: 20px;
+    color: #21836f;
+    flex: 0 0 20px;
+    padding: 3px;
+    border-radius: 999px;
+    background-color: rgba(33, 131, 111, 0.14);
+}
+
+.button-arrow {
+    font-size: 1.6rem;
+    line-height: 1;
+    color: #21836f;
 }
 
 
