@@ -1,4 +1,4 @@
-import { registerWithEmail } from './modules/dbConfig.js';
+import { registerWithEmail, auth, db } from './modules/dbConfig.js';
 import { setUser } from './modules/FS_Requests.js';
 
 const form = document.getElementById('profileEditForm');
@@ -17,10 +17,93 @@ const editAddressEl = document.getElementById('editAddress');
 const editCountryEl = document.getElementById('editCountry');
 const editMunicipalityIdEl = document.getElementById('editMunicipalityId');
 const editPhoneEl = document.getElementById('editPhone');
+const passwordLabelEl = document.querySelector('label[for="editPassword"]');
+
+// Query parameter to tell this page which mode to run in:
+// 1) normal registration (email + password creates a new auth user)
+// 2) profile completion for an already signed-in Google user
+const urlParams = new URLSearchParams(window.location.search);
+const isProfileCompletionMode = urlParams.get('completeProfile') === '1';
+// Holds the Google-authenticated user while this page is open.
+let profileCompletionUser = null;
 
 function setStatus(message, isError = false) {
 	statusEl.textContent = message;
 	statusEl.style.color = isError ? '#b00020' : '#0b7a3b';
+}
+
+// Adapts the form for Google profile completion:
+// - email is already provided by Google and should not be edited here
+// - password is not needed because account already exists
+// - display name can be prefilled from Google profile
+function applyGoogleProfileCompletionUi(user) {
+	profileCompletionUser = user;
+
+	// Show a simple heading so user knows this is the Google completion step.
+	if (!document.getElementById('googleCompletionNotice')) {
+		const completionNoticeEl = document.createElement('p');
+		completionNoticeEl.id = 'googleCompletionNotice';
+		completionNoticeEl.textContent = 'Complete your Google-registration';
+		form.prepend(completionNoticeEl);
+	}
+
+	// Google already owns this email, so we show it but lock editing.
+	editEmailEl.value = user.email || '';
+	editEmailEl.readOnly = false;
+	editEmailEl.disabled = true;
+	editEmailEl.required = false;
+	editEmailEl.title = 'Email is locked to your Google account';
+
+	// Extra plain-text hint under the email field.
+	if (!document.getElementById('googleEmailLockHint')) {
+		const emailLockHintEl = document.createElement('small');
+		emailLockHintEl.id = 'googleEmailLockHint';
+		emailLockHintEl.textContent = 'Email is taken from your Google account and cannot be edited here.';
+		emailLockHintEl.style.display = 'block';
+		editEmailEl.insertAdjacentElement('afterend', emailLockHintEl);
+	}
+
+	if (editPasswordEl) {
+		editPasswordEl.value = '';
+		editPasswordEl.disabled = true;
+		editPasswordEl.required = false;
+		editPasswordEl.style.display = 'none';
+	}
+
+	if (passwordLabelEl) {
+		passwordLabelEl.style.display = 'none';
+	}
+
+	if (!editDisplayNameEl.value && user.displayName) {
+		editDisplayNameEl.value = user.displayName;
+	}
+
+	setStatus('Google account found. Complete profile and save.');
+	syncDisplayNameInput();
+}
+
+// Runs only in completeProfile mode.
+// It waits for Firebase Auth state, then decides:
+// - no signed-in real user -> show error
+// - users/{uid} already exists -> skip this page and go to profile
+// - users/{uid} missing -> keep user here to complete profile fields
+async function setupProfileCompletionMode() {
+	if (!isProfileCompletionMode) return;
+
+	auth.onAuthStateChanged(async (user) => {
+		if (!user || user.isAnonymous) {
+			setStatus('Sign in with Google first.', true);
+			return;
+		}
+
+		const userDoc = await db.collection('users').doc(user.uid).get();
+		if (userDoc.exists) {
+			window.location.href = '/pages/userProfile.html';
+			return;
+		}
+
+		applyGoogleProfileCompletionUi(user);
+	});
 }
 
 // Normalizes input values before validation or save so empty/null values do not leak into the payload.
@@ -70,7 +153,9 @@ function buildProfileData(displayName) {
 	};
 }
 
-// Validates the form, creates the auth user, then stores the profile data in users/{uid}.
+// Validates and saves profile data in users/{uid}.
+// In normal mode it first creates Firebase Auth user with email/password.
+// In completeProfile mode it reuses the already signed-in Google user.
 async function registerUser() {
 	syncDisplayNameInput();
 
@@ -96,13 +181,30 @@ async function registerUser() {
 	setStatus('Creating account...');
 
 	try {
-		const user = await registerWithEmail(email, password);
+		// Two different auth sources depending on mode.
+		const user = isProfileCompletionMode
+			? (profileCompletionUser || auth.currentUser)
+			: await registerWithEmail(email, password);
+
+		// Safety check: we must have a real authenticated user before writing profile.
+		if (!user || user.isAnonymous) {
+			throw new Error('No authenticated user found for profile completion.');
+		}
+
+		// Keep Firebase Auth displayName in sync with our own users/{uid}.name.display.
 		await user.updateProfile({ displayName });
 		await setUser(user.uid, buildProfileData(displayName));
 
+		// For Google completion flow, go directly to profile after first save.
+		if (isProfileCompletionMode) {
+			setStatus('Profile saved. Redirecting...');
+			window.location.href = '/pages/userProfile.html';
+			return;
+		}
+
 		setStatus('Account created.');
-		form.reset();
-		syncDisplayNameInput();
+		window.location.href = '/pages/userProfile.html';
+		return;
 	} catch (error) {
 		setStatus(error.message || 'Could not register account.', true);
 	} finally {
@@ -122,3 +224,4 @@ form.addEventListener('submit', (event) => {
 });
 
 syncDisplayNameInput();
+setupProfileCompletionMode();
