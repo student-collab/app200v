@@ -53,6 +53,7 @@ body {
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
+  font-family: inherit;
 }
 
 .save-top-btn:hover {
@@ -199,6 +200,7 @@ body {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
+  font-family:inherit;
 }
 
 
@@ -224,6 +226,7 @@ body {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
+  font-family: inherit;
 }
 
 /*small green svg icons before the label title*/
