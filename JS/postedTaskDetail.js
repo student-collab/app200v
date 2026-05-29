@@ -111,7 +111,7 @@ function renderTask(task) {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 const saveTask = document.getElementById("save-btn");
 
-//setter opp attributter for hvilken state knappen er i
+//setter opp attributter for hvilken state save task knappen er i
 const setSaveButtonState = (isSaved) => {
   saveTask.classList.toggle('is-saved', isSaved);
   saveTask.setAttribute('aria-pressed', isSaved ? 'true' : 'false');
@@ -135,6 +135,9 @@ const hydrateSavedState = async () => {
 // Run once after rendering so the button reflects real saved state immediately.
 hydrateSavedState();
 
+
+
+
 saveTask.addEventListener('click', async ()=>{ 
   // const user = getMockUser(); Har kommentert ut bruken til mockusers slik at d funker med ekte brukere
   const currentUserId = auth.currentUser?.uid;
@@ -145,18 +148,21 @@ saveTask.addEventListener('click', async ()=>{
 
   // const savedTaskIds = await getSavedTaskIds(user.uid);
   const savedTaskIds = await getSavedTaskIds(currentUserId);
-  
-  if (savedTaskIds.includes(task.id)){
-    setSaveButtonState(true);
-    console.log("Brukeren har den allerede"); 
 
-  }
-  else{
-  // await db.collection('users').doc(user.uid).update({
-  await db.collection('users').doc(currentUserId).update({
-              savedTaskIds: firebase.firestore.FieldValue.arrayUnion(task.id)
-      });
-  setSaveButtonState(true);
+  if (savedTaskIds.includes(task.id)) {
+    // Fjern fra savedTaskIds
+    await db.collection('users').doc(currentUserId).update({
+      savedTaskIds: firebase.firestore.FieldValue.arrayRemove(task.id)
+    });
+    setSaveButtonState(false);
+    console.log("Oppgave fjernet fra lagrede oppgaver");
+  } else {
+    // Legg til i savedTaskIds
+    await db.collection('users').doc(currentUserId).update({
+      savedTaskIds: firebase.firestore.FieldValue.arrayUnion(task.id)
+    });
+    setSaveButtonState(true);
+    console.log("Oppgave lagt til i lagrede oppgaver");
   }
 
 
