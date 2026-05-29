@@ -1,8 +1,9 @@
   <header id = "inserted-header">
-    <div id = "logo-header">
+  <a href="/index.html" id="logo-header" alt="Tilbake til forsiden">
+
       <img style = "width:25px; height:25px;" src="/img/testSize/sq-greenNew.png" alt="Logo: SQ" >
       <h1>SideQuest</h1>
-    </div>
+    </a>
     <div id="login-clickable"  data-role="login-trigger">
       <div id="login-symbol-background">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="50 40 95 95" >

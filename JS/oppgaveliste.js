@@ -319,13 +319,19 @@ function adjustSearchField(){
     let lastScrollY = 0;
 
     window.addEventListener('scroll', () => {
-        const currentScrollY = window.scrollY;
+        //const currentScrollY = window.scrollY;
+        const currentScrollY = Math.max(0, window.scrollY); // clamp negatives from bounce
+
         if (Math.abs(currentScrollY - lastScrollY) < 5) return;
         
         const headerGone = currentScrollY > headerHeight;
         searchBar.style.top = headerGone ? '0' : headerHeight + 'px';
-        searchBar.classList.toggle('search--hidden', currentScrollY > lastScrollY);
-        //console.log(headerGone);
+
+        const scrollingDown = currentScrollY > lastScrollY;
+        const nearTop = currentScrollY < 200; // never hide when near top
+
+        searchBar.classList.toggle('search--hidden', scrollingDown && !nearTop);
+
         lastScrollY = currentScrollY;
     });
     
