@@ -26,6 +26,7 @@ window.addEventListener('load', ()=>{
             });
     
             contentLoad ();
+            wireSearch();
 
 });
 
@@ -60,6 +61,7 @@ function prepRender (task) {
   let infoTask = {
         id: task.id,    
         title: task.title, 
+        description: task.description ?? '',   // Brukes i søkeindeks
         pris: task.pris,
         kommune: task.location.kommune,
         kategori: task.category,
@@ -68,12 +70,13 @@ function prepRender (task) {
         images: task.images ?? [],
         distance: distanceRounded
     }
-     if (mainInfo.length === 0 && false){ 
+     if (mainInfo.length === 0){ 
         nearbyTasks = 0;
-            console.log('first task in cachedTask before sorting:')
+          /*  console.log('first task in cachedTask before sorting:')
             console.table(Object.keys(task));
             console.table(Object.keys(infoTask));
             console.info ("Stored object:\n" + JSON.stringify(task, null,3)  + "\n\nRendered object\n" + JSON.stringify(infoTask, null,3))
+          */
     }
     if(infoTask.distance <= 5) nearbyTasks ++;
     mainInfo.push(infoTask);
@@ -189,24 +192,108 @@ function haversine(lat1, lng1, lat2, lng2) {
 /* * * * * *  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *      Genererer HTML for informasjon som skal vises på skjerm         *
  * * * * * *  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-function insertHTML() {
+function insertHTML(tasks = mainInfo) {
     const insertInto = document.getElementById('oppgavelisten-org');
     if (!insertInto) {
         console.error("Mangler element 'oppgavelisten'");
         return;
     }
-    if (mainInfo.length === 0) {
-        insertInto.innerHTML = '<p>Ingen oppgaver funnet i dette området.</p>';
+    if (tasks.length === 0) {
+        insertInto.innerHTML = '<p>Ingen oppgaver funnet</p>';
         return;
     }
     document.getElementById('nearby-tasks').textContent = nearbyTasks;
 
-    const insertReadyHTMLFragment = renderTasks(mainInfo);
-    
-        insertInto.innerHTML = "";
+    const insertReadyHTMLFragment = renderTasks(tasks);
+    insertInto.innerHTML = "";
     insertInto.appendChild(insertReadyHTMLFragment);
     lucide.createIcons();
 }
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *   Fuzzy søk med trigram-scoring                                       *
+ *                                                                       *
+ *   trigrams("hei") → ["hei"] (for korte strenger), ellers alle         *
+ *   3-tegns vinduer: "maling" → ["mal","ali","lin","ing"]               *
+ *                                                                       *
+ *   Hver oppgave får en score basert på antall trigram-treff:           *
+ *     - Tittel-treff vektes 3×                                          *
+ *     - Beskrivelse-treff vektes 1×                                     *
+ *   Oppgaver med score 0 skjules. Resten sorteres høy→lav score.        *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+function trigrams(str) {
+    const s = str.toLowerCase();
+    if (s.length <= 3) return [s];   // kortere strenger matcher som én enhet
+    const result = [];
+    for (let i = 0; i <= s.length - 3; i++) {
+        result.push(s.slice(i, i + 3));
+    }
+    return result;
+}
+
+function trigramScore(queryGrams, text) {
+    const textGrams = new Set(trigrams(text));
+    return queryGrams.reduce((sum, gram) => sum + (textGrams.has(gram) ? 1 : 0), 0);
+}
+
+function fuzzySearch(query) {
+    const q = query.trim().toLowerCase();
+    
+    if (q.length < 3) {
+        const results = mainInfo.filter(task =>
+            task.title.toLowerCase().includes(q) ||
+            task.description.toLowerCase().includes(q)
+        );
+        insertHTML(results.length ? results : []);
+        return results;
+    }
+
+    const queryGrams = trigrams(query.trim());
+
+    return mainInfo
+        .map(task => {
+            const titleScore = trigramScore(queryGrams, task.title) * 5;       // tittel vektes 5×
+            const descScore  = trigramScore(queryGrams, task.description) * 1; // beskrivelse vektes 1×
+            const exactBonus = task.title.toLowerCase().includes(query.toLowerCase()) ? 100 : 0;
+            return { task, score: titleScore + descScore };
+        })
+        .filter(({ score }) => score > 0)
+        .sort((a, b) => b.score - a.score)
+        .map(({ task }) => task);
+}
+
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * 
+ *   Kobler søkefelt til fuzzySearch                 *
+ *   Debounce 150ms — ikke søk på hvert tastetrykk   *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * */
+function wireSearch() {
+    const input = document.getElementById('input-search');
+    if (!input) return;
+
+    let debounceTimer;
+
+    input.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            const query = input.value.trim();
+            if (query === '') {
+                insertHTML();           // tom streng → vis full mainInfo
+            } else {
+                const results = fuzzySearch(query);
+                if (results.length === 0) {
+                    document.getElementById('oppgavelisten-org').innerHTML =
+                        '<p>Ingen treff for «' + query + '».</p>';
+                } else {
+                    insertHTML(results); // send filtrert+sortert liste som param
+                }
+            }
+        }, 150);
+    });
+}
+
 /* * * * * * * * * * * * * * * * * * * * * * * *
 *        Søkefelt kommer og går med scroll     *
 * * * * * * * * * * * * * * * * * * * * * * * **/

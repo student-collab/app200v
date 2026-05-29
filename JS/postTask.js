@@ -103,7 +103,7 @@ async function postingTask (){
         *  Opplasting til Firebase, skjer i FS_requests.js    *
         * * * * * * * * * * * * * * * * * * * * * * * * * * * */
         console.log(JSON.stringify(payload));
-        docID = await setTask("", payload, imageFiles);
+        const docID = await setTask("", payload, imageFiles);
         console.info("Ferdig, ID:", docID);
         // Sletter intern fil-liste og tømmer den synlige fil-listen
         clearDroppedFiles(); 
