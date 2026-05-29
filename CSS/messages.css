@@ -22,6 +22,8 @@ body {
 	border-radius: 12px; /*rounded corners for message area*/
 	background: #ffffff; /*white background for chat content*/
 	
+	
+	
 }
 
 .message-box {
@@ -42,13 +44,13 @@ body {
 .message-mine {
 
 	align-self:flex-end; /*places my messages to the right*/
-	background-color: rgb(167, 192, 231); /*background color for my messages*/
+	background-color: #b4e5b6; /*background color for my messages*/
 }
 
 .message-other {
 	
 	align-self:flex-start; /*places other user's messages to the left*/
-	background-color: rgb(232, 232, 232); /*background color for other user's messages*/
+	background-color: #e3eafc; /*background color for other user's messages*/
 }
 
 .container {
@@ -105,6 +107,8 @@ body {
 	
 }
 
+
+/*for chats in the chatlist */
 #chatList .chat-list-link {
 	display: flex;
 	align-items: center;
@@ -166,11 +170,11 @@ body {
 /*for the subheader "Messages". Straight copied from userprofile.css*/
 .subheader {
     width: 100%;
-    
+	margin-bottom: 18px;
 }
 
 .subheader-content {
-    max-width: 1600px;
+    width: 100%;
     margin: 0 auto;
     padding: 1rem;
     display: flex;
@@ -178,6 +182,7 @@ body {
     align-items: center;
 	gap: 0.6rem;
     border-bottom: 2px solid rgb(229, 229, 229);
+
 }
 
 .subheader-content h2 {
@@ -185,7 +190,7 @@ body {
 }
 
 .subheader-back-text {
-	margin-left: 1rem;
+	
 	font-size: 20px;
 	line-height: 1;
 	font-weight: 600;
@@ -207,6 +212,38 @@ body {
 
 .subheader.is-back #subheaderTitle {
     margin-left: 0;
+}
+
+.chat-task-link-box {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	width: 100%;
+	margin: 0 auto;
+	padding: 16px;
+	border: solid 1px black;
+	border-radius: 5px;
+	background-color: white;
+	text-decoration: none;
+	color: inherit;
+}
+
+.chat-task-link-title {
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 1.3;
+	overflow: hidden;
+	text-overflow: ellipsis; /*... hvis for lang*/
+	white-space: nowrap;
+}
+
+.chat-task-link-image {
+	width: 56px;
+	height: 56px;
+	object-fit: cover;
+	border-radius: 8px;
+	flex-shrink: 0;
 }
 
 .inputRow {

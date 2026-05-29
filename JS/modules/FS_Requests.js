@@ -197,7 +197,7 @@ function formatMessageText(text = '') {
 
 // Builds the empty-chat message: "This is the start of your conversation with x".
 async function getConversationStartText(chatId) {
-  const fallbackText = 'This is the start of your conversation.';
+  const fallbackText = 'Dette er starten på din samtale.';
 
   try {
     const chatSnap = await db.collection('chats').doc(chatId).get();
@@ -210,7 +210,7 @@ async function getConversationStartText(chatId) {
     const otherUserSnap = await db.collection('users').doc(otherUserId).get();
     const displayName = otherUserSnap.exists ? (otherUserSnap.data()?.name?.display || otherUserId) : otherUserId;
 
-    return `This is the start of your SideQuest with ${displayName}`;
+    return `Dette er starten på din samtale med ${displayName}`;
   } catch {
     return fallbackText;
   }

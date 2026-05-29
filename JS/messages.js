@@ -2,6 +2,8 @@
 import { auth } from '../JS/modules/dbConfig.js';
 import { getChatsForUser, getUser } from '../JS/modules/FS_Requests.js';
 
+
+
 // Runtime state: cached users and loaded chats.
 let usersById = {};
 let currentChats = [];
@@ -70,7 +72,7 @@ function renderChatList(chats) {
 
     const userLine = document.createElement('div');
     userLine.className = 'chat-list-user';
-    userLine.textContent = `by ${taskPoster}`;
+    userLine.textContent = `${taskPoster}`;
 
     details.append(taskLine, userLine);
     link.appendChild(details);

@@ -2,9 +2,12 @@
 import { auth } from './modules/dbConfig.js';
 import { getChatsForUser, getUser, listenForMessages, sendMessage } from './modules/FS_Requests.js';
 
+
+
 const subheaderTitle = document.getElementById('subheaderTitle');
 const subheaderBackText = document.getElementById('subheaderBackText');
 const profileSubheader = document.getElementById('profileSubheader');
+const chatTaskLinkBox = document.getElementById('chatTaskLinkBox');
 const messages = document.getElementById('messages');
 const sendBtn = document.getElementById('sendBtn');
 const messageInput = document.getElementById('messageInput');
@@ -32,6 +35,12 @@ async function getChatDisplayName(chat) {
   return usersById[otherUid]?.name?.display || otherUid;
 }
 
+
+function getTaskImageUrl(chat) {
+  if (typeof chat?.taskImage === 'string' && chat.taskImage.trim()) return chat.taskImage;
+  return null;
+}
+
 // Puts the page in a disabled/error state when chat cannot be used.
 // Used for missing URL params, unauthorized access, or signed-out users.
 function setUnavailableState(text) {
@@ -46,6 +55,39 @@ function setUnavailableState(text) {
 
   if (sendBtn) sendBtn.disabled = true;
   if (messageInput) messageInput.disabled = true;
+
+  chatTaskLinkBox?.classList.add('hidden');
+}
+
+//setter link til task det gjelder over chatten
+function setTaskLink(chat) {
+  const taskId = chat?.taskId;
+  if (!taskId || !chatTaskLinkBox) {
+    chatTaskLinkBox?.classList.add('hidden');
+    return;
+  }
+
+  const taskTitle = chat?.taskTitle?.trim() || 'Vis oppgaven';
+  const taskImageUrl = getTaskImageUrl(chat);
+
+  chatTaskLinkBox.href = `./postedTaskDetail.html?id=${encodeURIComponent(taskId)}`;
+
+  chatTaskLinkBox.innerHTML = '';
+
+  const title = document.createElement('span');
+  title.className = 'chat-task-link-title';
+  title.textContent = taskTitle;
+  chatTaskLinkBox.appendChild(title);
+
+  if (taskImageUrl) {
+    const image = document.createElement('img');
+    image.className = 'chat-task-link-image';
+    image.src = taskImageUrl;
+    image.alt = `Bilde for oppgaven ${taskTitle}`;
+    chatTaskLinkBox.appendChild(image);
+  }
+
+  chatTaskLinkBox.classList.remove('hidden');
 }
 
 // Keeps the message textarea compact while still allowing multi-line messages.
@@ -94,6 +136,7 @@ async function initializeChatPage(user) {
 
   const chatName = await getChatDisplayName(activeChat);
   if (subheaderTitle) subheaderTitle.textContent = `Samtale med ${chatName}`;
+  setTaskLink(activeChat);
 
   if (chatStatus) chatStatus.classList.add('hidden');
 
