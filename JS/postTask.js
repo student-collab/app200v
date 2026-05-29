@@ -107,6 +107,7 @@ async function postingTask (){
         console.info("Ferdig, ID:", docID);
         // Sletter intern fil-liste og tømmer den synlige fil-listen
         clearDroppedFiles(); 
+        window.location.href = `/pages/postedTaskDetail.html?id=${encodeURIComponent(docID)}`;
         
     }
     
