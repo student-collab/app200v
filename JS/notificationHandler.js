@@ -1,4 +1,4 @@
-import {getUserNotifications, deleteNotification} from './modules/FS_Requests.js';
+import {getUserNotifications, deleteNotification, acceptTaskRequest, denyTaskRequest} from './modules/FS_Requests.js';
 import {auth} from './modules/dbConfig.js';
 
 function escapeHtml(text = '') {
@@ -48,9 +48,15 @@ async function loadNotifications() {
     const timeText = formatTimestamp(notification.createdAt);
     const readClass = notification.read ? ' read' : '';
     const unreadDot = notification.read ? '' : '<span class="unread-dot" aria-hidden="true"></span>';
+    const requestControls = notification.type === 'request'
+      ? `<div class="request-controls">
+          <button class="accept-btn" aria-label="Aksepter request">Aksepter</button>
+          <button class="reject-btn" aria-label="Avvis request">Avvis</button>
+        </div>`
+      : '';
 
     return `
-      <div class="notification-card${readClass}" data-id="${notification.id}">
+      <div class="notification-card${readClass}" data-id="${notification.id}" data-task-id="${notification.taskId || ''}" data-assignee-id="${notification.assigneeId || ''}">
         <div class="icon-wrapper" aria-hidden="true">🔔</div>
         <div class="notification-body">
           <div class="card-header">
@@ -58,7 +64,8 @@ async function loadNotifications() {
             <span class="time">${timeText}</span>
             <button class="delete-btn" aria-label="Delete notification">X</button>
           </div>
-          <p>${description}</p>
+          <p class="notification-desc">${description}</p>
+          ${requestControls}
         </div>
         ${unreadDot}
       </div>
@@ -68,17 +75,66 @@ async function loadNotifications() {
   // Add event listener for delete buttons
   container.addEventListener('click', async (event) => {
     const deleteBtn = event.target.closest('.delete-btn');
-    if (!deleteBtn) return;
+    if (deleteBtn) {
+      const notificationCard = deleteBtn.closest('.notification-card');
+      const notificationId = notificationCard?.dataset.id;
+      if (!notificationId) return;
 
-    const notificationCard = deleteBtn.closest('.notification-card');
-    const notificationId = notificationCard?.dataset.id;
-    if (!notificationId) return;
+      try {
+        await deleteNotification(notificationId, currentUserId);
+        notificationCard.remove();
+      } catch (error) {
+        console.error('Failed to delete notification:', error);
+      }
+      return;
+    }
 
-    try {
-      await deleteNotification(notificationId, currentUserId);
-      notificationCard.remove();
-    } catch (error) {
-      console.error('Failed to delete notification:', error);
+    const acceptBtn = event.target.closest('.accept-btn');
+    if (acceptBtn) {
+      const notificationCard = acceptBtn.closest('.notification-card');
+      const notificationId = notificationCard?.dataset.id;
+      const taskId = notificationCard?.dataset.taskId;
+      const assigneeId = notificationCard?.dataset.assigneeId;
+      if (!notificationId || !taskId || !assigneeId) {
+        console.error('Missing taskId or assigneeId for accept action');
+        return;
+      }
+
+      try {
+        await acceptTaskRequest(taskId, assigneeId, currentUserId);
+        await deleteNotification(notificationId, currentUserId);
+        const desc = notificationCard.querySelector('.notification-desc');
+        if (desc) desc.textContent = 'Forespørselen er akseptert.';
+        notificationCard.classList.add('accepted');
+        setTimeout(() => notificationCard.remove(), 1200);
+      } catch (error) {
+        console.error('Failed to accept request:', error);
+      }
+      return;
+    }
+
+    const rejectBtn = event.target.closest('.reject-btn');
+    if (rejectBtn) {
+      const notificationCard = rejectBtn.closest('.notification-card');
+      const notificationId = notificationCard?.dataset.id;
+      const taskId = notificationCard?.dataset.taskId;
+      const assigneeId = notificationCard?.dataset.assigneeId;
+      if (!notificationId || !taskId || !assigneeId) {
+        console.error('Missing taskId or assigneeId for reject action');
+        return;
+      }
+
+      try {
+        await denyTaskRequest(taskId, assigneeId, currentUserId);
+        await deleteNotification(notificationId, currentUserId);
+        const desc = notificationCard.querySelector('.notification-desc');
+        if (desc) desc.textContent = 'Tilbudet er avvist.';
+        notificationCard.classList.add('rejected');
+        setTimeout(() => notificationCard.remove(), 1200);
+      } catch (error) {
+        console.error('Failed to reject request:', error);
+      }
+      return;
     }
 });
 

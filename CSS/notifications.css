@@ -113,7 +113,44 @@ h1 {
   margin: 0;
 }
 
-/* GrA,nn prikk for uleste varsler */
+.request-controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.accept-btn,
+.reject-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.accept-btn {
+  background-color: var(--accent-green);
+  color: #fff;
+}
+
+.reject-btn {
+  background-color: #d64545;
+  color: #fff;
+}
+
+.notification-card.accepted {
+  border-color: var(--accent-green);
+  background-color: #eef7ed;
+}
+
+.notification-card.rejected {
+  border-color: #d64545;
+  background-color: #fbe8e8;
+}
+
+/* Grønn prikk for uleste varsler */
 .unread-dot {
   width: 8px;
   height: 8px;

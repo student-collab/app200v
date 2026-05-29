@@ -205,7 +205,7 @@ acceptBtn.addEventListener('click', async () => {
       'assignee.pendingRequest': firebase.firestore.FieldValue.arrayUnion(currentUserId)
     });
     console.log('Added user to assignee.pendingRequest');
-    addNotification(taskOwnerId, "request", false, "New Task Request", "You have a new task request!");
+    addNotification(taskOwnerId, currentUserId, taskId, "request", false, "New Task Request", "You have a new task request!");
 
     // Hent opp oppgave eier uid
     // Lag en notifikasjon via newNotification.js modul som 

@@ -381,7 +381,7 @@ Notification types:
 
 */
 
-async function addNotification(userId, type, read, title, description) {
+async function addNotification(userId, assigneeId, taskId, type, read, title, description) {
   if (!userId) {
     throw new Error('addNotification requires a valid userId');
   }
@@ -389,6 +389,8 @@ async function addNotification(userId, type, read, title, description) {
   // Writing to a subcollection auto-creates it if missing.
   await db.collection('users').doc(userId).collection('notifications').add({
     userId,
+    assigneeId,
+    taskId,
     type,
     read,
     title,
@@ -410,6 +412,84 @@ async function deleteNotification(notificationId, userId = auth.currentUser?.uid
   console.log('Deleted notification with ID:', notificationId);
 }
 
+async function deleteNotificationsByTask(userId, taskId) {
+  if (!userId || !taskId) return;
+
+  const snapshot = await db
+    .collection('users')
+    .doc(userId)
+    .collection('notifications')
+    .where('taskId', '==', taskId)
+    .get();
+
+  if (snapshot.empty) return;
+
+  const batch = db.batch();
+  snapshot.docs.forEach(doc => batch.delete(doc.ref));
+  await batch.commit();
+}
+
+async function acceptTaskRequest(taskId, assigneeId, ownerId) {
+  if (!taskId || !assigneeId || !ownerId) {
+    throw new Error('acceptTaskRequest requires taskId, assigneeId and ownerId');
+  }
+
+  const taskDoc = await db.collection('tasks').doc(taskId).get();
+  if (!taskDoc.exists) {
+    throw new Error('Task not found: ' + taskId);
+  }
+
+  const taskData = taskDoc.data();
+  const pendingRequests = taskData?.assignee?.pendingRequest ?? taskData?.pendingRequests ?? [];
+  const otherAssignees = Array.isArray(pendingRequests)
+    ? pendingRequests.filter(uid => uid && uid !== assigneeId)
+    : [];
+
+  await db.collection('tasks').doc(taskId).update({
+    'assignee.uid': assigneeId,
+    status: 'accepted',
+    'assignee.pendingRequest': firebase.firestore.FieldValue.delete(),
+    pendingRequests: firebase.firestore.FieldValue.delete()
+  });
+
+  await deleteNotificationsByTask(ownerId, taskId);
+
+  await Promise.all(otherAssignees.map(async (otherAssigneeId) => {
+    await addNotification(
+      otherAssigneeId,
+      ownerId,
+      taskId,
+      'denyNotification',
+      false,
+      'Tilbud avvist',
+      'Tilbudet ditt er dessverre avvist.'
+    );
+  }));
+}
+
+async function denyTaskRequest(taskId, assigneeId, ownerId) {
+  if (!taskId || !assigneeId || !ownerId) {
+    throw new Error('denyTaskRequest requires taskId, assigneeId and ownerId');
+  }
+
+  await db.collection('tasks').doc(taskId).update({
+    'assignee.pendingRequest': firebase.firestore.FieldValue.arrayRemove(assigneeId),
+    pendingRequests: firebase.firestore.FieldValue.arrayRemove(assigneeId)
+  });
+
+  await deleteNotificationsByTask(assigneeId, taskId);
+
+  await addNotification(
+    assigneeId,
+    ownerId,
+    taskId,
+    'denyNotification',
+    false,
+    'Tilbud avvist',
+    'Tilbudet ditt er dessverre avvist.'
+  );
+}
+
 async function NotificationRead(notificationId) {}
 
 async function getUserNotifications(userId) {
@@ -427,6 +507,8 @@ async function getUserNotifications(userId) {
   return notificationCollection.docs.map(doc => ({ 
     id: doc.id,
     userId: doc.data().userId,
+    assigneeId: doc.data().assigneeId,
+    taskId: doc.data().taskId,
     type: doc.data().type,
     read: doc.data().read,
     title: doc.data().title,
@@ -443,7 +525,9 @@ async function getNotificationDetails(notificationId) {
 
   return {
     id: notificationDoc.id,
-    useId: notificationDoc.data().userId,
+    userId: notificationDoc.data().userId,
+    assigneeId: notificationDoc.data().assigneeId,
+    taskId: notificationDoc.data().taskId,
     type: notificationDoc.data().type,
     read: notificationDoc.data().read,
     title: notificationDoc.data().title,
@@ -452,4 +536,4 @@ async function getNotificationDetails(notificationId) {
   };
 };
 
-export {addNotification, deleteNotification, NotificationRead, getUserNotifications, getNotificationDetails};
+export {addNotification, deleteNotification, acceptTaskRequest, denyTaskRequest, NotificationRead, getUserNotifications, getNotificationDetails};
