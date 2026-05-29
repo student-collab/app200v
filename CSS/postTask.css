@@ -1,16 +1,4 @@
 
-#caption{
- display: flex;
- justify-content: center;   
-}
-#caption > h2{ 
-    margin-left:2em;
-}
-#caption__left-arrow{
-    font-size: 2em;
-    align-self: center;
-    
-}
 
 
 /* * * * * * * * * * * * * * * *
@@ -45,7 +33,7 @@
     }
 
     #urg-toggle-btn:checked + #urgent-toggle {
-    background-color: #2196F3;
+    background-color: var(--button-main-color);
     }
 
     #urg-toggle-btn:checked + #urgent-toggle::before {
@@ -54,8 +42,9 @@
     #urg-btn-container{
         display: flex;
         justify-content: space-between;
-        background-color: white;
+        background-color: var(--backgroundcolor-form-fields);
         border-radius: 10px;
+        color: var(--font-color-forms);
 
     }
     #urg-btn-container > span{ 
@@ -65,7 +54,21 @@
 /* * * * * * * * *
  *  user input   *
  * * * * * * * * */
- #clear-form{cursor:pointer;}
+#clear-form{
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  width: fit-content;
+  padding: .45rem .7rem;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 500;
+  
+  background-color: var(--backgroundcolor-form-fields);
+  border: 1px solid var(--bordercolor-form-fields);
+  border-radius: 10px;
+
+}
 #form__post-task{
     display: flex;
     flex-direction: column;
@@ -79,33 +82,44 @@
 #form__post-task input,
 #form__post-task textarea,
 #form__post-task select{
-    color:var(----font-color-forms);
+  width: 100%;
+  padding: 12px 12px;
+  font-size: 14px;
+  color:var(--font-color-forms);
     background-color:  var(--backgroundcolor-form-fields);
     border:1px solid var(--bordercolor-form-fields);
     border-radius: 10px;
-    
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
 }
 #form__post-task :is(input, textarea, select):focus {
     outline:var(--font-color-forms);
     box-shadow: 0 2px 4px 1px var(--font-color-forms);
 }
 #form__post-task textarea{
-    height: 5em;
+    height: 8em;
 }
 #slider-pris-container{
-  margin-left: 2em;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
 }
-#pris-slider{width:60%;}
-#viser-pris{
-    width:4em;
+#form__post-task #pris-slider{
+    flex: 1;
+    width: auto;
+    accent-color: var(--button-main-color);
+    
+}
+#form__post-task #viser-pris{
+    width: 6rem;
+    flex: 0 0 6rem;
     text-align: right;
     padding-right: .5em;
-    position: absolute;
-    left: 70%;
-    font-size: 1.5em;
+    font-size: 1rem;
   }
-  #viser-pris:focus, 
-  #viser-pris.sliderActive{
+#viser-pris:focus, 
+#viser-pris.sliderActive{
     
     font-weight: bold;
 }
@@ -155,7 +169,7 @@
 
     #file-drop__zone span {
       font-size: .72rem;
-      color: var(--bordercolor-form-fields);
+      color: var(--font-color-forms);
     }
 
     #file-drop__input {
@@ -228,12 +242,15 @@
 
 
 #btn-post-task{
-    background-color: var(--background-color-dark);
+    background-color: var(--button-main-color);
     border: 2px solid var(--bordercolor-form-fields);
     width:100%;
-    height: 3em;
+    height: 5em;
     color:white;
     border-radius: 10px;
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 18px;
 }
 /* * * * * * * * * * * * *
  *    Google-maps API    *
@@ -255,6 +272,7 @@
 #map-sidebar{height:100%;} 
 
 #form__post-task { order: 1; }
+#file-drop-label { order: 3; margin-bottom: -0.75rem; }
 #file-drop { order: 3; }
 #map-panel     { order: 2; }
 #btn-post-task  { order: 4; }
@@ -289,3 +307,53 @@
     color:var(--font-color-menu-icons);
     
 }
+
+/*for the subheader "Opprett småjobb". Straight copied from userprofile.css*/
+.subheader {
+    width: 100%;
+    
+}
+
+.subheader-content {
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+	  justify-content: space-between;
+    align-items: center;
+	  gap: 0.6rem;
+    border-bottom: 2px solid rgb(229, 229, 229);
+}
+
+.subheader-content h2 {
+	margin: 0;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+/*small green svg icons before the label title*/
+.label-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+}
+
+.label-with-icon svg {
+  width: 20px;
+  height: 20px;
+  padding: 3px;
+  color: var(--button-main-color);
+  background-color: #dff2ec;
+  border-radius: 50%;
+  border: 1px solid #c7e7dd;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+
