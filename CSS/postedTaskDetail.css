@@ -1,13 +1,16 @@
-/* Reset */
-* {
+/* bytter ut gamle * reset for å fikse top header uten å ødelegge linje spacingen som allerede var designet) */
+.header h2,
+.title-row h1,
+.creator-row h4,
+.section h3,
+.section p {
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: inherit;
 }
 
 /* Body */
 body {
+  margin: 0;
+  padding: 0;
   background-color: #f5f6f8;
   color: #1a1a1a;
   
