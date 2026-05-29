@@ -40,12 +40,13 @@ function renderTask(task) {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
   *    Setter data fra databasen inn i HTML             *
   * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    const appInnerHTML =`
-        <a class="header-link" href="oppgaveliste.html">
-     <div class="header">   
-          <h2>← ${task.title}</h2>    
-     </div>
-     </a>
+        const appInnerHTML =`
+      <div class="header">   
+        <a class="header-link header-back-link" href="oppgaveliste.html">
+          <h2>← ${task.title}</h2>
+        </a>
+        <button id="save-btn" class="save-top-btn" type="button" aria-pressed="false">🤍 Lagre</button>
+      </div>
 
     <div class="container">
 
@@ -87,21 +88,17 @@ function renderTask(task) {
       
 
       <div class="section">
-        <h3>ABOUT THIS TASK</h3>
+        <h3 class="label-with-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Om oppgaven</h3>
 
-        <p>${task.description}</p>
+        <p class="task-description">${task.description}</p>
       </div>
 
-      <div class="button-row">
+        <div class="buttons">
+          <button id="contact-btn" class="contact-btn">💬 Kontakt oppdragsgiver</button>
+          <button class="accept-btn">✅ Tilby å utføre oppdraget</button>
+        </div>
 
-        <button id ="save-task" class="saveTask-btn">❤️ Save task</button> 
-        <button class="contact-btn">💬 Contact Poster</button> 
-        
-      </div>
-      
-      <div class="accept-btn">
-      <button class="saveTask-btn">✅ Accept task</button>
-      </div>
+    
       
     
 
@@ -112,7 +109,32 @@ function renderTask(task) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *    Legger til eventlistners på knapper som nå finnes  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-const saveTask = document.getElementById("save-task");
+const saveTask = document.getElementById("save-btn");
+
+//setter opp attributter for hvilken state knappen er i
+const setSaveButtonState = (isSaved) => {
+  saveTask.classList.toggle('is-saved', isSaved);
+  saveTask.setAttribute('aria-pressed', isSaved ? 'true' : 'false');
+  saveTask.textContent = isSaved ? '❤️ Lagret' : '🤍 Lagre';
+};
+
+// On page load, sync the heart button with what is already saved in Firestore.
+const hydrateSavedState = async () => {
+  // No logged-in user means this task cannot be in a saved list.
+  const currentUserId = auth.currentUser?.uid;
+  if (!currentUserId) {
+    setSaveButtonState(false);
+    return;
+  }
+
+  // Fetch the user's saved tasks and mark this task as saved/unsaved in UI.
+  const savedTaskIds = await getSavedTaskIds(currentUserId);
+  setSaveButtonState(savedTaskIds.includes(task.id));
+};
+
+// Run once after rendering so the button reflects real saved state immediately.
+hydrateSavedState();
+
 saveTask.addEventListener('click', async ()=>{ 
   // const user = getMockUser(); Har kommentert ut bruken til mockusers slik at d funker med ekte brukere
   const currentUserId = auth.currentUser?.uid;
@@ -125,7 +147,7 @@ saveTask.addEventListener('click', async ()=>{
   const savedTaskIds = await getSavedTaskIds(currentUserId);
   
   if (savedTaskIds.includes(task.id)){
-
+    setSaveButtonState(true);
     console.log("Brukeren har den allerede"); 
 
   }
@@ -134,13 +156,14 @@ saveTask.addEventListener('click', async ()=>{
   await db.collection('users').doc(currentUserId).update({
               savedTaskIds: firebase.firestore.FieldValue.arrayUnion(task.id)
       });
+  setSaveButtonState(true);
   }
 
 
 })
 
   //Creates a chat with between the logged in user and the poster of the task
-  const contactBtn = document.querySelector('.contact-btn');
+  const contactBtn = document.getElementById('contact-btn');
   contactBtn?.addEventListener('click', async () => {
     const currentUserId = auth.currentUser?.uid;
     const posterId = task?.createdBy?.uid || task?.creatorId;
