@@ -111,13 +111,15 @@ function markCurrentNavItem() {
   const currentPath = normalizePath(window.location.pathname);
   const currentFileName = currentPath.split('/').pop() || '';
   const aliases = new Set(['', 'index.html', 'index']);
+  const messagesAliases = new Set(['messages.html', 'messageschat.html', 'messageschat']);
 
   navLinks.forEach((link) => {
     const linkPath = normalizePath(link.getAttribute('href'));
     const linkFileName = linkPath.split('/').pop() || '';
 
     const isMatch = currentPath === linkPath ||
-      (aliases.has(currentFileName) && linkFileName === 'oppgaveliste.html');
+      (aliases.has(currentFileName) && linkFileName === 'oppgaveliste.html') ||
+      (messagesAliases.has(currentFileName) && linkFileName === 'messages.html');
 
     if (isMatch) {
       link.setAttribute('aria-current', 'page');
