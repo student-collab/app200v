@@ -16,7 +16,7 @@
 
 // Firebase Auth gives us the currently logged-in user.
 // Firestore gives us the user profile document.
-import { auth, db } from './modules/dbConfig.js';
+import { auth, db, storage } from './modules/dbConfig.js';
 
 // DOM targets: each span receives one profile value.
 const profileEmailEl = document.getElementById('profileEmail');
@@ -47,6 +47,7 @@ const editAddressEl = document.getElementById('editAddress');
 const editCountryEl = document.getElementById('editCountry');
 const editMunicipalityIdEl = document.getElementById('editMunicipalityId');
 const editPhoneEl = document.getElementById('editPhone');
+const editProfilePhotoEl = document.getElementById('editProfilePhoto');
 
 // -----------------------------
 // Runtime state (in-memory only)
@@ -161,6 +162,7 @@ function fillEditForm(userDoc, authUser) {
   editLocationEl.value = municipality;
   editMunicipalityIdEl.value = municipalityId;
   editPhoneEl.value = userDoc?.phone || '';
+  if (editProfilePhotoEl) editProfilePhotoEl.value = '';
 
   syncDisplayNameInput();
   clearUnsavedChanges();
@@ -175,7 +177,7 @@ function toggleEditMode(enableEdit) {
   isEditMode = enableEdit;
   profileInfoList.style.display = enableEdit ? 'none' : 'block';
   profileEditForm.style.display = enableEdit ? 'block' : 'none';
-  editInfoBtn.textContent = enableEdit ? 'Save information' : 'Edit information';
+  editInfoBtn.textContent = enableEdit ? 'Lagre endringer' : 'Gjør endringer';
 
   if (!enableEdit) {
     clearUnsavedChanges();
@@ -209,6 +211,7 @@ async function saveProfileEdits(user) {
   const municipality = cleanValue(editLocationEl.value);
   const municipalityId = cleanValue(editMunicipalityIdEl.value);
   const phone = cleanValue(editPhoneEl.value);
+  const profilePhotoFile = editProfilePhotoEl?.files?.[0] || null;
 
   // Basic validation before writing to database.
   if (!displayName) {
@@ -217,10 +220,21 @@ async function saveProfileEdits(user) {
   }
 
   try {
+    let photoURL = currentUserDoc?.photoURL || user.photoURL || '';
+
+    if (profilePhotoFile) {
+      const safeFileName = profilePhotoFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const filePath = `profilePhotos/${user.uid}/${Date.now()}_${safeFileName}`;
+      const storageRef = storage.ref(filePath);
+      const uploadSnapshot = await storageRef.put(profilePhotoFile);
+      photoURL = await uploadSnapshot.ref.getDownloadURL();
+    }
+
     // Merge into existing users/{uid} document so untouched fields are kept.
     // Persisted fields in this save:
     // - email, gender, phone
     // - name.first, name.last, name.display, name.useFullNameAsDisplay
+    // - photoURL
     // - location.municipality
     // - meta.updatedAt
     await db.collection('users').doc(user.uid).set(
@@ -228,6 +242,7 @@ async function saveProfileEdits(user) {
         email,
         gender,
         phone,
+        photoURL,
         name: {
           first: firstName,
           last: lastName,
@@ -247,8 +262,8 @@ async function saveProfileEdits(user) {
       { merge: true }
     );
 
-    // Keep Firebase Auth displayName in sync with profile name.
-    await user.updateProfile({ displayName });
+    // Keep Firebase Auth profile in sync with profile data.
+    await user.updateProfile({ displayName, photoURL });
     clearUnsavedChanges();
     return true;
   } catch (error) {

@@ -200,8 +200,8 @@ body {
 #sendBtn {
 	min-height: 40px;
 	padding: 0 14px;
-	background-color: #6c5ce7;
-	color: white;
+	background-color: var(--button-main-color);
+	color: var(--button-font-color);
 	border: solid 2px;
 	border-radius: 10px;
 	font-family: inherit;
