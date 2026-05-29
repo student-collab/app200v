@@ -116,7 +116,8 @@ auth.onAuthStateChanged((user) => {
        "kategori":task.category,
        "rating":task.rating,
        "urgent":task.urgent,
-       "distance":0.0 // komme tilbake til - 
+       "distance":0.0, // komme tilbake til - 
+       "images": task.images // Legg til bilder
       });
     });
     return dataSelect;
