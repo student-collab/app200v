@@ -371,3 +371,85 @@ endAt(value)                // end at value
 
 
 */
+
+
+/* Notifications
+
+Notification types:
+
+  DB Collection format: notificationId, userId, type, read, title, description, createdAt
+
+*/
+
+async function addNotification(userId, type, read, title, description) {
+  if (!userId) {
+    throw new Error('addNotification requires a valid userId');
+  }
+
+  // Writing to a subcollection auto-creates it if missing.
+  await db.collection('users').doc(userId).collection('notifications').add({
+    userId,
+    type,
+    read,
+    title,
+    description,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
+
+async function deleteNotification(notificationId, userId = auth.currentUser?.uid) {
+  if (!notificationId) {
+    throw new Error('deletion requires a valid notificationId');
+  }
+
+  if (!userId) {
+    throw new Error('deletion requires a valid userId');
+  }
+
+  await db.collection('users').doc(userId).collection('notifications').doc(notificationId).delete();
+  console.log('Deleted notification with ID:', notificationId);
+}
+
+async function NotificationRead(notificationId) {}
+
+async function getUserNotifications(userId) {
+  console.log(userId);
+  const notificationCollection = await db
+    .collection('users')
+    .doc(userId)
+    .collection('notifications')
+    .get();
+
+  if (notificationCollection.empty) {
+    return "No notifications";
+  }
+
+  return notificationCollection.docs.map(doc => ({ 
+    id: doc.id,
+    userId: doc.data().userId,
+    type: doc.data().type,
+    read: doc.data().read,
+    title: doc.data().title,
+    description: doc.data().description,
+    createdAt: doc.data().createdAt
+   }));
+}
+
+async function getNotificationDetails(notificationId) {
+  const notificationDoc = await db.collection('notifications').doc(notificationId).get();
+  if (!notificationDoc.exists) {
+    return "Notification not found";
+  }
+
+  return {
+    id: notificationDoc.id,
+    useId: notificationDoc.data().userId,
+    type: notificationDoc.data().type,
+    read: notificationDoc.data().read,
+    title: notificationDoc.data().title,
+    description: notificationDoc.data().description,
+    createdAt: notificationDoc.data().createdAt
+  };
+};
+
+export {addNotification, deleteNotification, NotificationRead, getUserNotifications, getNotificationDetails};

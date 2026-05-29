@@ -14,8 +14,10 @@
   <meta name="description" content="" />
   <link rel="stylesheet" href="../CSS/main.css">
   <link rel="stylesheet" href="../CSS/messages.css">
+  <link rel="stylesheet" href="../CSS/notifications.css">
   <script src="../JS/main.js" type = "module" defer></script>
   <script src="../JS/messages.js" type = "module" defer></script>
+  <script src="../JS/notificationHandler.js" type = "module" defer></script>
   <link rel="icon" href="../img/favicon.png">
 
   
@@ -23,8 +25,16 @@
 </head>
 
 <body>
-  <h1>Notifications</h1>
-  <p>Nothing here yet</p>
+ <main class="content">
+    <div class="header-inline">
+      <div>
+        <h1>Notifications</h1>
+        <p id="unreadCount" class="unread-count">0 unread</p>
+      </div>
+      <button id="markAllBtn" class="mark-all-btn" type="button">Mark all as read</button>
+    </div>
+    <div id="notificationsList" class="notification-list"></div>
+  </main>
   
   <nav id="replaceNav">
               Blir erstattet av main.js  

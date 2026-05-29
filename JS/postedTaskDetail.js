@@ -1,7 +1,8 @@
 // import { getMockUser } from '../JS/modules/mockUser.js';
 // importerer funksjonene som skal brukes
-  import {getSavedTaskIds, getTask, createChat} from './modules/FS_Requests.js';
+  import {getSavedTaskIds, getTask, createChat, addNotification, getUserNotifications} from './modules/FS_Requests.js';
   import {auth, db} from './modules/dbConfig.js';
+  
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * *
  *    id blir sendt med i URL - for hver link i 'oppgavelisten.html' sendes                               *
@@ -95,7 +96,7 @@ function renderTask(task) {
 
         <div class="buttons">
           <button id="contact-btn" class="contact-btn">💬 Kontakt oppdragsgiver</button>
-          <button class="accept-btn">✅ Tilby å utføre oppdraget</button>
+          <button id="accept-btn" class="accept-btn">✅ Tilby å utføre oppdraget</button>
         </div>
 
     
@@ -189,4 +190,30 @@ saveTask.addEventListener('click', async ()=>{
     });
     window.location.href = `./messagesChat.html?chatId=${encodeURIComponent(chatId)}`;
   });
+
+  const acceptBtn = document.getElementById("accept-btn");
+acceptBtn.addEventListener('click', async () => {
+  const currentUserId = auth.currentUser?.uid;
+
+  const taskId = task?.id;
+  const taskOwnerId = task?.createdBy?.uid || task?.creatorId;
+  console.log(taskOwnerId);
+  if (!currentUserId || !taskId) return;
+
+  try {
+    await db.collection('tasks').doc(taskId).update({
+      'assignee.pendingRequest': firebase.firestore.FieldValue.arrayUnion(currentUserId)
+    });
+    console.log('Added user to assignee.pendingRequest');
+    addNotification(taskOwnerId, "request", false, "New Task Request", "You have a new task request!");
+
+    // Hent opp oppgave eier uid
+    // Lag en notifikasjon via newNotification.js modul som 
+  } catch (error) {
+    console.error('Could not append pending request:', error);
+  }
+
+  
+});
+  
 }
