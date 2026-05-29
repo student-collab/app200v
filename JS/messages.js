@@ -1,14 +1,12 @@
 //Author: Viktor Eliassen. SCRIPT FOR MESSAGES PAGE THAT SHOWS LIST OF CONVERSATIONS
 import { auth } from '../JS/modules/dbConfig.js';
-import { createChat, getChatsForUser, getUser } from '../JS/modules/FS_Requests.js';
+import { getChatsForUser, getUser } from '../JS/modules/FS_Requests.js';
 
 // Runtime state: cached users and loaded chats.
 let usersById = {};
 let currentChats = [];
 
 // Cache DOM elements once so we do not query repeatedly.
-const createChatSelect = document.getElementById('createChat');
-const createChatBtn = document.getElementById('createChatBtn');
 const chatList = document.getElementById('chatList');
 const profileSubheader = document.getElementById('profileSubheader');
 const subheaderTitle = document.getElementById('subheaderTitle');
@@ -31,23 +29,12 @@ function getChatLabel(chat) {
   return otherUid ? getUserDisplayName(otherUid) : chat.id;
 }
 
-// Loads users once, caches them by uid, and fills the Create Chat dropdown.
+// Loads users once and caches them by uid for display names.
 async function loadUsers() {
-  if (!auth.currentUser || !createChatSelect) return;
+  if (!auth.currentUser) return;
 
   const users = await getUser();
   usersById = Object.fromEntries(users.map(user => [user.id, user]));
-
-  createChatSelect.innerHTML = '';
-
-  users
-    .filter(user => user.id !== auth.currentUser.uid)
-    .forEach(user => {
-      const option = document.createElement('option');
-      option.value = user.id;
-      option.textContent = user.name?.display || user.id;
-      createChatSelect.appendChild(option);
-    });
 }
 
 // Draws active chat links. Each link opens a dedicated chat page.
@@ -108,18 +95,4 @@ async function refreshMessagesPage() {
 auth.onAuthStateChanged((user) => {
   if (!user) return;
   refreshMessagesPage();
-});
-
-// Creates a chat with selected user, then refreshes list/title/listener state.
-createChatBtn?.addEventListener('click', async () => {
-  const otherUserId = createChatSelect?.value;
-  if (!otherUserId || !auth.currentUser) return;
-
-  const participants = [auth.currentUser.uid, otherUserId];
-  const chatId = [...participants].sort().join('_');
-
-  await createChat(chatId, participants);
-  await refreshMessagesPage();
-
-  if (createChatSelect) createChatSelect.selectedIndex = 0;
 });
