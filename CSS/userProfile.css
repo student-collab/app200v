@@ -55,6 +55,8 @@ header > #moon-symbol-background{
     align-items: center;
     border-top: 2px solid #ddd;
     border-bottom: 2px solid #ddd;
+    text-decoration: none;
+    color: inherit;
 }
 
 .subheader-content h2 {
