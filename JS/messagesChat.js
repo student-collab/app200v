@@ -93,7 +93,7 @@ async function initializeChatPage(user) {
   }
 
   const chatName = await getChatDisplayName(activeChat);
-  if (subheaderTitle) subheaderTitle.textContent = `Chat with ${chatName}`;
+  if (subheaderTitle) subheaderTitle.textContent = `Samtale med ${chatName}`;
 
   if (chatStatus) chatStatus.classList.add('hidden');
 

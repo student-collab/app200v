@@ -23,13 +23,24 @@ function getUserDisplayName(uid) {
   return usersById[uid]?.name?.display || uid;
 }
 
-// Builds the chat button/title label from the other participant in the chat.
-function getChatLabel(chat) {
+//builds task title and participant label so each part can be styled separately.
+function getChatMeta(chat) {
   const otherUid = (chat.participants || []).find(uid => uid !== auth.currentUser?.uid);
-  return otherUid ? getUserDisplayName(otherUid) : chat.id;
+  const taskTitle = chat?.taskTitle?.trim();
+  const taskPoster = otherUid ? getUserDisplayName(otherUid) : chat.id;
+
+  return {
+    taskTitle: taskTitle || 'No task title',
+    taskPoster
+  };
 }
 
-// Loads users once and caches them by uid for display names.
+function getTaskImageUrl(chat) {
+  if (typeof chat?.taskImage === 'string' && chat.taskImage.trim()) return chat.taskImage;
+  return null;
+}
+
+//loads users once and caches them by uid for display names.
 async function loadUsers() {
   if (!auth.currentUser) return;
 
@@ -37,7 +48,7 @@ async function loadUsers() {
   usersById = Object.fromEntries(users.map(user => [user.id, user]));
 }
 
-// Draws active chat links. Each link opens a dedicated chat page.
+//draws active chat links. Each link opens a dedicated chat page.
 function renderChatList(chats) {
   if (!chatList) return;
 
@@ -47,7 +58,32 @@ function renderChatList(chats) {
     const link = document.createElement('a');
     link.className = 'chat-list-link';
     link.href = `./messagesChat.html?chatId=${encodeURIComponent(chat.id)}`;
-    link.textContent = getChatLabel(chat);
+
+    const details = document.createElement('div');
+    details.className = 'chat-list-details';
+
+    const { taskTitle, taskPoster } = getChatMeta(chat);
+
+    const taskLine = document.createElement('div');
+    taskLine.className = 'chat-list-task-title';
+    taskLine.textContent = taskTitle;
+
+    const userLine = document.createElement('div');
+    userLine.className = 'chat-list-user';
+    userLine.textContent = `by ${taskPoster}`;
+
+    details.append(taskLine, userLine);
+    link.appendChild(details);
+
+    const taskImageUrl = getTaskImageUrl(chat);
+    if (taskImageUrl) {
+      const image = document.createElement('img');
+      image.className = 'chat-list-image';
+      image.src = taskImageUrl;
+      image.alt = chat?.taskTitle ? `Task image for ${chat.taskTitle}` : 'Task image';
+      link.appendChild(image);
+    }
+
     chatList.appendChild(link);
   });
 }
@@ -77,7 +113,7 @@ function updateChatStates(hasChats) {
 async function refreshMessagesPage() {
   if (!auth.currentUser) return;
 
-  if (subheaderTitle) subheaderTitle.textContent = 'Messages';
+  if (subheaderTitle) subheaderTitle.textContent = 'Meldinger';
   profileSubheader?.classList.remove('is-back');
 
   await loadUsers();

@@ -136,11 +136,17 @@ export async function setUser(userId, data) { //userId= Firebase Authenticator I
 
 //------------------- CHAT FUNKSJONER --------------------------------
 
-// Creates (or overwrites) a chat document with its participant user IDs.
-export async function createChat(chatId, participants) {
-  await db.collection('chats').doc(chatId).set({
+//Creates or updates a chat document with participants and optional task context.
+export async function createChat(chatId, participants, metadata = {}) {
+  const payload = {
     participants
-  });
+  };
+
+  if (metadata.taskId) payload.taskId = metadata.taskId;
+  if (metadata.taskTitle) payload.taskTitle = metadata.taskTitle;
+  if (metadata.taskImage) payload.taskImage = metadata.taskImage;
+
+  await db.collection('chats').doc(chatId).set(payload, { merge: true });
 }
 
 // Adds one message document inside chats/{chatId}/messages.

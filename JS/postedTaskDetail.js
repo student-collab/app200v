@@ -167,13 +167,20 @@ saveTask.addEventListener('click', async ()=>{
   contactBtn?.addEventListener('click', async () => {
     const currentUserId = auth.currentUser?.uid;
     const posterId = task?.createdBy?.uid || task?.creatorId;
+    const taskImage = Array.isArray(task?.images)
+      ? (task.images[0] || null)
+      : (typeof task?.images === 'string' ? task.images : null);
 
     if (!currentUserId || !posterId || currentUserId === posterId) return;
 
     const participants = [currentUserId, posterId];
     const chatId = [...participants].sort().join('_');
 
-    await createChat(chatId, participants);
+    await createChat(chatId, participants, {
+      taskId: task.id,
+      taskTitle: task.title,
+      taskImage
+    });
     window.location.href = `./messagesChat.html?chatId=${encodeURIComponent(chatId)}`;
   });
 }
