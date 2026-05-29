@@ -111,15 +111,20 @@ function markCurrentNavItem() {
   const currentPath = normalizePath(window.location.pathname);
   const currentFileName = currentPath.split('/').pop() || '';
   const aliases = new Set(['', 'index.html', 'index']);
-  const messagesAliases = new Set(['messages.html', 'messageschat.html', 'messageschat']);
+  const messagesAliases = new Set(['messages.html', 'messagesChat.html', 'messageschat']);
 
   navLinks.forEach((link) => {
     const linkPath = normalizePath(link.getAttribute('href'));
     const linkFileName = linkPath.split('/').pop() || '';
 
+
+    // Sjekk for messagesChat og postedTaskDetail med ekstra etter .html
+    const isMessagesChatVariant = currentFileName.startsWith('messageschat.html');
+    const isPostedTaskDetailVariant = currentFileName.startsWith('postedtaskdetail.html');
+
     const isMatch = currentPath === linkPath ||
-      (aliases.has(currentFileName) && linkFileName === 'oppgaveliste.html') ||
-      (messagesAliases.has(currentFileName) && linkFileName === 'messages.html');
+      ((aliases.has(currentFileName) || isPostedTaskDetailVariant) && linkFileName === 'oppgaveliste.html') ||
+      ((messagesAliases.has(currentFileName) || isMessagesChatVariant) && linkFileName === 'messages.html');
 
     if (isMatch) {
       link.setAttribute('aria-current', 'page');
