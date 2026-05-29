@@ -106,7 +106,27 @@ async function setTask(taskId, data, imageFiles = []) {
     });
   }
 
+export async function getActiveTasks(currentUserUid) {
+  // Hent tasks hvor bruker er assignee
+  const assigneeSnap = await db.collection('tasks')
+    .where("assignee.uid", "==", currentUserUid)
+    .get();
+  // Hent tasks hvor bruker er eier
+  const ownerSnap = await db.collection('tasks')
+    .where("createdBy.uid", "==", currentUserUid)
+    .get();
 
+  // Slå sammen, bare tasks med assignee skal vises
+  const assigneeTasks = assigneeSnap.docs
+    .map(doc => ({ id: doc.id, ...doc.data() }))
+    .filter(task => task.assignee && task.assignee.uid);
+
+  const ownerTasks = ownerSnap.docs
+    .map(doc => ({ id: doc.id, ...doc.data() }))
+    .filter(task => task.assignee && task.assignee.uid);
+    
+  return [...assigneeTasks, ...ownerTasks];
+}
 
 
 export async function readFSdb(path = 'collection/document') {

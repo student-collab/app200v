@@ -1,5 +1,5 @@
 import { auth } from '../JS/modules/dbConfig.js';
-import { getUserTasks, getUsersSavedTasks } from '../JS/modules/FS_Requests.js';
+import { getUserTasks, getUsersSavedTasks, getActiveTasks } from '../JS/modules/FS_Requests.js';
 import { renderTasks } from '../JS/modules/renderTasks.js';
 
 
@@ -77,6 +77,7 @@ auth.onAuthStateChanged((user) => {
 
   initUserTaskData(activeUser.uid);
   usersSaved(activeUser.uid);
+  usersActiveTasks(activeUser.uid);
 });
 /**
  * 
@@ -133,6 +134,20 @@ auth.onAuthStateChanged((user) => {
   
  }
 /**
+ * Henter ut aktive oppgaver for brukeren (der bruker er assignee)
+ */
+async function usersActiveTasks(userUid) {
+  const taskData = await getActiveTasks(userUid);
+  const dataSelect = filterData(taskData);
+  const HTMLFrag = renderTasks(dataSelect);
+  const activeTasksContainer = document.getElementById("active-tasks");
+  if (activeTasksContainer) {
+    activeTasksContainer.replaceChildren();
+    activeTasksContainer.appendChild(HTMLFrag);
+    lucide.createIcons();
+  }
+}
+/**
  * 
  * Henter ut oppgaver brukeren har lagret
  * 
@@ -152,6 +167,7 @@ async function usersSaved(userUid){
 function clearTaskContainers() {
   document.getElementById("own-tasks")?.replaceChildren();
   document.getElementById("saved-tasks")?.replaceChildren();
+  document.getElementById("active-tasks")?.replaceChildren();
 }
 
 const editProfileButton = document.querySelector('.editProfileBtn');
