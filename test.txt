@@ -1,4 +1,0 @@
-Fra VSCodium
-Fra Vim på serveren
-Fra VSC (Microsoft)
-hei

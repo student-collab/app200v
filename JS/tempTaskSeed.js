@@ -198,3 +198,91 @@ console.log(realUsers[0]);
 console.log("displayName type:", typeof realUsers[0].displayName, realUsers[0].displayName);
   return tasks;
 }
+
+
+/**
+ * 
+ *    Koden under er brukt til å lage fikitve oppdrag - tasks
+ *    Hver oppdrag har en del informasjon
+ * 
+ *    For å se at sortering og filtrering fungerer er trenger vi spredning.
+ *    Tilfeldig utvalg fra 1-6 for rating for eksempel
+ * 
+ *    Koordinater og stedsnavn:
+ *    Vi har tatt utgangspunkt i et referansepunkt og koden under lager oppdrag som 
+ *    er innenfor forskjellige avstander fra refereansepunktet: 5 , 10 , 20 eller 200 km 
+ *    fra referansepunktet. Det er fordi brukerne kan velge disse avstandende fra sitt
+ *    eget referansepunkt.
+ * 
+ *    Koden selvfølgelig overflødig men psudodata er vikitg for å se at 
+ *    web-applikasjonen gjør det den skal
+ * 
+ * 
+ * 
+ * 
+ */
+
+async function createAllFictiveTasks() {
+  const tasks = await generateFictiveTasks();
+  const numTask = tasks.length;
+
+  for (let i = 0; i < numTask; i++) {
+    try {
+      const docID = await setTask("", tasks[i]);
+      console.log(`Task ${i + 1}/${numTask} created with ID: ${docID}`);
+    } catch (error) {
+      console.error(`Failed to create task ${i + 1}:`, error);
+    }
+  }
+
+  console.log("All 50 fictive tasks created!");
+  console.info(JSON.stringify(tasks[0]));
+}
+//Lager 50 oppgaver til databasen
+        //createAllFictiveTasks();
+
+        /*
+let tempTasks = await generateFictiveTasks();
+
+const user = {lat : 59.272349982043586,lng : 10.417871475219727 }
+let userDistance = [];
+
+tempTasks.forEach(oppdrag=>{
+  userDistance.push({
+      tittel: oppdrag.title,
+      sted: oppdrag.location.kommune,
+      avstand: haversine(user.lat,user.lng,oppdrag.location.latitude,oppdrag.location.longitude)
+   });
+});
+ console.table(userDistance);
+function haversine(lat1, lng1, lat2, lng2) {
+    const R = 6371; // Earth radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+
+    const a = Math.sin(dLat / 2) ** 2 +
+              Math.cos(lat1 * Math.PI / 180) *
+              Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLng / 2) ** 2;
+
+    return R * 2 * Math.asin(Math.sqrt(a)); // returns km
+}
+
+const ti = [
+    { name: "Stokke"                  , latitude: 59.2200, longitude: 10.2950 },
+    { name: "Skoppum"                 , latitude: 59.3300, longitude: 10.3500 },
+    { name: "Åsgårdstrand"            , latitude: 59.3450, longitude: 10.4650 },
+    { name: "Nøtterøy sør"           , latitude: 59.1950, longitude: 10.4200 },
+    { name: "Re (Revetal)"            , latitude: 59.2900, longitude: 10.2700 },
+    { name: "Borre"                   , latitude: 59.3700, longitude: 10.4500 },
+    { name: "Smørbukk"               , latitude: 59.2400, longitude: 10.5100 },
+  ];
+  
+  let avstand = ti.map(p => {
+  return {
+    name: p.name,
+    distance: haversine(user.lat, user.lng, p.latitude, p.longitude)
+  };
+});
+console.table(avstand);   
+*/

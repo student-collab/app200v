@@ -5,33 +5,23 @@ import{db } from '/JS/modules/dbConfig.js'
 const PAGES = [
   { label: 'DevDashboard', path: '/pages/dev-dashboard.html', isOverview: true },
   { label: 'Landing',        path: '/index.html' },
-  { label: '/search.html', path: '/pages/search.html', deprecated: true },
   // Main pages
   { label: 'oppgaveliste',       path: '/pages/oppgaveliste.html' },
   { label: 'Messages',           path: '/pages/notifications.html' },
   { label: 'Post Task',          path: '/pages/post-task.html' },
-  { label: 'Search',             path: '/pages/messages.html' },
   { label: 'postedTaskDetail',   path: '/pages/postedTaskDetail.html' },
   { label: 'User Profile',       path: '/pages/userProfile.html' },
 
   // Prosjektfiler
-  { label: 'index',              path: '/index.html' },
-  { label: 'dbtesting',          path: '/pages/dbtesting.html' },
   { label: 'dev-dashboard',      path: '/pages/dev-dashboard.html' },
   { label: 'editProfile',        path: '/pages/editProfile.html' },
-  { label: 'mapsTesting',        path: '/pages/mapsTesting.html' },
   { label: 'messages',           path: '/pages/messages.html' },
   { label: 'messagesChat',       path: '/pages/messagesChat.html' },
   { label: 'notifications',      path: '/pages/notifications.html' },
   { label: 'oppgaveliste',       path: '/pages/oppgaveliste.html' },
   { label: 'post-task',          path: '/pages/post-task.html' },
   { label: 'postedTaskDetail',   path: '/pages/postedTaskDetail.html' },
-  { label: 'profile',            path: '/pages/profile.html' },
   { label: 'register',           path: '/pages/register.html' },
-  { label: 'search',             path: '/pages/search.html' },
-  { label: 'tabs',               path: '/pages/tabs.html' },
-  { label: 'tom-side',           path: '/pages/tom-side.html' },
-  { label: 'urgent-toggle',      path: '/pages/urgent-toggle.html' },
   { label: 'userProfile',        path: '/pages/userProfile.html' },
   { label: 'navbar',             path: '/pages/html-fragments/navbar.html' }
 ];

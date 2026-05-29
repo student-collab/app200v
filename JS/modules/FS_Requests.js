@@ -1,73 +1,9 @@
-/**
- * Beskjeder som ikke trenger vær med i innleveringen, underveiskommunikasjon mer 
- * enn dokumentasjon. Skriver på norsk 
- * 
- */
-
-/*  ------------------------------------------------------------------------------------------
-        Eksempelfunskjoner som viser hvordan vi kan lese, sette, oppdatere og slette
-    ------------------------------------------------------------------------------------------
-*/
-
-// For å kommunisere med databasen via SDK importerer vi databaseobjektet fra konfig-filen dbConfig.js
 import { db, storage, auth } from './dbConfig.js'; 
 
-// db er et objekt returnert av SDK. SDK System Development Kit er lenket inn med HTML. Denne løsningen kalles Compat (?) og er fra Content Delivery Network (CDN)
-
-
-/*
-            Hvis dere skal ut finne informasjon på nettet, for eksempel dokumentasjon fra Google
-            Så må dere vite dette: 
-
-            Compat (CDN)
-            Loaded via a <script> tag from Google's CDN — no install, no bundler, no node_modules. Available globally in the browser immediately.
-
-            Modular (npm)
-            Installed via npm install firebase, used in a bundled project (React, Vite, etc.).
-
-            Vi bruker Compat (CDN) og her er forskjellen i kode-eksempel:
-            Modular (npm)	await setDoc(doc(db, 'tasks', taskId), data)	Separate arguments or template string
-            Compat (CDN)	await db.doc('tasks/taskId').set(data)	Template string or chained methods
-            
-            Mye informasjon på nettet er rettet mot Modular, som ikke vil virke hos oss
-            Dette gjelder selvfølgelig også dersom dere bruker AI: dere får riktig syntaks om dere presiserer at det er for Compat CDN
-
-    Dette er funksjonene vi bruker fra Compat (CDN): (Tilgjengelig i når db importeres fra dbConfig.js --> import { db } from './dbConfig.js';)
-
-    await db.doc(`tasks/${taskId}`).set(data);
-    await db.doc(`tasks/${taskId}`).update(changes);
-    await db.doc(`tasks/${taskId}`).delete();
-    await db.doc(`tasks/${taskId}`).update({ fieldName: firebase.firestore.FieldValue.delete() });
-
-Nedenfor er det generert hjelpefunksjoner som vi kan bruke ved å importere dem
-
-import-syntaks: 
-                    import {getTask,
-                            setTask,
-                            updateTask,
-                            deleteTask,
-                            clearField,
-                            readFSdb        
-                    } from './FS_Requests.js'; 
-
-*/
-
-/* Kartlegger oppdrag per kommune */
-
-
-/*
-        Froklaring av syntaks for returveriden: 
-                                                        .map() is just the standard JS array method — nothing Firestore-specific.
-
-                                                        The callback d => ({ id: d.id, ...d.data() }) runs for each snapshot d:
-
-                                                        d.id — the document's Firestore ID (string)
-                                                        d.data() — returns the document's fields as a plain JS object
-                                                        ...d.data() — spreads those fields into the new object
-                                                        id: d.id — adds the ID as an explicit field (since .data() doesn't include it)
-*/
-
-
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 
+ * 
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 async function getUser() {
   
         const querySnapshot = await db.collection('users').get();
