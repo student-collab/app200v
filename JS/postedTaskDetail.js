@@ -96,7 +96,7 @@ function renderTask(task) {
 
         <div class="buttons">
           <button id="contact-btn" class="contact-btn">💬 Kontakt oppdragsgiver</button>
-          <button id="accept-btn" class="accept-btn">✅ Tilby å utføre oppdraget</button>
+          ${task.status !== 'accepted' ? '<button id="accept-btn" class="accept-btn">✅ Tilby å utføre oppdraget</button>' : ''} 
         </div>
 
     
