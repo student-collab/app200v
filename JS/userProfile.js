@@ -134,11 +134,24 @@ auth.onAuthStateChanged((user) => {
   
  }
 /**
- * Henter ut aktive oppgaver for brukeren (der bruker er assignee)
+ * Henter ut aktive oppgaver for brukeren (der bruker er eier eller assignee)
  */
 async function usersActiveTasks(userUid) {
   const taskData = await getActiveTasks(userUid);
+  // Sett isMine=true for egne oppgaver
+  taskData.forEach(task => {
+    if (task.createdBy && task.createdBy.uid === userUid) {
+      task.isMine = true;
+    }
+  });
+
   const dataSelect = filterData(taskData);
+  // Kopier isMine over til dataSelect
+  dataSelect.forEach(ds => {
+    const original = taskData.find(t => t.id === ds.id);
+    if (original && original.isMine) ds.isMine = true;
+  });
+
   const HTMLFrag = renderTasks(dataSelect);
   const activeTasksContainer = document.getElementById("active-tasks");
   if (activeTasksContainer) {

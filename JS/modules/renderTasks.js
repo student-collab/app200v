@@ -115,6 +115,7 @@ const CSS_slugs = Object.fromEntries(
 export function renderTasks(tasksObject){
     const myDocFrag = document.createDocumentFragment();
     
+
     tasksObject.sort((a, b) => a.distance - b.distance).forEach(task => {
       
 /*
@@ -145,6 +146,29 @@ Hvert kort består av:
         
         const iWrap = document.createElement('div');
         iWrap.className = 'task__main';
+
+        // --- Sett inn "Mine oppdrag"-tekst hvis oppgaven er min ---
+        if (task.isMine) {
+            const mineInfo = document.createElement('span');
+
+            /*stil blir satt her pga dårlig tid */
+            mineInfo.textContent = 'Mitt oppdrag';
+            mineInfo.style.display = 'inline-block';
+            mineInfo.style.background = '#576b6a';
+            mineInfo.style.color = '#fff';
+            mineInfo.style.fontWeight = '600';
+            mineInfo.style.borderRadius = '12px';
+            mineInfo.style.padding = '2px 12px 2px 10px';
+            mineInfo.style.fontSize = '0.95em';
+            mineInfo.style.marginBottom = '6px';
+            mineInfo.style.marginRight = '8px';
+            mineInfo.style.verticalAlign = 'middle';
+            mineInfo.style.minWidth = '0';
+            mineInfo.style.maxWidth = '120px';
+            mineInfo.style.whiteSpace = 'nowrap';
+            
+            iWrap.appendChild(mineInfo);
+        }
 
         // --- Overskrift ---
         const title = document.createElement('h2');
