@@ -241,7 +241,9 @@ overflow-x: auto;
 }
 #inlog-info button{ color: brown}
 
-
+#btn-google {
+  text-decoration: underline;
+}
 /* * * * * * * * * * * * *
  *  mobile-footer menu   *
  * * * * * * * * * * * * */
