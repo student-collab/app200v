@@ -14,6 +14,77 @@
     <script src="https://unpkg.com/lucide@0.396.0/dist/umd/lucide.js"></script>
 </head>
 <body>
+  <header id = "inserted-header">
+  <a href="/index.html" id="logo-header" alt="Tilbake til forsiden">
+
+      <img style = "width:25px; height:25px;" src="/img/testSize/sq-greenNew.png" alt="Logo: SQ" >
+      <h1>SideQuest</h1>
+    </a>
+    <div id="login-clickable"  data-role="login-trigger">
+      <div id="login-symbol-background">
+        <img id="header-profile-photo" alt="Profilbilde" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="50 40 95 95" >
+          <path fill="none" stroke="currentColor" stroke-width="4.7625"
+                  d="M 70.600433,114.5978 C 82.878771,82.367175 117.6674,95.668702 121.50438,114.0862
+                    M 95.115491,63.2102
+                      A 15.731619,15.731619 0 0 1 111.7561,77.976912
+                      15.731619,15.731619 0 0 1 96.989457,94.617581
+                      15.731619,15.731619 0 0 1 80.348726,79.851003
+                      15.731619,15.731619 0 0 1 95.115238,63.210215
+                    M 93.732253,44.449334
+                      A 40.697323,40.697323 0 0 1 136.78112,82.650467
+                      40.697323,40.697323 0 0 1 98.580157,125.69948
+                      40.697323,40.697323 0 0 1 55.530986,87.498694
+                      40.697323,40.697323 0 0 1 93.731599,44.449373" />
+        </svg>
+      </div>
+      <span id = "usr-status">Logg inn</span>
+      <div id="login-screen" class="hidden" data-role="login-panel">
+      <div id="loading-animation">
+      <span class="dot1">Loading</span>
+      <div class="dot" id="dot_1"></div>
+      <div class="dot" id="dot_2"></div>
+      <div class="dot" id="dot_3"></div>
+      </div>
+         <form id="auth-form">
+            <label for="email">E-post</label>
+            <input type="email" id="email" required />
+            
+            <label for="password">Passord</label>
+            <input type="password" id="password" required minlength="6" />
+            <div id="login-screen-controllers">
+              <svg id ="clear-fields"xmlns="http://www.w3.org/2000/svg" viewBox="76 118 58 70" width="24" height="24">
+                  <path fill="currentColor" stroke="currentColor" stroke-width="2.11667" stroke-linecap="round"
+                  d="m 104.941,178.0277 c -3.16401,-0.2109 -6.345367,-0.40276 -9.470648,-0.96094 -1.58094,-0.37989 -3.365918,-0.74466 -4.466378,-2.04054 -0.925689,-1.36841 0.943709,-2.3256 2.050331,-2.56592 1.62963,-0.4845 3.113816,-0.83847 4.796857,-1.04622 0.449372,-0.28407 0.42638,-0.91112 0.05592,-1.09918 -2.582447,-0.14089 -5.142665,0.41489 -7.726535,0.38203 l -13.898512,0.36375 c 0.03385,0.28832 0.590098,0.62309 0.826875,0.92763 2.33455,2.30507 4.669101,4.61013 7.003652,6.91519 1.795409,0.35757 3.664695,0.24526 5.492177,0.33479 6.44703,0.11044 12.895471,0.0872 19.343061,0.0489 0.68353,-1.14112 -0.8281,-0.97612 -1.53875,-1.03898 -0.82268,-0.0735 -1.64537,-0.14701 -2.46805,-0.22052 z" />
+                  <path fill="none" stroke="currentColor" stroke-width="2.11667" stroke-linecap="round"
+                  d="m 110.08786,151.0101 c 2.93925,3.301 7.56644,5.28909 13.17363,5.24387 m -5.40226,-6.22805 10.99934,-25.45197 m -16.24321,21.16734 9.9122,-23.02188 m -14.83632,33.44568 c 2.93925,3.301 7.56644,5.28909 13.17363,5.24387 m 4.02883,-10.23195 9.9122,-23.02188 m -29.03809,34.00108 c 0,0 -3.04648,6.57846 -2.84881,7.2803 1.88306,6.68595 10.15043,6.30937 11.93788,4.52192 2.03487,-2.03487 3.25578,-6.87332 3.25578,-6.87332" />
+              </svg>
+              <svg id="toggle-password" xmlns="http://www.w3.org/2000/svg" viewBox="50 185 55 50" >
+                  <path fill="currentColor" stroke="currentColor" stroke-width="0.529167"
+                  d="m 78.175884,193.80804 c -0.304813,-0.005 -0.610048,-0.003 -0.915706,0.004 -8.630353,0.20071 -17.589946,5.12067 -26.450066,15.80369 l 15.689482,0.0527 c -0.07362,-0.42349 -0.1267,-0.85475 -0.152962,-1.29398 -0.378034,-6.32653 4.443903,-11.76179 10.770402,-12.14034 l 0.0015,-5.2e-4 c 6.327094,-0.37771 11.762365,4.44536 12.139828,10.77247 0.0559,0.93711 -0.0046,1.85389 -0.164848,2.73833 l 15.617656,0.0522 C 96.659123,199.74272 87.625091,193.95326 78.175884,193.80804 Z m -0.580843,6.37015 c -0.12804,7.1e-4 -0.25634,0.005 -0.384473,0.0119 -4.100928,0.24458 -7.227117,3.76732 -6.982519,7.86825 0.03349,0.56165 0.130551,1.10423 0.280086,1.62316 l 14.278715,0.0481 c 0.239212,-0.80702 0.34505,-1.66865 0.291972,-2.55746 -0.03198,-0.45081 -0.10497,-0.89776 -0.218075,-1.33532 -0.134971,0.0958 -0.274726,0.18564 -0.418579,0.26923 -2.093104,1.1988 -4.595164,0.85362 -5.588806,-0.77101 -0.870175,-1.43015 -0.292016,-3.40892 1.370976,-4.69222 -0.842258,-0.31261 -1.733018,-0.46952 -2.629297,-0.46457 z m 27.025739,9.62577 -15.546337,0.0522 c -0.963897,5.0334 -5.237849,8.96941 -10.587984,9.28884 -5.795714,0.34604 -10.840227,-3.67279 -11.937256,-9.21339 l -15.829524,0.0532 c 22.338239,21.3434 47.299113,7.41593 53.901101,-0.18087 z m -19.878889,0.0667 -14.162959,0.0475 c 1.021043,3.14415 4.064237,5.32892 7.517887,5.12269 3.159908,-0.18867 5.738968,-2.32425 6.645072,-5.17023 z" />
+                  <path id="eye-stroke" fill="currentColor" stroke="currentColor" stroke-width="3.4925"
+                  d="m 59.565081,190.83712 35.45416,35.05729" />
+              </svg>
+            </div>
+            <button type="button" id="login-Btn">Logg inn</button>
+            <button type="button" id="btn-register">Registrer</button>
+            <p>eller <a href="#" id="btn-google">logg inn med google</a></p>
+
+          </form>
+          <div id="inlog-info" class="hidden">
+            <span id="usr-inf1"></span>
+            <span id="usr-inf2"></span>
+            <span id="usr-inf3"></span>
+            <button type = "button" id = "sign-out" >Logg ut</button>
+          </div>
+      </div>
+    </div>
+</header>
+
+<div id="devinfo">
+<!-- Denne brukes av dev-panel.js som er importeres in main.js slettes før innlevering -->
+</div>
+
 
     <div class="subheader" id="profileSubheader">
     <div class="subheader-content">
@@ -130,9 +201,73 @@
             <p>I en fremtidig versjon av SideQuest kan du endre betalingsmåtene dine her.</p>
         </div>
 
-        <nav id="replaceNav">
-              Blir erstattet av main.js
-            </nav>
+        <svg xmlns="http://www.w3.org/2000/svg" hidden style = "height:0;">
+  <defs>
+    <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12L12 3l9 9"/>
+      <path d="M9 21V12h6v9"/>
+      <path d="M3 12v9h18V12"/>
+    </symbol>
+    <symbol id="icon-notifications" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 4a4 4 0 0 0-4 4v2c0 1.8-.7 3.5-2 4.8V17h12v-2.2A6.8 6.8 0 0 1 16 10V8a4 4 0 0 0-4-4z"/>
+      <path d="M9.5 17a2.5 2.5 0 0 0 5 0"/>
+    </symbol>
+    <symbol id="icon-post" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/>
+      <line x1="12" y1="8" x2="12" y2="16"/>
+      <line x1="8" y1="12" x2="16" y2="12"/>
+    </symbol>
+    <symbol id="icon-messages" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </symbol>
+    <symbol id="icon-profile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </symbol>
+
+    <!-- Devinfo midlertidig start -->
+      <symbol id="icon-devinfo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/>
+        <line x1="12" y1="8" x2="12" y2="8.5"/>
+        <line x1="12" y1="11" x2="12" y2="16"/>
+      </symbol>
+    <!-- Devinfo midlertidig slutt -->
+    
+  </defs>
+</svg>
+<nav id="footer-menu" aria-label="Main navigation">
+  <a class="nav-item" href="/pages/oppgaveliste.html">
+    <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-home"/></svg>
+    <span>Oppdrag</span>
+  </a>
+  <a class="nav-item" href="/pages/notifications.html">
+    <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-notifications"/></svg>
+    <span>Varsler</span>
+  </a>
+  <a class="nav-item" href="/pages/post-task.html">
+    <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-post"/></svg>
+    <span>Opprett</span>
+  </a>
+  <a class="nav-item" href="/pages/messages.html">
+    <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-messages"/></svg>
+    <span>Meldinger</span>
+  </a>
+  <a class="nav-item" href="/pages/userProfile.html">
+    <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-profile"/></svg>
+    <span>Profil</span>
+  </a>
+
+  <!--Devinfo midlertidig slide start-->
+      <button class="nav-item" id="devinfo-toggle" aria-pressed="false">
+        <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-devinfo"/></svg>
+        <span>Dev</span>
+        <span class="toggle-track" aria-hidden="true">
+          <span class="toggle-thumb"></span>
+        </span>
+      </button>
+  <!--Devinfo midlertidig slide slutt -->
+</nav>
+             
     </div>
 
     <!-- Firebase scripts --> 

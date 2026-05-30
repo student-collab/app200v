@@ -1,6 +1,6 @@
 import {db} from '../JS/modules/dbConfig.js'; 
 import { renderTasks } from '../JS/modules/renderTasks.js'; 
-import { headerReady } from './main.js';
+//import { headerReady } from './main.js';
 
 
 const MAX_RADIUS = 20; // Justeres til å være høyeste brukervalg
@@ -27,6 +27,7 @@ window.addEventListener('load', ()=>{
     
             contentLoad ();
             wireSearch();
+            adjustSearchField();
 
 });
 
@@ -302,11 +303,11 @@ function wireSearch() {
 *        Søkefelt kommer og går med scroll     *
 * * * * * * * * * * * * * * * * * * * * * * * **/
 
-
+/*
 headerReady.then(() => {
     adjustSearchField();
 });    
-
+*/
 function adjustSearchField(){
     const header = document.getElementById('inserted-header');
     console.info(header);
