@@ -194,7 +194,7 @@ Hvert kort består av:
 
         const viewTask = document.createElement('span');
         viewTask.className = 'task__view-btn';
-        viewTask.textContent = 'View Task >';
+        viewTask.textContent = 'Vis oppdrag >';
  
        // --- Bilde/ikon: bruk opplastet bilde hvis tilgjengelig, ellers kategoriikon ---
         const firstImage = Array.isArray(task.images) ? task.images[0] : null;
