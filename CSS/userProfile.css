@@ -13,33 +13,6 @@ body {
     padding: 20px;
 }
 
-/* * * * * * * * * *
- *  mobile-header  *
- * * * * * * * * * */
-header{
-    display:flex;
-    justify-content: space-between;
-    border-bottom: 2px solid rgb(229, 229, 229);
-}
-header #logo-header{
-    display:flex;
-}
-header > #logo-header > img{
-    align-self: center;
-    margin: 0 .5rem 0 1rem;
-    
-    
-}
-header > #moon-symbol-background{
-    background-color: #ddd;
-    text-align: center;
-    font-size:25px;
-    width: 1.5em;
-    height: 1.5em;
-    align-self: center;
-    border-radius: 100%;
-}
-
 
 .subheader {
     width: 100%;
@@ -91,7 +64,6 @@ header > #moon-symbol-background{
     max-width: 420px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-
 
 
 .profile-photo {
@@ -146,40 +118,3 @@ header > #moon-symbol-background{
     color: #111;
     -webkit-text-fill-color: #111;
 }
-
-/* For tablets and larger */
-@media (min-width: 768px) {
-    #myProfile {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    .profile-photo {
-        width: 140px;
-        height: 140px;
-    }
-}
-
-/* For desktop */
-@media (min-width: 1024px) {
-    #myProfile {
-        max-width: 720px;
-        margin: 0 auto;
-        padding: 30px;
-    }
-
-    .profile-photo {
-        width: 100px;
-        height: 100px;
-    }
-
-    .profile-header {
-        max-width: 720px;
-        margin: 0 auto;
-        padding: 0 30px;
-    }
-}
-
-
-

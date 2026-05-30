@@ -1,6 +1,6 @@
 import { auth } from '../JS/modules/dbConfig.js';
 import { getUserTasks, getUsersSavedTasks, getActiveTasks } from '../JS/modules/FS_Requests.js';
-import { renderTasks } from '../JS/modules/renderTasks.js';
+import {getMarked, renderTasks } from '../JS/modules/renderTasks.js';
 
 
 const userInfo = document.getElementById('userInfo');
@@ -78,6 +78,12 @@ auth.onAuthStateChanged((user) => {
   initUserTaskData(activeUser.uid);
   usersSaved(activeUser.uid);
   usersActiveTasks(activeUser.uid);
+  
+  const deleteSelected = document.getElementById('final-delete');
+  deleteSelected.addEventListener('click', ()=>{
+    const markedForRemoval = getMarked();
+    console.log('deleting ' + JSON.stringify([...markedForRemoval]))
+  })
 });
 /**
  * 
@@ -131,7 +137,15 @@ auth.onAuthStateChanged((user) => {
    const ownTasksContainer = document.getElementById("own-tasks");
    ownTasksContainer.replaceChildren(HTMLFrag);
    lucide.createIcons();
-  
+    document.getElementById('show-erase-buttons').addEventListener('click', (e)=>{
+          document.querySelectorAll(".deleteTaskBtn").forEach(btn => {
+              btn.classList.toggle('hidden');
+          });
+          document.getElementById('sikker-sletting').classList.toggle('hidden');
+          const sletter = e.target.textContent =='Slette oppdrag';
+          e.target.textContent = sletter?'Avbryt':'Slette oppdrag';
+            
+    })
  }
 /**
  * Henter ut aktive oppgaver for brukeren (der bruker er eier eller assignee)

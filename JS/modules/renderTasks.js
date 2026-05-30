@@ -111,6 +111,8 @@ const CSS_slugs = Object.fromEntries(
  * 
  */
 
+const markedForRemoval =new Set();
+export function getMarked(){return markedForRemoval;}
 
 export function renderTasks(tasksObject, edit = false){
     const myDocFrag = document.createDocumentFragment();
@@ -173,9 +175,25 @@ Hvert kort består av:
         if (task.own) {
             avoidAnchorWrap = document.createElement('div');
             const button = document.createElement('button');
-            button.className = 'deleteTaskBtn' 
-            button.dataset.taskId = task.id; 
+            button.className = 'deleteTaskBtn hidden' 
+            const taskId = task.id; 
             button.innerHTML = `<img src="https://unpkg.com/lucide-static@latest/icons/trash-2.svg" alt="Slett oppdraget"/>`
+            button.addEventListener('click', ()=>{
+                const isMarked = markedForRemoval.has(taskId);
+                
+                if (isMarked) {
+                    markedForRemoval.delete(taskId);
+                } else {
+                    markedForRemoval.add(taskId);
+                }
+                document.getElementById('markedCount').textContent=markedForRemoval.size;
+                button.classList.toggle('chosen');
+                console.log('yes! Kill' + taskId);
+              
+
+
+
+            })
             avoidAnchorWrap.appendChild(button);
                         
         }

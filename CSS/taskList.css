@@ -1,12 +1,12 @@
 /* * * * * * * * * *
  *  task element   *
  * * * * * * * * * */
- .oppgavelisten{text-align: left; padding: 0 1rem;}
- .oppgavelisten>a{
+ .oppgavelisten{text-align: left; }
+ .oppgavelisten a{
     text-decoration: none;
  }
-.oppgavelisten>a,
-.oppgavelisten>a:visited
+.oppgavelisten a,
+.oppgavelisten a:visited
 { color:inherit;}
  
 .task{

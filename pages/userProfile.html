@@ -129,7 +129,13 @@
 
         <div id="myTasks" class = "section" style="display:none;">
             <p>Oppdrag du selv har lagt ut vises her</p>
-            <button id = "show-erase-buttons"> Slette oppdrag </button>
+            <div id="slette-kontroller">
+            <button id = "show-erase-buttons">Slette oppdrag</button>
+              <div id="sikker-sletting" class ="hidden">
+                <button id = "final-delete">Slett valgte oppdrag</button>
+                <span>Sletter </span><span id = 'markedCount'>0</span><span> oppdrag?</span>
+              </div>
+            </div>
             <div class="oppgavelisten" id="own-tasks"></div>
         </div>
 
