@@ -1,7 +1,8 @@
 // import { getMockUser } from '../JS/modules/mockUser.js';
 // importerer funksjonene som skal brukes
-  import {getSavedTaskIds, getTask, createChat} from './modules/FS_Requests.js';
+  import {getSavedTaskIds, getTask, createChat, addNotification, getUserNotifications} from './modules/FS_Requests.js';
   import {auth, db} from './modules/dbConfig.js';
+  
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * *
  *    id blir sendt med i URL - for hver link i 'oppgavelisten.html' sendes                               *
@@ -40,12 +41,13 @@ function renderTask(task) {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
   *    Setter data fra databasen inn i HTML             *
   * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    const appInnerHTML =`
-        <a class="header-link" href="oppgaveliste.html">
-     <div class="header">   
-          <h2>← ${task.title}</h2>    
-     </div>
-     </a>
+        const appInnerHTML =`
+      <div class="header">   
+        <a class="header-link header-back-link" href="oppgaveliste.html">
+          <h2>← ${task.title}</h2>
+        </a>
+        <button id="save-btn" class="save-top-btn" type="button" aria-pressed="false">🤍 Lagre</button>
+      </div>
 
     <div class="container">
 
@@ -87,21 +89,17 @@ function renderTask(task) {
       
 
       <div class="section">
-        <h3>ABOUT THIS TASK</h3>
+        <h3 class="label-with-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Om oppgaven</h3>
 
-        <p>${task.description}</p>
+        <p class="task-description">${task.description}</p>
       </div>
 
-      <div class="button-row">
+        <div class="buttons">
+          <button id="contact-btn" class="contact-btn">💬 Kontakt oppdragsgiver</button>
+          <button id="accept-btn" class="accept-btn">✅ Tilby å utføre oppdraget</button>
+        </div>
 
-        <button id ="save-task" class="saveTask-btn">❤️ Save task</button> 
-        <button class="contact-btn">💬 Contact Poster</button> 
-        
-      </div>
-      
-      <div class="accept-btn">
-      <button class="saveTask-btn">✅ Accept task</button>
-      </div>
+    
       
     
 
@@ -112,7 +110,35 @@ function renderTask(task) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *    Legger til eventlistners på knapper som nå finnes  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-const saveTask = document.getElementById("save-task");
+const saveTask = document.getElementById("save-btn");
+
+//setter opp attributter for hvilken state save task knappen er i
+const setSaveButtonState = (isSaved) => {
+  saveTask.classList.toggle('is-saved', isSaved);
+  saveTask.setAttribute('aria-pressed', isSaved ? 'true' : 'false');
+  saveTask.textContent = isSaved ? '❤️ Lagret' : '🤍 Lagre';
+};
+
+// On page load, sync the heart button with what is already saved in Firestore.
+const hydrateSavedState = async () => {
+  // No logged-in user means this task cannot be in a saved list.
+  const currentUserId = auth.currentUser?.uid;
+  if (!currentUserId) {
+    setSaveButtonState(false);
+    return;
+  }
+
+  // Fetch the user's saved tasks and mark this task as saved/unsaved in UI.
+  const savedTaskIds = await getSavedTaskIds(currentUserId);
+  setSaveButtonState(savedTaskIds.includes(task.id));
+};
+
+// Run once after rendering so the button reflects real saved state immediately.
+hydrateSavedState();
+
+
+
+
 saveTask.addEventListener('click', async ()=>{ 
   // const user = getMockUser(); Har kommentert ut bruken til mockusers slik at d funker med ekte brukere
   const currentUserId = auth.currentUser?.uid;
@@ -123,34 +149,71 @@ saveTask.addEventListener('click', async ()=>{
 
   // const savedTaskIds = await getSavedTaskIds(user.uid);
   const savedTaskIds = await getSavedTaskIds(currentUserId);
-  
-  if (savedTaskIds.includes(task.id)){
 
-    console.log("Brukeren har den allerede"); 
-
-  }
-  else{
-  // await db.collection('users').doc(user.uid).update({
-  await db.collection('users').doc(currentUserId).update({
-              savedTaskIds: firebase.firestore.FieldValue.arrayUnion(task.id)
-      });
+  if (savedTaskIds.includes(task.id)) {
+    // Fjern fra savedTaskIds
+    await db.collection('users').doc(currentUserId).update({
+      savedTaskIds: firebase.firestore.FieldValue.arrayRemove(task.id)
+    });
+    setSaveButtonState(false);
+    console.log("Oppgave fjernet fra lagrede oppgaver");
+  } else {
+    // Legg til i savedTaskIds
+    await db.collection('users').doc(currentUserId).update({
+      savedTaskIds: firebase.firestore.FieldValue.arrayUnion(task.id)
+    });
+    setSaveButtonState(true);
+    console.log("Oppgave lagt til i lagrede oppgaver");
   }
 
 
 })
 
   //Creates a chat with between the logged in user and the poster of the task
-  const contactBtn = document.querySelector('.contact-btn');
+  const contactBtn = document.getElementById('contact-btn');
   contactBtn?.addEventListener('click', async () => {
     const currentUserId = auth.currentUser?.uid;
     const posterId = task?.createdBy?.uid || task?.creatorId;
+    const taskImage = Array.isArray(task?.images)
+      ? (task.images[0] || null)
+      : (typeof task?.images === 'string' ? task.images : null);
 
     if (!currentUserId || !posterId || currentUserId === posterId) return;
 
     const participants = [currentUserId, posterId];
     const chatId = [...participants].sort().join('_');
 
-    await createChat(chatId, participants);
+    await createChat(chatId, participants, {
+      taskId: task.id,
+      taskTitle: task.title,
+      taskImage
+    });
     window.location.href = `./messagesChat.html?chatId=${encodeURIComponent(chatId)}`;
   });
+
+  const acceptBtn = document.getElementById("accept-btn");
+acceptBtn.addEventListener('click', async () => {
+  const currentUserId = auth.currentUser?.uid;
+
+  const taskId = task?.id;
+  const taskOwnerId = task?.createdBy?.uid || task?.creatorId;
+  console.log(taskOwnerId);
+  if (!currentUserId || !taskId) return;
+
+  try {
+    await db.collection('tasks').doc(taskId).update({
+      'assignee.pendingRequest': firebase.firestore.FieldValue.arrayUnion(currentUserId)
+    });
+    console.log('Added user to assignee.pendingRequest');
+    addNotification(taskOwnerId, currentUserId, taskId, "request", false, "New Task Request", "You have a new task request!");
+
+    // Hent opp oppgave eier uid
+    // Lag en notifikasjon via newNotification.js modul som 
+  } catch (error) {
+    console.error('Could not append pending request:', error);
+  }
+
+  
+});
+  
 }

@@ -148,6 +148,7 @@ async function postingTask (){
         */
         // Sletter intern fil-liste og tømmer den synlige fil-listen
         clearDroppedFiles(); 
+        window.location.href = `/pages/postedTaskDetail.html?id=${encodeURIComponent(docID)}`;
         
     }
     

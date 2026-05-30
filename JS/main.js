@@ -111,13 +111,20 @@ function markCurrentNavItem() {
   const currentPath = normalizePath(window.location.pathname);
   const currentFileName = currentPath.split('/').pop() || '';
   const aliases = new Set(['', 'index.html', 'index']);
+  const messagesAliases = new Set(['messages.html', 'messagesChat.html', 'messageschat']);
 
   navLinks.forEach((link) => {
     const linkPath = normalizePath(link.getAttribute('href'));
     const linkFileName = linkPath.split('/').pop() || '';
 
+
+    // Sjekk for messagesChat og postedTaskDetail med ekstra etter .html
+    const isMessagesChatVariant = currentFileName.startsWith('messageschat.html');
+    const isPostedTaskDetailVariant = currentFileName.startsWith('postedtaskdetail.html');
+
     const isMatch = currentPath === linkPath ||
-      (aliases.has(currentFileName) && linkFileName === 'oppgaveliste.html');
+      ((aliases.has(currentFileName) || isPostedTaskDetailVariant) && linkFileName === 'oppgaveliste.html') ||
+      ((messagesAliases.has(currentFileName) || isMessagesChatVariant) && linkFileName === 'messages.html');
 
     if (isMatch) {
       link.setAttribute('aria-current', 'page');
@@ -217,6 +224,22 @@ function hideLogin(){
     loginScreen.classList.add('hidden');
 }
 
+//For å sette profilbilde av brukeren som er logget inn i topp høyre hjørnet ved siden av navnet
+function setHeaderProfilePhoto(user) {
+  const photoContainer = document.getElementById('login-symbol-background');
+  const profilePhoto = document.getElementById('header-profile-photo');
+  if (!photoContainer || !profilePhoto) return;
+
+  const photoUrl = user?.photoURL || '';
+  if (photoUrl) {
+    profilePhoto.src = photoUrl;
+    photoContainer.classList.add('has-photo');
+  } else {
+    profilePhoto.removeAttribute('src');
+    photoContainer.classList.remove('has-photo');
+  }
+}
+
 /* showLoginUI brukes av initMenu.js når noen logger av  */
 export function showLoginUI() {
   const logInScreen = document.getElementById('login-screen');
@@ -228,6 +251,7 @@ export function showLoginUI() {
   userStatus.textContent = "Logg inn"
   const logInForm = document.getElementById('auth-form');
   logInForm.classList.remove('hidden');
+  setHeaderProfilePhoto(null);
 }
 
 function showLogOut(user){
@@ -247,6 +271,7 @@ inlogInfo.classList.remove('hidden');
 console.log("ShowLogOut");
   userStatus.textContent = user.displayName ?? "Innlogget";
   logInForm.classList.add('hidden');
+  setHeaderProfilePhoto(user);
   
 }
 

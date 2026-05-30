@@ -1,0 +1,178 @@
+/* Globale stiler og fargevariabler */
+:root {
+  --bg-color: #fafdf7;
+  --card-bg: #ffffff;
+  --text-main: #2d312c;
+  --text-muted: #727970;
+  --primary-green: #43693d;
+  --light-green: #e1ebd9;
+  --accent-green: #4ca64c;
+  --border-color: #e1e4dc;
+}
+
+/* Hovedinnhold */
+.content {
+  flex: 1;
+  padding: 24px 20px;
+  overflow-y: auto;
+}
+
+.header-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+h1 {
+  font-size: 24px;
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.unread-count {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.mark-all-btn {
+  background: none;
+  border: none;
+  color: var(--primary-green);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Varslingsliste og kort */
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notification-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  position: relative;
+}
+
+/* Ton ned leste varsler slik som pA bildet */
+.notification-card.read {
+  opacity: 0.6;
+}
+
+/* Ikon-containere */
+.icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f1f5ec;
+  color: var(--primary-green);
+  flex-shrink: 0;
+}
+
+.notification-body {
+  flex: 1;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  gap: 12px;
+}
+
+.card-header h3 {
+  font-size: 16px;
+  color: var(--text-main);
+  font-weight: 600;
+  margin: 0;
+}
+
+.card-header .time {
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.notification-body p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.request-controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.accept-btn,
+.reject-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.accept-btn {
+  background-color: var(--accent-green);
+  color: #fff;
+}
+
+.reject-btn {
+  background-color: #d64545;
+  color: #fff;
+}
+
+.notification-card.accepted {
+  border-color: var(--accent-green);
+  background-color: #eef7ed;
+}
+
+.notification-card.rejected {
+  border-color: #d64545;
+  background-color: #fbe8e8;
+}
+
+/* Grønn prikk for uleste varsler */
+.unread-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-green);
+  border-radius: 50%;
+  position: absolute;
+  right: 16px;
+  bottom: 24px;
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: 18px 14px;
+  }
+
+  .header-inline {
+    gap: 12px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+}

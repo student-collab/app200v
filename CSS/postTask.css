@@ -62,20 +62,24 @@
    gap: .45rem;
   font:inherit;
   align-items: center;
-  padding: .45rem .7rem;
+  gap: .45rem;
+  width: fit-content;
+  padding: 8px 12px;
   cursor: pointer;
   user-select: none;
-  font-weight: 500;
-  
-  background-color: var(--backgroundcolor-form-fields);
-  border: 1px solid var(--bordercolor-form-fields);
-  border-radius: 10px;
+  font-weight: 700;
+  background: #ffffff;
+  color: #000;
+  border: 1px solid var(--button-main-color);
+  border-radius: 999px;
+  font-size: 14px;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 
 }
 
-/* * * * * * * * *
- *  user input   *
- * * * * * * * * */
+#clear-form:hover {
+  background: #f2faf7;
+}
 #form__post-task{
     display: flex;
     flex-direction: column;
@@ -349,6 +353,7 @@
     align-items: center;
 	  gap: 0.6rem;
     border-bottom: 2px solid rgb(229, 229, 229);
+    background-color: white;
 }
 
 .subheader-content h2 {

@@ -94,7 +94,9 @@ async function taskLoader () {
         const snap = await db.collection('tasks').get();
         const tasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         console.info(JSON.stringify(tasks[0]));
-        tasks.forEach(task => prepRender(task));
+        tasks
+          .filter(task => task.status !== 'accepted')
+          .forEach(task => prepRender(task));
         insertHTML();
         console.log("Rendering");
     } catch (err) {
@@ -140,6 +142,8 @@ async function taskLoaderDistanceFilter (taskRadius = MAX_RADIUS){
     const box = getBoundingBox(userLat, userLng, taskRadius);
     /* Filtrering av oppdragene: reduce tar med seg tasksWithinRadius for hver iterasjon over elementene i cashedTasks -> task  */
     const newMainInfo = cachedTasks.reduce((tasksWithinRadius, task) => {
+        if (task.status === 'accepted') return tasksWithinRadius;
+
         const { longitude: lng, latitude: lat } = task.location; // deconstruct -- tillegger lng og lat verdiene fra task.location.lat -- istedet for property accessing: const lng = task.location.longitude; + ... en gang til for lat
 
         if (lng < box.minLng || lng > box.maxLng ||

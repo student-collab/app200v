@@ -6,6 +6,7 @@
     </a>
     <div id="login-clickable"  data-role="login-trigger">
       <div id="login-symbol-background">
+        <img id="header-profile-photo" alt="Profilbilde" />
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="50 40 95 95" >
           <path fill="none" stroke="currentColor" stroke-width="4.7625"
                   d="M 70.600433,114.5978 C 82.878771,82.367175 117.6674,95.668702 121.50438,114.0862

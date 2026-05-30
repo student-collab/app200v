@@ -115,7 +115,27 @@ async function setTask(taskId, data, imageFiles = []) {
     });
   }
 
+export async function getActiveTasks(currentUserUid) {
+  // Hent tasks hvor bruker er assignee
+  const assigneeSnap = await db.collection('tasks')
+    .where("assignee.uid", "==", currentUserUid)
+    .get();
+  // Hent tasks hvor bruker er eier
+  const ownerSnap = await db.collection('tasks')
+    .where("createdBy.uid", "==", currentUserUid)
+    .get();
 
+  // Slå sammen, bare tasks med assignee skal vises
+  const assigneeTasks = assigneeSnap.docs
+    .map(doc => ({ id: doc.id, ...doc.data() }))
+    .filter(task => task.assignee && task.assignee.uid);
+
+  const ownerTasks = ownerSnap.docs
+    .map(doc => ({ id: doc.id, ...doc.data() }))
+    .filter(task => task.assignee && task.assignee.uid);
+    
+  return [...assigneeTasks, ...ownerTasks];
+}
 
 
 export async function readFSdb(path = 'collection/document') {
@@ -145,11 +165,17 @@ export async function setUser(userId, data) { //userId= Firebase Authenticator I
 
 //------------------- CHAT FUNKSJONER --------------------------------
 
-// Creates (or overwrites) a chat document with its participant user IDs.
-export async function createChat(chatId, participants) {
-  await db.collection('chats').doc(chatId).set({
+//Creates or updates a chat document with participants and optional task context.
+export async function createChat(chatId, participants, metadata = {}) {
+  const payload = {
     participants
-  });
+  };
+
+  if (metadata.taskId) payload.taskId = metadata.taskId;
+  if (metadata.taskTitle) payload.taskTitle = metadata.taskTitle;
+  if (metadata.taskImage) payload.taskImage = metadata.taskImage;
+
+  await db.collection('chats').doc(chatId).set(payload, { merge: true });
 }
 
 // Adds one message document inside chats/{chatId}/messages.
@@ -200,7 +226,7 @@ function formatMessageText(text = '') {
 
 // Builds the empty-chat message: "This is the start of your conversation with x".
 async function getConversationStartText(chatId) {
-  const fallbackText = 'This is the start of your conversation.';
+  const fallbackText = 'Dette er starten på din samtale.';
 
   try {
     const chatSnap = await db.collection('chats').doc(chatId).get();
@@ -213,7 +239,7 @@ async function getConversationStartText(chatId) {
     const otherUserSnap = await db.collection('users').doc(otherUserId).get();
     const displayName = otherUserSnap.exists ? (otherUserSnap.data()?.name?.display || otherUserId) : otherUserId;
 
-    return `This is the start of your SideQuest with ${displayName}`;
+    return `Dette er starten på din samtale med ${displayName}`;
   } catch {
     return fallbackText;
   }
@@ -374,3 +400,169 @@ endAt(value)                // end at value
 
 
 */
+
+
+/* Notifications
+
+Notification types:
+
+  DB Collection format: notificationId, userId, type, read, title, description, createdAt
+
+*/
+
+async function addNotification(userId, assigneeId, taskId, type, read, title, description) {
+  if (!userId) {
+    throw new Error('addNotification requires a valid userId');
+  }
+
+  // Writing to a subcollection auto-creates it if missing.
+  await db.collection('users').doc(userId).collection('notifications').add({
+    userId,
+    assigneeId,
+    taskId,
+    type,
+    read,
+    title,
+    description,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
+
+async function deleteNotification(notificationId, userId = auth.currentUser?.uid) {
+  if (!notificationId) {
+    throw new Error('deletion requires a valid notificationId');
+  }
+
+  if (!userId) {
+    throw new Error('deletion requires a valid userId');
+  }
+
+  await db.collection('users').doc(userId).collection('notifications').doc(notificationId).delete();
+  console.log('Deleted notification with ID:', notificationId);
+}
+
+async function deleteNotificationsByTask(userId, taskId) {
+  if (!userId || !taskId) return;
+
+  const snapshot = await db
+    .collection('users')
+    .doc(userId)
+    .collection('notifications')
+    .where('taskId', '==', taskId)
+    .get();
+
+  if (snapshot.empty) return;
+
+  const batch = db.batch();
+  snapshot.docs.forEach(doc => batch.delete(doc.ref));
+  await batch.commit();
+}
+
+async function acceptTaskRequest(taskId, assigneeId, ownerId) {
+  if (!taskId || !assigneeId || !ownerId) {
+    throw new Error('acceptTaskRequest requires taskId, assigneeId and ownerId');
+  }
+
+  const taskDoc = await db.collection('tasks').doc(taskId).get();
+  if (!taskDoc.exists) {
+    throw new Error('Task not found: ' + taskId);
+  }
+
+  const taskData = taskDoc.data();
+  const pendingRequests = taskData?.assignee?.pendingRequest ?? taskData?.pendingRequests ?? [];
+  const otherAssignees = Array.isArray(pendingRequests)
+    ? pendingRequests.filter(uid => uid && uid !== assigneeId)
+    : [];
+
+  await db.collection('tasks').doc(taskId).update({
+    'assignee.uid': assigneeId,
+    status: 'accepted',
+    'assignee.pendingRequest': firebase.firestore.FieldValue.delete(),
+    pendingRequests: firebase.firestore.FieldValue.delete()
+  });
+
+  await deleteNotificationsByTask(ownerId, taskId);
+
+  await Promise.all(otherAssignees.map(async (otherAssigneeId) => {
+    await addNotification(
+      otherAssigneeId,
+      ownerId,
+      taskId,
+      'denyNotification',
+      false,
+      'Tilbud avvist',
+      'Tilbudet ditt er dessverre avvist.'
+    );
+  }));
+}
+
+async function denyTaskRequest(taskId, assigneeId, ownerId) {
+  if (!taskId || !assigneeId || !ownerId) {
+    throw new Error('denyTaskRequest requires taskId, assigneeId and ownerId');
+  }
+
+  await db.collection('tasks').doc(taskId).update({
+    'assignee.pendingRequest': firebase.firestore.FieldValue.arrayRemove(assigneeId),
+    pendingRequests: firebase.firestore.FieldValue.arrayRemove(assigneeId)
+  });
+
+  await deleteNotificationsByTask(assigneeId, taskId);
+
+  await addNotification(
+    assigneeId,
+    ownerId,
+    taskId,
+    'denyNotification',
+    false,
+    'Tilbud avvist',
+    'Tilbudet ditt er dessverre avvist.'
+  );
+}
+
+async function NotificationRead(notificationId) {}
+
+async function getUserNotifications(userId) {
+  console.log(userId);
+  const notificationCollection = await db
+    .collection('users')
+    .doc(userId)
+    .collection('notifications')
+    .get();
+
+  if (notificationCollection.empty) {
+    return "No notifications";
+  }
+
+  return notificationCollection.docs.map(doc => ({ 
+    id: doc.id,
+    userId: doc.data().userId,
+    assigneeId: doc.data().assigneeId,
+    taskId: doc.data().taskId,
+    type: doc.data().type,
+    read: doc.data().read,
+    title: doc.data().title,
+    description: doc.data().description,
+    createdAt: doc.data().createdAt
+   }));
+}
+
+async function getNotificationDetails(notificationId) {
+  const notificationDoc = await db.collection('notifications').doc(notificationId).get();
+  if (!notificationDoc.exists) {
+    return "Notification not found";
+  }
+
+  return {
+    id: notificationDoc.id,
+    userId: notificationDoc.data().userId,
+    assigneeId: notificationDoc.data().assigneeId,
+    taskId: notificationDoc.data().taskId,
+    type: notificationDoc.data().type,
+    read: notificationDoc.data().read,
+    title: notificationDoc.data().title,
+    description: notificationDoc.data().description,
+    createdAt: notificationDoc.data().createdAt
+  };
+};
+
+export {addNotification, deleteNotification, acceptTaskRequest, denyTaskRequest, NotificationRead, getUserNotifications, getNotificationDetails};
