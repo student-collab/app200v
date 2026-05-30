@@ -310,3 +310,57 @@ overflow-x: auto;
     color: var(--nav-active-color);
 }
 
+/* Rad med bilde og animerte prikker */
+.centered-row-animation {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+
+  
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 500;
+}
+
+
+
+.centered-row-img {
+  display: block;
+}
+
+.loadingDot-loader {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5em;
+}
+
+.loadingDot {
+  width: 10px;
+  height: 10px;
+  background: #34576e;
+  border-radius: 50%;
+  display: inline-block;
+  animation: dot-fade 0.8s infinite ease-in-out both;
+}
+.dot1 {
+  animation-delay: 0s;
+}
+.dot2 {
+  animation-delay: 0.15s;
+}
+.dot3 {
+  animation-delay: 0.3s;
+}
+
+@keyframes dot-fade {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
