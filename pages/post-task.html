@@ -111,7 +111,7 @@
 
 
 
-   <div id="page-wrap " class ="bredde-begrenser">
+  <div id="page-wrap" class ="bredde-begrenser">
         <div id="main-content">
             <form id ="form__post-task" action="">
                 
@@ -148,7 +148,12 @@
             </form>
 
             
-              <label id="file-drop-label" class="label-with-icon" for="file-drop__input"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Last opp bilder</label>
+       
+         <div id="map-panel">
+                <div id="map-sidebar" class="map-instance"></div>
+        </div>    
+     
+        <label id="file-drop-label" class="label-with-icon" for="file-drop__input"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Last opp bilder</label>
             <div id="file-drop" role="button" tabindex="0"
        aria-label="Last opp bilder – klikk eller dra filer hit">
 
@@ -181,13 +186,12 @@
 
     <p id="file-drop__status" role="alert" aria-live="polite"></p>
   </div>
-            
+
+  
             <button id = "btn-post-task" type = "button">Publiser oppdrag</button>
         </div> 
         
-        <div id="map-panel">
-                <div id="map-sidebar" class="map-instance"></div>
-        </div>
+       
         
         <svg xmlns="http://www.w3.org/2000/svg" hidden style = "height:0;">
   <defs>

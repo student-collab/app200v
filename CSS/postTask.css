@@ -267,6 +267,7 @@
     font-family: inherit;
     font-weight: 500;
     font-size: 18px;
+    margin-bottom: 2em;
 }
 /* * * * * * * * * * * * *
  *    For redigering     *
@@ -300,8 +301,7 @@
 }
 #main-content{display:contents;}
 #map-panel{
-    height:400px;
-    
+  height:400px;
 }
 
 #map-sidebar{height:100%;} 
