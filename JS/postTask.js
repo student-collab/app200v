@@ -30,12 +30,19 @@ window.addEventListener('load', ()=>{
     if (id){
         currentTaskId = id;
         getTask(id).then((task) => {
-            prepareEdit(task);
-            insertMap(task.location ?? null);
+            if (task) {
+                prepareEdit(task);
+                insertMap(task.location ?? null);            
+            }
+            else{
+                currentTaskId = null;
+            } 
+    
         });
         
     }
-        
+    
+
     /* ----------- post-task-knappen ---------------------------- */
     const submitButton = document.getElementById("btn-post-task");
     submitButton.addEventListener('click',async ()=> postingTask());
@@ -151,7 +158,7 @@ async function postingTask (){
         window.location.href = `/pages/postedTaskDetail.html?id=${encodeURIComponent(docID)}`;
         
     }
-    
+const markedForDeletion = new Set();
 function renderExistingImages() {
     document.getElementById("existing-images")?.remove();
 
@@ -172,23 +179,19 @@ function renderExistingImages() {
 
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.innerHTML = "Slett bildet";
-        btn.dataset.imgName = imgName;
-        btn.dataset.imgId = imgId;
+        btn.textContent = "Slett bildet";
         btn.addEventListener("click", (e) => {
-            survivingImages.splice(survivingImages.indexOf(url), 1);
-            const myBtn = e.target;
-            const imgId = myBtn.dataset.imgId;
-            const imgName = myBtn.dataset.imgName;
-            const myIMG = document.getElementById(imgId);
-            myIMG.classList.toggle('markedDelete');
-            myBtn.textContent = (myBtn.textContent == 'Slett bildet')?
-            'Gjenopprett bildet':'Slett bildet';
-            const mySpan = document.getElementById('span_'+imgId);
-            mySpan.textContent = (mySpan.textContent == imgName)?
-            imgName + ' -slettes ved opplasting': imgName;
-
+            const isMarked = markedForDeletion.has(url);
+            if (isMarked) {
+                markedForDeletion.delete(url);
+            } else {
+                markedForDeletion.add(url);
+            }
+            img.classList.toggle('markedDelete');
+            btn.textContent = isMarked ? 'Slett bildet' : 'Gjenopprett bildet';
+            name.textContent = isMarked ? imgName : imgName + ' – slettes ved opplasting';
         });
+
         const img = document.createElement("img");
         img.src = url;
         img.id = imgId;
