@@ -2,7 +2,7 @@
 import { initMenu } from './modules/initMenu.js';
 import { auth, loginAnonymously} from './modules/dbConfig.js';
 import { initDevPanel } from '/JS/modules/dev-panel.js';
-export const headerReady = injectHeader();
+//export const headerReady = injectHeader();
 
 document.addEventListener('readystatechange', async (e) => {
     console.log("Readystate: " + document.readyState);
@@ -19,7 +19,7 @@ document.addEventListener('readystatechange', async (e) => {
     /* * * * * * * * * * * * *
     *   Setter inn navbar   *
     * * * * * * * * * * * * */
-    await injectNav();
+  //  await injectNav();
    
     /* * * * * * * * * * * * *
     *    Setter inn devInfo *
