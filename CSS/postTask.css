@@ -56,7 +56,10 @@
  *  #clear-form - tøm skjema                     *
  *  #returnBtn -  forkast endringer og returner  *
  * * * * * * * * * * * * * * * * * * * * * * * * */
-#btnWrap{display:flex;}
+#btnWrap{
+  display:flex;
+  gap:1rem;
+}
  #clear-form, #returnBtn{
   display: inline-flex;
   gap: .45rem;
