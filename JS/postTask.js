@@ -31,6 +31,7 @@ window.addEventListener('load', ()=>{
         currentTaskId = id;
         getTask(id).then((task) => {
             if (task) {
+                document.getElementById('returnBtn').style='visibility:visible';
                 prepareEdit(task);
                 insertMap(task.location ?? null);            
             }
@@ -179,6 +180,7 @@ function renderExistingImages() {
 
         const btn = document.createElement("button");
         btn.type = "button";
+        btn.className = "remove-img-button"
         btn.textContent = "Slett bildet";
         btn.addEventListener("click", (e) => {
             const isMarked = markedForDeletion.has(url);

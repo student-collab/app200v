@@ -60,7 +60,7 @@
   display:flex;
   gap:1rem;
 }
- #clear-form, #returnBtn{
+ .remove-img-button, #clear-form, #returnBtn{
   display: inline-flex;
   gap: .45rem;
   font:inherit;
@@ -76,10 +76,15 @@
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 
 }
+.remove-img-button{justify-content: center;}
 
 #clear-form:hover {
   background: #f2faf7;
 }
+
+/* * * * * * * * *
+ *  user input   *
+ * * * * * * * * */
 #form__post-task{
     display: flex;
     flex-direction: column;
