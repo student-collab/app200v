@@ -169,7 +169,16 @@ Hvert kort består av:
             
             iWrap.appendChild(mineInfo);
         }
-
+        let avoidAnchorWrap = false;
+        if (task.own) {
+            avoidAnchorWrap = document.createElement('div');
+            const button = document.createElement('button');
+            button.className = 'deleteTaskBtn' 
+            button.dataset.taskId = task.id; 
+            button.innerHTML = `<img src="https://unpkg.com/lucide-static@latest/icons/trash-2.svg" alt="Slett oppdraget"/>`
+            avoidAnchorWrap.appendChild(button);
+                        
+        }
         // --- Overskrift ---
         const title = document.createElement('h2');
         title.className = 'task__title';
@@ -226,12 +235,16 @@ Hvert kort består av:
         iWrap.appendChild(infWrap);
         iWrap.appendChild(viewTask);
         yWrap.appendChild(iWrap);
-                
         if (iconUrgent) {
             yWrap.appendChild(iconUrgent);
         }   
         yWrap.appendChild(mediaElement);
-        myDocFrag.appendChild(yWrap);
+        if(avoidAnchorWrap){
+            avoidAnchorWrap.appendChild(yWrap);        
+            myDocFrag.appendChild(avoidAnchorWrap);
+        } else{
+            myDocFrag.appendChild(yWrap);
+        }
     });
     return myDocFrag;
 }

@@ -25,19 +25,29 @@ const passwordLabelEl = document.querySelector('label[for="editPassword"]');
 const urlParams = new URLSearchParams(window.location.search);
 const isProfileCompletionMode = urlParams.get('completeProfile') === '1';
 // Holds the Google-authenticated user while this page is open.
-let profileCompletionUser = null;
 
 function setStatus(message, isError = false) {
 	statusEl.textContent = message;
 	statusEl.style.color = isError ? '#b00020' : '#0b7a3b';
 }
 
+// Returns a promise that resolves to the first auth state Firebase emits.
+// This eliminates the race between onAuthStateChanged firing and the user
+// hitting submit — the resolved value is used directly instead of a module-
+// level variable that might still be null at submit time.
+function resolveAuthUser() {
+	return new Promise((resolve) => {
+		const unsubscribe = auth.onAuthStateChanged((user) => {
+			unsubscribe(); // stop listening after the first emission
+			resolve(user);// settle the promise with that user value 
+		});
+	});
+}
 // Adapts the form for Google profile completion:
 // - email is already provided by Google and should not be edited here
 // - password is not needed because account already exists
 // - display name can be prefilled from Google profile
 function applyGoogleProfileCompletionUi(user) {
-	profileCompletionUser = user;
 
 	// Show a simple heading so user knows this is the Google completion step.
 	if (!document.getElementById('googleCompletionNotice')) {
@@ -90,20 +100,26 @@ function applyGoogleProfileCompletionUi(user) {
 async function setupProfileCompletionMode() {
 	if (!isProfileCompletionMode) return;
 
-	auth.onAuthStateChanged(async (user) => {
+	
+		setStatus('Checking your account...');
+		registerBtn.disabled = true;
+	
+		const user = await resolveAuthUser();
+	
 		if (!user || user.isAnonymous) {
 			setStatus('Sign in with Google first.', true);
+			// Leave the button disabled — there is nothing useful the user can submit.
 			return;
 		}
-
+	
 		const userDoc = await db.collection('users').doc(user.uid).get();
 		if (userDoc.exists) {
 			window.location.href = '/pages/userProfile.html';
 			return;
 		}
-
+	
+		registerBtn.disabled = false;
 		applyGoogleProfileCompletionUi(user);
-	});
 }
 
 // Normalizes input values before validation or save so empty/null values do not leak into the payload.
@@ -158,58 +174,64 @@ function buildProfileData(displayName) {
 // In completeProfile mode it reuses the already signed-in Google user.
 async function registerUser() {
 	syncDisplayNameInput();
-
-	if (!form.checkValidity()) {
-		form.reportValidity();
-		return;
-	}
-
-	const email = cleanValue(editEmailEl.value);
-	const password = editPasswordEl.value;
-	const firstName = cleanValue(editFirstNameEl.value);
-	const lastName = cleanValue(editLastNameEl.value);
-	const displayName = useFullNameAsDisplayEl.checked
-		? buildFullName(firstName, lastName)
-		: cleanValue(editDisplayNameEl.value);
-
-	if (!displayName) {
-		setStatus('Display name cannot be empty.', true);
-		return;
-	}
-
-	registerBtn.disabled = true;
-	setStatus('Creating account...');
-
-	try {
-		// Two different auth sources depending on mode.
-		const user = isProfileCompletionMode
-			? (profileCompletionUser || auth.currentUser)
-			: await registerWithEmail(email, password);
-
-		// Safety check: we must have a real authenticated user before writing profile.
-		if (!user || user.isAnonymous) {
-			throw new Error('No authenticated user found for profile completion.');
-		}
-
-		// Keep Firebase Auth displayName in sync with our own users/{uid}.name.display.
-		await user.updateProfile({ displayName });
-		await setUser(user.uid, buildProfileData(displayName));
-
-		// For Google completion flow, go directly to profile after first save.
-		if (isProfileCompletionMode) {
-			setStatus('Profile saved. Redirecting...');
-			window.location.href = '/pages/userProfile.html';
+	
+		if (!form.checkValidity()) {
+			form.reportValidity();
 			return;
 		}
-
-		setStatus('Account created.');
-		window.location.href = '/pages/userProfile.html';
-		return;
-	} catch (error) {
-		setStatus(error.message || 'Could not register account.', true);
-	} finally {
-		registerBtn.disabled = false;
-	}
+	
+		const email = cleanValue(editEmailEl.value);
+		const password = editPasswordEl.value;
+		const firstName = cleanValue(editFirstNameEl.value);
+		const lastName = cleanValue(editLastNameEl.value);
+		const displayName = useFullNameAsDisplayEl.checked
+			? buildFullName(firstName, lastName)
+			: cleanValue(editDisplayNameEl.value);
+	
+		if (!displayName) {
+			setStatus('Display name cannot be empty.', true);
+			return;
+		}
+	
+		registerBtn.disabled = true;
+		setStatus('Saving...');
+	
+		try {
+			let user;
+	
+			if (isProfileCompletionMode) {
+				// Re-resolve from Firebase at submit time — guaranteed to be settled by now
+				// because setupProfileCompletionMode already awaited the first auth emission
+				// and only enabled the button after confirming a real user is signed in.
+				user = await resolveAuthUser();
+			} else {
+				user = await registerWithEmail(email, password);
+			}
+	
+			if (!user || user.isAnonymous) {
+				throw new Error('No authenticated user found. Please sign in and try again.');
+			}
+	
+			// Check whether a Firestore profile already exists before writing.
+			// Covers the edge case where the user somehow submits twice or arrives
+			// on this page with a profile already created.
+			const existingDoc = await db.collection('users').doc(user.uid).get();
+			if (existingDoc.exists) {
+				window.location.href = '/pages/userProfile.html';
+				return;
+			}
+	
+			// Keep Firebase Auth displayName in sync with our own users/{uid}.name.display.
+			await user.updateProfile({ displayName });
+			await setUser(user.uid, buildProfileData(displayName));
+	
+			setStatus('Profile saved. Redirecting...');
+			window.location.href = '/pages/userProfile.html';
+		} catch (error) {
+			setStatus(error.message || 'Could not save profile.', true);
+		} finally {
+			registerBtn.disabled = false;
+		}
 }
 
 // Re-sync the display name whenever the name fields or checkbox change.

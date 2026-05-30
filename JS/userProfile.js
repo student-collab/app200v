@@ -68,13 +68,13 @@ function setSubheaderAsBackButton(title) {
 auth.onAuthStateChanged((user) => {
   const activeUser = user && !user.isAnonymous ? user : null;
 
-  initUserData(activeUser);
-
+  
   if (!activeUser) {
     clearTaskContainers();
     return;
   }
-
+  
+  initUserData(activeUser);
   initUserTaskData(activeUser.uid);
   usersSaved(activeUser.uid);
   usersActiveTasks(activeUser.uid);
@@ -126,6 +126,7 @@ auth.onAuthStateChanged((user) => {
  async function initUserTaskData (userUid){
    const taskData = await getUserTasks(userUid);
    const dataSelect = filterData(taskData);
+   dataSelect.forEach(ds => ds.own = true);
    const HTMLFrag = renderTasks(dataSelect,true);
    const ownTasksContainer = document.getElementById("own-tasks");
    ownTasksContainer.replaceChildren(HTMLFrag);
@@ -136,18 +137,18 @@ auth.onAuthStateChanged((user) => {
  * Henter ut aktive oppgaver for brukeren (der bruker er eier eller assignee)
  */
 async function usersActiveTasks(userUid) {
-  const taskData = await getActiveTasks(userUid);
+  const taskData = await getActiveTasks(userUid); //Henter oppdrag der bruker er eier eller asignee
   // Sett isMine=true for egne oppgaver
   taskData.forEach(task => {
-    if (task.createdBy && task.createdBy.uid === userUid) {
+    if (task.createdBy && task.createdBy.uid === userUid) {  //merker oppdrag der bruker er eier
       task.isMine = true;
     }
   });
 
-  const dataSelect = filterData(taskData);
+  const dataSelect = filterData(taskData); 
   // Kopier isMine over til dataSelect
   dataSelect.forEach(ds => {
-    const original = taskData.find(t => t.id === ds.id);
+    const original = taskData.find(t => t.id === ds.id); 
     if (original && original.isMine) ds.isMine = true;
   });
 

@@ -138,14 +138,7 @@ async function postingTask (){
         /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
         *  Opplasting til Firebase, skjer i FS_requests.js    *
         * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-        console.log("Testing no upload");
-        console.log("Payload");
-        console.log(JSON.stringify(payload));
-        console.log("imageFiles");
-        console.log(imageFiles);
-        console.log("survivingImages");
-        console.log(survivingImages);
-/*
+        
         const docID = await setTask(
                     currentTaskId ?? "",   // Ved redigering er det en id
                     payload,
@@ -153,7 +146,7 @@ async function postingTask (){
                     survivingImages
             );
         console.info("Ferdig, ID:", docID);
-        */
+  
         // Sletter intern fil-liste og tømmer den synlige fil-listen
         clearDroppedFiles(); 
         window.location.href = `/pages/postedTaskDetail.html?id=${encodeURIComponent(docID)}`;
