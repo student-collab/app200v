@@ -1,2 +1,5 @@
 .vscode/sftp.json
 customers/
+backupDB.php
+mm.php
+.htaccess
