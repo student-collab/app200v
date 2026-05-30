@@ -112,7 +112,7 @@ const CSS_slugs = Object.fromEntries(
  */
 
 
-export function renderTasks(tasksObject){
+export function renderTasks(tasksObject, edit = false){
     const myDocFrag = document.createDocumentFragment();
     
     tasksObject.sort((a, b) => a.distance - b.distance).forEach(task => {
@@ -140,7 +140,7 @@ Hvert kort består av:
         const yWrap = document.createElement('a');
         yWrap.id = `task-${task.id}`;
         yWrap.className = 'task';
-        yWrap.href=`/pages/postedTaskDetail.html?id=${task.id}`;
+        yWrap.href = edit ? `/pages/post-task.html?id=${task.id}`: `/pages/postedTaskDetail.html?id=${task.id}`;
 
         
         const iWrap = document.createElement('div');
