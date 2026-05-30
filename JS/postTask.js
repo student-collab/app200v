@@ -1,11 +1,41 @@
 import {auth} from './modules/dbConfig.js';
 
-import {getUser, setTask} from './modules/FS_Requests.js'; 
+import {getTask, getUser, setTask} from './modules/FS_Requests.js'; 
 import { getDroppedFiles, clearDroppedFiles } from './modules/postTask-fileDrop.js';
 import { insertMap, getPinnedLoacationData } from './modules/insertGoogleMaps.js';
 
-window.addEventListener('load', ()=>{
+let currentTaskId = null; // Ved redigering brukes id fra URL
+let survivingImages = []; // Eksisterende bilde-url brukeren kan redusere
+// Redigering oppdages i window load, verdier fra database vises i feltene
+function prepareEdit(task) {
+    document.getElementById("task-title").value       = task.title       ?? "";
+    document.getElementById("kategori").value         = task.category    ?? "";
+    document.getElementById("beskrivelse").value      = task.description ?? "";
+    document.getElementById("urg-toggle-btn").checked = task.urgent      ?? false;
 
+    const slider = document.getElementById("pris-slider");
+    const output = document.getElementById("viser-pris");
+    slider.value = task.pris ?? 0;
+    output.value = task.pris ?? 0;
+console.log(task.images);
+    survivingImages = [...(task.images ?? [])];
+    renderExistingImages();
+
+}
+
+window.addEventListener('load', ()=>{
+    
+    // Leser id ut av URL-en
+    const id = new URLSearchParams(window.location.search).get('id');
+    if (id){
+        currentTaskId = id;
+        getTask(id).then((task) => {
+            prepareEdit(task);
+            insertMap(task.location ?? null);
+        });
+        
+    }
+        
     /* ----------- post-task-knappen ---------------------------- */
     const submitButton = document.getElementById("btn-post-task");
     submitButton.addEventListener('click',async ()=> postingTask());
@@ -43,8 +73,7 @@ window.addEventListener('load', ()=>{
     function bigOutputDuringSlide (){output.classList.add("sliderActive")}
     function normalOutput (){output.classList.remove("sliderActive")}
 })
-
-    let payload = {}; 
+    
 async function postingTask (){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *  Henter brukerens id, avbryter hvis ikke funnet     *
@@ -64,8 +93,7 @@ async function postingTask (){
         /* * * * * * * * * * * * * * * * * * * * * * * * *
         *  Definering av payload, objekt for sending    *
         * * * * * * * * * * * * * * * * * * * * * * * * */
-       
-       payload ={
+       const payload ={
            status:"open", 
            urgent:false,
            title: "", 
@@ -102,19 +130,82 @@ async function postingTask (){
         /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
         *  Opplasting til Firebase, skjer i FS_requests.js    *
         * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        console.log("Testing no upload");
+        console.log("Payload");
         console.log(JSON.stringify(payload));
-        const docID = await setTask("", payload, imageFiles);
+        console.log("imageFiles");
+        console.log(imageFiles);
+        console.log("survivingImages");
+        console.log(survivingImages);
+/*
+        const docID = await setTask(
+                    currentTaskId ?? "",   // Ved redigering er det en id
+                    payload,
+                    imageFiles,
+                    survivingImages
+            );
         console.info("Ferdig, ID:", docID);
+        */
         // Sletter intern fil-liste og tømmer den synlige fil-listen
         clearDroppedFiles(); 
         window.location.href = `/pages/postedTaskDetail.html?id=${encodeURIComponent(docID)}`;
         
     }
     
+function renderExistingImages() {
+    document.getElementById("existing-images")?.remove();
+
+    if (survivingImages.length === 0) return;
+
+    const existingImagesContainer = document.createElement("div");
+    existingImagesContainer.id = "existing-images";
+    
+    survivingImages.forEach((url, i) => {
+        const item = document.createElement("div");
+        item.className = "existing-image-item";
+
+        const name = document.createElement("span");
+        const imgName = `Bilde ${i + 1}`;
+        const imgId = 'Bilde'+(i+1); 
+        name.textContent = imgName;
+        name.id = 'span_' + imgId;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.innerHTML = "Slett bildet";
+        btn.dataset.imgName = imgName;
+        btn.dataset.imgId = imgId;
+        btn.addEventListener("click", (e) => {
+            survivingImages.splice(survivingImages.indexOf(url), 1);
+            const myBtn = e.target;
+            const imgId = myBtn.dataset.imgId;
+            const imgName = myBtn.dataset.imgName;
+            const myIMG = document.getElementById(imgId);
+            myIMG.classList.toggle('markedDelete');
+            myBtn.textContent = (myBtn.textContent == 'Slett bildet')?
+            'Gjenopprett bildet':'Slett bildet';
+            const mySpan = document.getElementById('span_'+imgId);
+            mySpan.textContent = (mySpan.textContent == imgName)?
+            imgName + ' -slettes ved opplasting': imgName;
+
+        });
+        const img = document.createElement("img");
+        img.src = url;
+        img.id = imgId;
+        img.className = "existing-image-preview";
+        
+        item.append(img, name, btn);
+        existingImagesContainer.appendChild(item);
+    });
+
+    // Insert above the dropzone
+    const dropzone = document.getElementById("form__post-task"); 
+    dropzone.parentElement.insertBefore(existingImagesContainer, dropzone);
+}
 auth.onAuthStateChanged((user)=>{
 
                 if (user) {
-                    insertMap();
+                  if (!currentTaskId) insertMap(null); 
                 }
                 else {
                     // User is not signed in

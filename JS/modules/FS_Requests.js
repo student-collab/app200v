@@ -69,29 +69,38 @@ async function getTask(taskId = "") {
     return snapshot.ref.getDownloadURL();
 }
 
-async function setTask(taskId, data, imageFiles = []) {
 
+async function setTask(taskId, data, imageFiles = [], existingImages = []) {
   let resolvedId = taskId;
   if (taskId !== "") {
     await db.collection('tasks').doc(taskId).set(data);
   } else {
-     const docRef = await db.collection('tasks').add(data);
+    const docRef = await db.collection('tasks').add(data);
     resolvedId = docRef.id;
   }
 
-  if (imageFiles.length > 0) {
-    const urls = await Promise.all(
-      imageFiles.map(file => uploadImage(file, resolvedId))
-    );
+  const newUrls = imageFiles.length > 0
+    ? await Promise.all(imageFiles.map(file => uploadImage(file, resolvedId)))
+    : [];
 
+  const allImages = [...existingImages, ...newUrls];
+
+  if (allImages.length > 0) {
     await db.collection('tasks').doc(resolvedId).update({
-      images: urls
+      images: allImages
     });
   }
 
   return resolvedId;
 }
+/*
+async function setTask(taskId, data, imageFiles = []) {
 
+
+  return resolvedId;
+}
+*/
+//--------------
   async function updateTask(taskId, changes) {
     await db.collection('tasks').doc(taskId).update(changes);
   }

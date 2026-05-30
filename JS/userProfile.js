@@ -126,10 +126,9 @@ auth.onAuthStateChanged((user) => {
  async function initUserTaskData (userUid){
    const taskData = await getUserTasks(userUid);
    const dataSelect = filterData(taskData);
-   const HTMLFrag = renderTasks(dataSelect);
+   const HTMLFrag = renderTasks(dataSelect,true);
    const ownTasksContainer = document.getElementById("own-tasks");
-   ownTasksContainer.replaceChildren();
-   ownTasksContainer.appendChild(HTMLFrag);
+   ownTasksContainer.replaceChildren(HTMLFrag);
    lucide.createIcons();
   
  }
@@ -172,8 +171,7 @@ async function usersSaved(userUid){
   const dataSelect = filterData(taskData);
   const HTMLFrag = renderTasks(dataSelect);
   const savedTasksContainer = document.getElementById("saved-tasks");
-  savedTasksContainer.replaceChildren();
-  savedTasksContainer.appendChild(HTMLFrag);
+  savedTasksContainer.replaceChildren(HTMLFrag);
   lucide.createIcons();
 }
 

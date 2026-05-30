@@ -51,14 +51,17 @@
         align-self: center;
         margin-left: 2em;
     }
-/* * * * * * * * *
- *  user input   *
- * * * * * * * * */
-#clear-form{
+/* * * * * * * * * * * * * * * * * * * * * * * * *
+ *  under-overskrift kontroll knapper:           *
+ *  #clear-form - tøm skjema                     *
+ *  #returnBtn -  forkast endringer og returner  *
+ * * * * * * * * * * * * * * * * * * * * * * * * */
+#btnWrap{display:flex;}
+ #clear-form, #returnBtn{
   display: inline-flex;
-  align-items: center;
   gap: .45rem;
-  width: fit-content;
+  font:inherit;
+  align-items: center;
   padding: 8px 12px;
   cursor: pointer;
   user-select: none;
@@ -67,7 +70,6 @@
   color: #000;
   border: 1px solid var(--button-main-color);
   border-radius: 999px;
-  font-size: 14px;
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 
 }
@@ -259,6 +261,25 @@
     font-size: 18px;
 }
 /* * * * * * * * * * * * *
+ *    For redigering     *
+ * * * * * * * * * * * * */
+#existing-images{
+  overflow-x: auto;
+}
+ .existing-image-item{
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 300px;
+}
+.existing-image-item{
+  width:200px;
+}
+.markedDelete{
+  opacity:50%;
+  scale: 0.7;
+}
+/* * * * * * * * * * * * *
  *    Google-maps API    *
  * * * * * * * * * * * * */
  
@@ -284,8 +305,9 @@
 #btn-post-task  { order: 4; }
 
 /* * * * * * * * * * * * *
- *  mobile-footer menu   *
- * * * * * * * * * * * * */
+ *  mobile-footer menu   * Dette skal slettes, bare sjekke først
+ * * * * * * * * * * * * */ 
+
 #footer-menu{
     order:5;
     display: flex;

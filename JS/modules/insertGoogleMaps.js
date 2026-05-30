@@ -2,7 +2,8 @@
  *  insertMap injisjerer script med API nøkkel som trigger callbak   *
  *  fra Google.                                                      *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-export function insertMap() {
+export function insertMap(location = null) {
+    _editLocation = location;  // Hvis oppgave skal redigeres blir det lagret koordinater
     var MY_API_KEY = "AIzaSyB-CC4QtLrD-HD9_63IQFhNroyE8pnOOQY";
     const APILoader = document.createElement("script");
     APILoader.src = "https://maps.googleapis.com/maps/api/js?key=" +
@@ -13,6 +14,7 @@ export function insertMap() {
 }
 let pinnedLocationData = { kommune: "", longitude: 0, latitude: 0 };
 export function getPinnedLoacationData(){ return pinnedLocationData}
+let _editLocation = null; 
 
 window.initMap = function() {
     // Define Norway's bounding box
@@ -67,8 +69,16 @@ window.initMap = function() {
             county: extractComponent(place.address_components, "administrative_area_level_1"),
         };
         fillForm(lat, lng, selectedLocation);
-});
-
+    });
+    // Hvis det er redigering plasseres pinnen og lagret kommune skrives til adressefeltet 
+    if (_editLocation?.latitude && _editLocation?.longitude) {
+        const lat = _editLocation.latitude;
+        const lng = _editLocation.longitude;
+        placePin(lat, lng);
+        map.panTo({ lat, lng });
+        pinnedLocationData = { ..._editLocation };
+        addressInput.value = _editLocation.kommune;
+    }
     function fillForm(lat, lng, selectedLocation){
         const userLocation = (selectedLocation.address) ?? "";
         addressInput.value = userLocation + " " + selectedLocation.municipality + " kommune" ;
