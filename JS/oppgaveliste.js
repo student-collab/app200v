@@ -213,6 +213,10 @@ function insertHTML(tasks = mainInfo) {
     insertInto.innerHTML = "";
     insertInto.appendChild(insertReadyHTMLFragment);
     lucide.createIcons();
+
+    //Hide loading animation if present
+    const loadingOverlay = document.querySelector('.centered-row-animation');
+    if (loadingOverlay) loadingOverlay.style.display = 'none';
 }
 
 
