@@ -3,7 +3,7 @@
 
 header, 
 #page-wrap,
-#search-field-and-info {
+.search-field-info {
   max-width: 1600px;
   margin: 0 auto;
 /*  padding: 0 10rem;*/
@@ -13,7 +13,7 @@ header,
 /* * * * * * * * * * * * * * * * *
  *   Søkefeltmed filterknapper   *
  * * * * * * * * * * * * * * * * */
-#search-field-and-info {
+.search-field-info {
     position: fixed;
     /* top blir satt dynamisk i soppgavelisten.js*/
     left: 0;
@@ -28,7 +28,7 @@ header,
     
 }
 
-#search-field-and-info.search--hidden {
+.search-field-info.search--hidden {
     transform: translateY(-100%);
 }
 
@@ -42,7 +42,7 @@ header,
     
 }
 
-#search-field-and-info > input{
+.search-field-info > input{
     width:100%;
     font-size: 1.2em;
     border-radius: 15px;
@@ -55,7 +55,7 @@ header,
     
 }
 
-#search-field-and-info > button{
+.search-field-info > button{
     color:var(--font-color-main);
     border-radius: 10px;
     padding: 0 14px ;
@@ -93,6 +93,6 @@ header,
   color: var(--font-color-main);
   font-weight: 600;
 }
-#search-field-and-info input::placeholder {
+.search-field-info input::placeholder {
     color: var(--font-color-forms);
 }

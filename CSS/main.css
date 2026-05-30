@@ -32,6 +32,11 @@ Footer - Side avslutning med nyttige lenker
 
 
 */
+.bredde-begrenser{
+    margin: 20px auto;
+    max-width: 420px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
 html{overflow-x: hidden;}
 *{box-sizing: border-box;}
 
