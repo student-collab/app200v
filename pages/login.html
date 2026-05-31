@@ -1,27 +1,17 @@
-
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
-  <meta charset="UTF-8" />
-
-  <title>Notifications</title>
-
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-
-  <meta name="description" content="" />
-  <link rel="stylesheet" href="../CSS/main.css">
-  <link rel="stylesheet" href="../CSS/notifications.css">
-  <script src="../JS/main.js" type = "module" defer></script>
-  <script src="../JS/notificationHandler.js" type = "module" defer></script>
-  <link rel="icon" href="../img/favicon.png">
-
-  
-
+    <meta charset="UTF-8" />
+    <title>Vennligst logg inn</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="../CSS/login.css">
+    <link rel="stylesheet" href="../CSS/taskList.css">
+    <link rel="stylesheet" href="../CSS/main.css">
+    <link rel="icon" href="../img/favicon.png">
+    <script src="../JS/main.js" type = "module" defer></script>
+    <script src="https://unpkg.com/lucide@0.396.0/dist/umd/lucide.js"></script>
 </head>
-
 <body>
   <header id = "inserted-header">
   <a href="/index.html" id="logo-header" alt="Tilbake til forsiden">
@@ -94,18 +84,27 @@
 <!-- Denne brukes av dev-panel.js som er importeres in main.js slettes før innlevering -->
 </div>
 
- <main class="content">
-    <div class="header-inline">
-      <div>
-        <h1>Notifications</h1>
-        <p id="unreadCount" class="unread-count">0 unread</p>
-      </div>
-      <button id="markAllBtn" class="mark-all-btn" type="button">Mark all as read</button>
+
+    <div class="subheader" id="profileSubheader">
+    <div class="subheader-content">
+        <h2 id="subheaderTitle">Vennligst logg inn</h2>
+        <span id="subheaderIcon">&#9881</span>
     </div>
-    <div id="notificationsList" class="notification-list"></div>
-  </main>
-  
-  <svg xmlns="http://www.w3.org/2000/svg" hidden style = "height:0;">
+</div>
+<!-- SVG som blir bruk på kort -->
+
+
+   <!--DER LOGG INN KNAPPEN ER-->
+    <div id="myProfile" class="bredde-begrenser">
+        <button id="loginKnapp" data-role="login-trigger">Logg inn</button>
+    </div>
+
+
+
+
+
+
+        <svg xmlns="http://www.w3.org/2000/svg" hidden style = "height:0;">
   <defs>
     <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 12L12 3l9 9"/>
@@ -144,7 +143,7 @@
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-home"/></svg>
     <span>Oppdrag</span>
   </a>
-  <a class="nav-item active" href="/pages/notifications.html">
+  <a class="nav-item" href="/pages/notifications.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-notifications"/></svg>
     <span>Varsler</span>
   </a>
@@ -156,7 +155,7 @@
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-messages"/></svg>
     <span>Meldinger</span>
   </a>
-  <a class="nav-item" href="/pages/userProfile.html">
+  <a class="nav-item active" href="/pages/userProfile.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-profile"/></svg>
     <span>Profil</span>
   </a>
@@ -171,13 +170,17 @@
       </button>
   <!--Devinfo midlertidig slide slutt -->
 </nav>
-      
-  
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-</body>
+             
+    </div>
 
+    <!-- Firebase scripts --> 
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+
+    
+</body>
 </html>
 

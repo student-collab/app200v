@@ -1,154 +1,64 @@
-// import { getMockUser } from '../JS/modules/mockUser.js';
-// importerer funksjonene som skal brukes
-  import {getSavedTaskIds, getTask, createChat, addNotification, getUserNotifications, getUser} from './modules/FS_Requests.js';
-  import {auth, db} from './modules/dbConfig.js';
+import { auth } from '../JS/modules/dbConfig.js';
+import { getUserTasks, getUsersSavedTasks, getActiveTasks } from '../JS/modules/FS_Requests.js';
+import {getMarked, renderTasks } from '../JS/modules/renderTasks.js';
+import { authGuard } from './authGuard.js';
 
-let usersCachePromise = null;
+authGuard();
 
-async function findDisplayNameByUserId(userId, fallbackName = 'brukeren') {
-  if (!userId) return fallbackName;
 
-  try {
-    usersCachePromise = usersCachePromise || getUser();
-    const users = await usersCachePromise;
-    const matchedUser = Array.isArray(users)
-      ? users.find((user) => user.id === userId)
-      : null;
+const userInfo = document.getElementById('userInfo');
+const subheaderTitle = document.getElementById('subheaderTitle');
+const subheaderIcon = document.getElementById('subheaderIcon');
+const sectionWrap = document.getElementById('myProfile');
+const sections = sectionWrap.querySelectorAll(".section");
+const buttons = sectionWrap.querySelectorAll(".nav-knapper");
 
-    return matchedUser?.user?.name?.display || matchedUser?.name?.display || userId;
-  } catch (error) {
-    console.error('Could not resolve display name:', error);
-    return userId;
-  }
-}
-  
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * *
- *    id blir sendt med i URL - for hver link i 'oppgavelisten.html' sendes                               *
- *    id med etter spørsmålstegn                                                                          *
- *    i URL: http://127.0.0.1:5500/pages/postedTaskDetail.html?id=08pCAxlL9X039IbK2egl                    *
- *                                                             ^^                                         *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * */
-
-  window.addEventListener('load' , ()=>{
-  /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
-   *  Hvis det ikke er en id der blir brukeren           *
-   *  sendt til oppgavelisten for å velge oppgave        *
-   *  Ellers brukes ide til å hente en oppgave           *
-   * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    
-    // Leser id ut av URL-en
-    const id = new URLSearchParams(window.location.search).get('id');
-    if (!id) {
-        // Rediger 'other-page.html' til ønsket side
-        window.location.href = '/pages/oppgaveliste.html';
-        return; // Stans videre kjøring av koden
-    }
-    getTask(id).then((res)=>renderTask(res));
-        
-        console.log(id);
-    });    
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *  Hvis det ikke er en id der blir brukeren           *
- *  sendt til oppgavelisten for å velge oppgave.       *
- *  Samme hvis id ikke finnes i databasen.             *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-function renderTask(task) {
-  if (!task){window.location.href = '/pages/oppgaveliste.html';}
-  const isFinished = task?.status === 'finished';
-  const app = document.getElementById("app");
-  /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  *    Setter data fra databasen inn i HTML             *
-  * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-        const appInnerHTML =`
-      <div class="header">   
-        <a class="header-link header-back-link" href="oppgaveliste.html">
-          <h2>← ${task.title}</h2>
-        </a>
-        <button id="save-btn" class="save-top-btn" type="button" aria-pressed="false" ${isFinished ? 'disabled' : ''}>🤍 Lagre</button>
-      </div>
-
-    <div class="container ${isFinished ? 'task-finished' : ''}">
-
-      <div class="image-box">
-       <img src="${task.images}" alt="Task image">
-      </div>
-
-      <div class="title-row">
-        <h1>${task.title}</h1>
-        <div class="rating">
-          ⭐ ${task.rating}
-        </div>
-        
-      </div>
-
-      <div class="creator-row">
-      <h4> by: ${task.createdBy?.displayName} </h4>
-      </div>
-
-      
-      <div class="tags">
-        <span class="tag">
-          📍 ${task.location.kommune}
-        </span>
-
-        <span class="tag">
-          🏷 ${task.category}
-        </span>
-
-        <span class="tag price">
-          ${task.pris} kr
-        </span>
-      </div>
-
-      <div class="status">
-        ${task.status}
-      </div>
-
-      ${isFinished ? '<p class="finished-note">Dette oppdraget er ferdig. Handlinger er deaktivert.</p>' : ''}
-
-      
-
-      <div class="section">
-        <h3 class="label-with-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Om oppgaven</h3>
-
-        <p class="task-description">${task.description}</p>
-      </div>
-
-        <div class="buttons">
-          <button id="contact-btn" class="contact-btn" ${isFinished ? 'disabled' : ''}>💬 Kontakt oppdragsgiver</button>
-          ${task.status !== 'accepted' && !isFinished ? '<button id="accept-btn" class="accept-btn">✅ Tilby å utføre oppdraget</button>' : ''} 
-          ${task.status === 'accepted' && (task?.createdBy?.uid === auth.currentUser?.uid) && !isFinished ? '<button id="taskDone-btn" class="taskDone-btn">Oppdrag er utført</button>' : ''}
-        </div>
-
-    
-      
-    
-
-    </div>
-  
-  `;
-  app.innerHTML = appInnerHTML;
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *    Legger til eventlistners på knapper som nå finnes  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-const saveTask = document.getElementById("save-btn");
-const disableTaskInteractions = () => {
-  document.querySelectorAll('#app button').forEach((button) => {
-    button.disabled = true;
+  sectionWrap.addEventListener('click', e => {
+      const btn = e.target.closest('[data-section]');
+      if (!btn) return;
+      const section = document.getElementById(btn.dataset.section);
+      showSection(section, btn.dataset.title, btn);
   });
 
-  const taskContainer = document.querySelector('#app .container');
-  taskContainer?.classList.add('task-finished');
+// Tar HTML-element og tittel som argument.
+// Viser section som er mottatt
+function showSection(section, title, activeButton) {
+  
+  // Skjuler alle section knapper siden subheaderen allerede viser aktiv side
+  buttons.forEach(btn => {
+    btn.style.display = 'none';
+  });
+  // Skjuler userInfo
+    userInfo.style.display = 'none';
+    section.style.display = 'block';
+    setSubheaderAsBackButton(title);
+}
 
-  const statusElement = taskContainer?.querySelector('.status');
-  if (statusElement) statusElement.textContent = 'finished';
+// Motsatt av showSection, skjuler alle sections
+// Gjør alle section-knappene og profilinfo synlig
+function showProfile() {
+    sections.forEach(view => view.style.display = 'none');
+    userInfo.style.display = 'block';
+    buttons.forEach(btn =>btn.style.display = 'flex');
+    subheaderTitle.textContent = 'Brukerprofil';
+    subheaderIcon.innerHTML = '&#9881';
+    profileSubheader.classList.remove('is-back');
+}  
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                       *                    
+ *  Overskriften profileSubheader får klassen 'is-back' som fungerer     *
+ *  som flagg for funksjonen onSubheaderClick. Den er knyttet til        *
+ *  overskriften med eventlistner.                                       *
+ *  onSubheaderClick kaller showProfile som skjuler alle seksjoner,      *
+ *  viser alle profilknappene, endrer overskriften og fjerner klassen.   *
+ *                                                                       *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-  if (taskContainer && !taskContainer.querySelector('.finished-note')) {
-    const note = document.createElement('p');
-    note.className = 'finished-note';
-    note.textContent = 'Dette oppdraget er ferdig. Handlinger er deaktivert.';
-    statusElement?.insertAdjacentElement('afterend', note);
+const profileSubheader = document.getElementById('profileSubheader');
+profileSubheader.addEventListener('click', onSubheaderClick);
+function onSubheaderClick() {
+  if (profileSubheader.classList.contains('is-back')) {
+    showProfile();
   }
 };
 

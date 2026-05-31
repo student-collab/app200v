@@ -148,7 +148,7 @@ Hvert kort består av:
         const iWrap = document.createElement('div');
         iWrap.className = 'task__main';
 
-        // --- Sett inn "Mine oppdrag"-tekst hvis oppgaven er min ---
+        // --- Sett inn "Mine oppdrag"-tekst hvis oppgaven er min. Brukt til aktive oppdrag ---
         if (task.isMine) {
             const mineInfo = document.createElement('span');
 

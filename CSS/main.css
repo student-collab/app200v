@@ -63,13 +63,15 @@ html{overflow-x: hidden;}
     --backgroundcolor-form-fields: #EBECF0;
     --bordercolor-form-fields: #E2E5EB;
     --font-color-menu-icons:#727888;
-    --nav-active-color: #21836f; /*this is the color the symbols on the bottom nav bar turns into when active*/
+    --nav-active-color: #1b6f5f; /*this is the color the symbols on the bottom nav bar turns into when active*/
     --background-color-dark:#88898E;
-    --button-main-color: #21836f;
-    --button-main-active-color: #185f50;
+    --button-main-color: #1b6f5f;
+    --button-main-active-color: #15584b;
     --button-white-active-color: #cccccc;
     --button-font-color: #F7F7F7;
     --button-delete-red: #e0613a;
+    --subheader-color: #e6e6e6;
+    --subheader-border-bottom: rgba(0, 0, 0, 0.08);
     
 
 }
@@ -88,7 +90,15 @@ body{
 header{
     display:flex;
     justify-content: space-between;
-    border-bottom: 2px solid rgb(229, 229, 229);
+    border-bottom: 2px solid rgba(21, 70, 60, 0.6);
+    background-color: var(--button-main-color);
+    color: white;
+    background: linear-gradient(
+    rgba(0,0,0,0.27),
+    rgba(0,0,0,0.27)
+  ), #21836f;
+   
+ 
   
 }
 header a, 
@@ -238,6 +248,7 @@ header  #login-symbol-background{
     flex-direction: column;
     gap:1em;
     padding:3em;
+    color: #000;
 }
 #usr-inf2{
 overflow-x: auto;
@@ -246,7 +257,20 @@ overflow-x: auto;
 
 #btn-google {
     text-decoration: underline;
+    color: #000;
 }
+
+label[for="email"],
+label[for="password"] {
+    color: #000;
+} 
+
+/*Gjør <p> med "eller" i login-skjema svart */
+#auth-form p {
+  color: #000;
+}
+
+
 
 
 /* * * * * * * * * * * * *
@@ -318,7 +342,7 @@ overflow-x: auto;
 }
 
 
-/* Rad med bilde og animerte prikker */
+/* Rad med bilde og animerte prikker, loading screenen */
 .centered-row-animation {
   position: fixed;
   display: flex;
@@ -349,7 +373,7 @@ overflow-x: auto;
 .loadingDot {
   width: 10px;
   height: 10px;
-  background: #34576e;
+  background: var(--button-main-active-color);
   border-radius: 50%;
   display: inline-block;
   animation: dot-fade 0.8s infinite ease-in-out both;

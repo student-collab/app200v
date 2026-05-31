@@ -1,4 +1,6 @@
-
+body {
+  display: none; /*blir satt til 'block' av authGuard når bruker er logget inn*/
+}
 
 
 /* * * * * * * * * * * * * * * *
@@ -57,18 +59,22 @@
  *  #returnBtn -  forkast endringer og returner  *
  * * * * * * * * * * * * * * * * * * * * * * * * */
 #btnWrap{
-  display:flex;
-  gap:1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  align-items: center;
+  margin-right: 0.5rem; /*liten mellomrom mellom tøm knappen og høyre side av skjermen*/
 }
  .remove-img-button, #clear-form, #returnBtn{
   display: inline-flex;
-  gap: .45rem;
+  gap: .3rem;
   font:inherit;
   align-items: center;
-  padding: 8px 12px;
+  padding: 4px 10px;
   cursor: pointer;
   user-select: none;
   font-weight: 700;
+  font-size: 14px;
   background: #ffffff;
   color: #000;
   border: 1px solid var(--button-main-color);
@@ -76,11 +82,16 @@
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 
 }
+
+.remove-img-button:active,
+#clear-form:active,
+#returnBtn:active{
+  background: var(--button-white-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
+}
 .remove-img-button{justify-content: center;}
 
-#clear-form:hover {
-  background: #f2faf7;
-}
 
 /* * * * * * * * *
  *  user input   *
@@ -280,11 +291,14 @@
  * * * * * * * * * * * * */
 #existing-images{
   overflow-x: auto;
+  display: flex;
+  justify-content: center;
+  
 }
  .existing-image-item{
   display:flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   height: 300px;
 }
 .existing-image-item{
@@ -353,21 +367,25 @@
 /*for the subheader "Opprett småjobb". Straight copied from userprofile.css*/
 .subheader {
     width: 100%;
+    background-color: var(--subheader-color);
     
 }
 
 .subheader-content {
-    margin: 0 auto;
-    padding: 1rem;
-    display: flex;
-	  justify-content: space-between;
-    align-items: center;
-	  gap: 0.6rem;
-    border-bottom: 2px solid rgb(229, 229, 229);
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  border-bottom: 2px solid var(--subheader-border-bottom);
+  color: #000;
+  text-decoration: none;
 }
 
 .subheader-content h2 {
-	margin: 0;
+	margin: 0 0 0 1rem;
 }
 
 label {
