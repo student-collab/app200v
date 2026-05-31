@@ -246,6 +246,7 @@ header  #login-symbol-background{
     flex-direction: column;
     gap:1em;
     padding:3em;
+    color: #000;
 }
 #usr-inf2{
 overflow-x: auto;
@@ -254,7 +255,20 @@ overflow-x: auto;
 
 #btn-google {
     text-decoration: underline;
+    color: #000;
 }
+
+label[for="email"],
+label[for="password"] {
+    color: #000;
+} 
+
+/*Gjør <p> med "eller" i login-skjema svart */
+#auth-form p {
+  color: #000;
+}
+
+
 
 
 /* * * * * * * * * * * * *
