@@ -47,7 +47,8 @@ body {
 .hidden{visibility:hidden;}
 .deleteTaskBtn.chosen{background-color: var(--button-delete-red)}
 .subheader {
-    margin-right: 1rem;
+    background-color: var(--subheader-color);
+
 }
 
 .subheader-content {

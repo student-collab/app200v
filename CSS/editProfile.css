@@ -10,6 +10,10 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
+.subheader.is-back {
+    background-color: var(--subheader-color)
+}
+
 .sectionHeader{
 
     font-size: 1.30em;
@@ -30,6 +34,7 @@
     cursor: pointer; /* hand cursor when hovering */
     
 }
+
 
 .editInfoBtn:active {
   background: var(--button-main-active-color);

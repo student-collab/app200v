@@ -57,12 +57,15 @@
  *  #returnBtn -  forkast endringer og returner  *
  * * * * * * * * * * * * * * * * * * * * * * * * */
 #btnWrap{
-  display:flex;
-  gap:1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
 }
  .remove-img-button, #clear-form, #returnBtn{
   display: inline-flex;
-  gap: .45rem;
+  gap: .3rem;
   font:inherit;
   align-items: center;
   padding: 8px 12px;
@@ -76,11 +79,16 @@
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 
 }
+
+.remove-img-button:active,
+#clear-form:active,
+#returnBtn:active{
+  background: var(--button-white-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
+}
 .remove-img-button{justify-content: center;}
 
-#clear-form:hover {
-  background: #f2faf7;
-}
 
 /* * * * * * * * *
  *  user input   *
@@ -353,6 +361,7 @@
 /*for the subheader "Opprett småjobb". Straight copied from userprofile.css*/
 .subheader {
     width: 100%;
+    background-color: var(--subheader-color);
     
 }
 
@@ -360,9 +369,9 @@
     margin: 0 auto;
     padding: 1rem;
     display: flex;
-	  justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-	  gap: 0.6rem;
+    gap: 0.6rem;
     border-bottom: 2px solid rgb(229, 229, 229);
 }
 
