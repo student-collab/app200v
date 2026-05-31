@@ -58,7 +58,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid rgb(229, 229, 229);
+    border-bottom: 2px solid var(--subheader-border-bottom);
     color:#000;
     text-decoration: none;
 }

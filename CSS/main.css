@@ -71,6 +71,7 @@ html{overflow-x: hidden;}
     --button-font-color: #F7F7F7;
     --button-delete-red: #e0613a;
     --subheader-color: #e6e6e6;
+    --subheader-border-bottom: rgba(0, 0, 0, 0.08);
     
 
 }
@@ -89,7 +90,7 @@ body{
 header{
     display:flex;
     justify-content: space-between;
-    border-bottom: 2px solid rgb(229, 229, 229);
+    border-bottom: 2px solid rgba(21, 70, 60, 0.6);
     background-color: var(--button-main-color);
     color: white;
     background: linear-gradient(
@@ -97,6 +98,7 @@ header{
     rgba(0,0,0,0.27)
   ), #21836f;
    
+ 
   
 }
 header a, 

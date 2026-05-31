@@ -25,7 +25,7 @@ header,
     border: 1px solid var(--bordercolor-form-fields);
     padding: 12px;
     /*box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);*/   
-    border-bottom: 1px solid #9f9d9d;
+    border-bottom: 2px solid var(--subheader-border-bottom);
    
 }
 
