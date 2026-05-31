@@ -61,17 +61,18 @@
   gap: 1rem;
   justify-content: flex-end;
   align-items: center;
-  width: 100%;
+  margin-right: 0.5rem; /*liten mellomrom mellom tøm knappen og høyre side av skjermen*/
 }
  .remove-img-button, #clear-form, #returnBtn{
   display: inline-flex;
   gap: .3rem;
   font:inherit;
   align-items: center;
-  padding: 8px 12px;
+  padding: 4px 10px;
   cursor: pointer;
   user-select: none;
   font-weight: 700;
+  font-size: 14px;
   background: #ffffff;
   color: #000;
   border: 1px solid var(--button-main-color);
@@ -288,11 +289,14 @@
  * * * * * * * * * * * * */
 #existing-images{
   overflow-x: auto;
+  display: flex;
+  justify-content: center;
+  
 }
  .existing-image-item{
   display:flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   height: 300px;
 }
 .existing-image-item{
@@ -366,17 +370,20 @@
 }
 
 .subheader-content {
-    margin: 0 auto;
-    padding: 1rem;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 0.6rem;
-    border-bottom: 2px solid rgb(229, 229, 229);
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  border-bottom: 2px solid rgb(229, 229, 229);
+  color: #000;
+  text-decoration: none;
 }
 
 .subheader-content h2 {
-	margin: 0;
+	margin: 0 0 0 1rem;
 }
 
 label {
