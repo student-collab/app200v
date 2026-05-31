@@ -140,11 +140,9 @@ Hvert kort består av:
 */
 
         /// --- To wrap for skille mellom bilde og resten ---
-        const yWrap = document.createElement('a');
+        const yWrap = document.createElement('div');
         yWrap.id = `task-${task.id}`;
         yWrap.className = 'task';
-        // Lenke til oppdrag
-        yWrap.href = `/pages/postedTaskDetail.html?id=${task.id}`;
 
         
         const iWrap = document.createElement('div');
@@ -217,9 +215,10 @@ Hvert kort består av:
         price.className = 'task__price';
         price.textContent = `${task.pris} kr`;
 
-        const viewTask = document.createElement('span');
+        const viewTask = document.createElement('a');
         viewTask.className = 'task__view-btn';
         viewTask.textContent = 'Vis oppdrag >';
+        viewTask.href = `/pages/postedTaskDetail.html?id=${task.id}`;
 
         //Endre-knapp for egne oppdrag
         let editBtn = null;

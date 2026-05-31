@@ -5,9 +5,9 @@
  .oppgavelisten a{
     text-decoration: none;
  }
-.oppgavelisten a,
+/*.oppgavelisten a,
 .oppgavelisten a:visited
-{ color:inherit;}
+{ color:inherit;}*/
  
 .task{
      padding:1rem;
@@ -73,6 +73,7 @@
   font-size: 0.9rem;
   font-weight: 550;
 
+  color: black;
   background: #ffffff;
 }
 
