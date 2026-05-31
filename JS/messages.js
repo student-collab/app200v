@@ -46,8 +46,14 @@ function getTaskImageUrl(chat) {
 async function loadUsers() {
   if (!auth.currentUser) return;
 
-  const users = await getUser();
-  usersById = Object.fromEntries(users.map(user => [user.id, user]));
+  try {
+    const users = await getUser();
+    usersById = Object.fromEntries(users.map(user => [user.id, user]));
+  } catch (error) {
+    // If Firestore rules deny broad users reads, keep UI functional with UID fallback.
+    console.warn('Could not load users collection (permissions):', error);
+    usersById = {};
+  }
 }
 
 //draws active chat links. Each link opens a dedicated chat page.

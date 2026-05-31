@@ -1,7 +1,26 @@
 // import { getMockUser } from '../JS/modules/mockUser.js';
 // importerer funksjonene som skal brukes
-  import {getSavedTaskIds, getTask, createChat, addNotification, getUserNotifications} from './modules/FS_Requests.js';
+  import {getSavedTaskIds, getTask, createChat, addNotification, getUserNotifications, getUser} from './modules/FS_Requests.js';
   import {auth, db} from './modules/dbConfig.js';
+
+let usersCachePromise = null;
+
+async function findDisplayNameByUserId(userId, fallbackName = 'brukeren') {
+  if (!userId) return fallbackName;
+
+  try {
+    usersCachePromise = usersCachePromise || getUser();
+    const users = await usersCachePromise;
+    const matchedUser = Array.isArray(users)
+      ? users.find((user) => user.id === userId)
+      : null;
+
+    return matchedUser?.user?.name?.display || matchedUser?.name?.display || userId;
+  } catch (error) {
+    console.error('Could not resolve display name:', error);
+    return userId;
+  }
+}
   
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * *
@@ -10,7 +29,6 @@
  *    i URL: http://127.0.0.1:5500/pages/postedTaskDetail.html?id=08pCAxlL9X039IbK2egl                    *
  *                                                             ^^                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * */
-  
 
   window.addEventListener('load' , ()=>{
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -37,6 +55,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 function renderTask(task) {
   if (!task){window.location.href = '/pages/oppgaveliste.html';}
+  const isFinished = task?.status === 'finished';
   const app = document.getElementById("app");
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
   *    Setter data fra databasen inn i HTML             *
@@ -46,10 +65,10 @@ function renderTask(task) {
         <a class="header-link header-back-link" href="oppgaveliste.html">
           <h2>← ${task.title}</h2>
         </a>
-        <button id="save-btn" class="save-top-btn" type="button" aria-pressed="false">🤍 Lagre</button>
+        <button id="save-btn" class="save-top-btn" type="button" aria-pressed="false" ${isFinished ? 'disabled' : ''}>🤍 Lagre</button>
       </div>
 
-    <div class="container">
+    <div class="container ${isFinished ? 'task-finished' : ''}">
 
       <div class="image-box">
        <img src="${task.images}" alt="Task image">
@@ -86,6 +105,8 @@ function renderTask(task) {
         ${task.status}
       </div>
 
+      ${isFinished ? '<p class="finished-note">Dette oppdraget er ferdig. Handlinger er deaktivert.</p>' : ''}
+
       
 
       <div class="section">
@@ -95,8 +116,9 @@ function renderTask(task) {
       </div>
 
         <div class="buttons">
-          <button id="contact-btn" class="contact-btn">💬 Kontakt oppdragsgiver</button>
-          ${task.status !== 'accepted' ? '<button id="accept-btn" class="accept-btn">✅ Tilby å utføre oppdraget</button>' : ''} 
+          <button id="contact-btn" class="contact-btn" ${isFinished ? 'disabled' : ''}>💬 Kontakt oppdragsgiver</button>
+          ${task.status !== 'accepted' && !isFinished ? '<button id="accept-btn" class="accept-btn">✅ Tilby å utføre oppdraget</button>' : ''} 
+          ${task.status === 'accepted' && (task?.createdBy?.uid === auth.currentUser?.uid) && !isFinished ? '<button id="taskDone-btn" class="taskDone-btn">Oppdrag er utført</button>' : ''}
         </div>
 
     
@@ -111,6 +133,24 @@ function renderTask(task) {
  *    Legger til eventlistners på knapper som nå finnes  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 const saveTask = document.getElementById("save-btn");
+const disableTaskInteractions = () => {
+  document.querySelectorAll('#app button').forEach((button) => {
+    button.disabled = true;
+  });
+
+  const taskContainer = document.querySelector('#app .container');
+  taskContainer?.classList.add('task-finished');
+
+  const statusElement = taskContainer?.querySelector('.status');
+  if (statusElement) statusElement.textContent = 'finished';
+
+  if (taskContainer && !taskContainer.querySelector('.finished-note')) {
+    const note = document.createElement('p');
+    note.className = 'finished-note';
+    note.textContent = 'Dette oppdraget er ferdig. Handlinger er deaktivert.';
+    statusElement?.insertAdjacentElement('afterend', note);
+  }
+};
 
 //setter opp attributter for hvilken state save task knappen er i
 const setSaveButtonState = (isSaved) => {
@@ -137,9 +177,8 @@ const hydrateSavedState = async () => {
 hydrateSavedState();
 
 
-
-
 saveTask.addEventListener('click', async ()=>{ 
+  if (isFinished) return;
   // const user = getMockUser(); Har kommentert ut bruken til mockusers slik at d funker med ekte brukere
   const currentUserId = auth.currentUser?.uid;
   if (!currentUserId) {
@@ -172,6 +211,7 @@ saveTask.addEventListener('click', async ()=>{
   //Creates a chat with between the logged in user and the poster of the task
   const contactBtn = document.getElementById('contact-btn');
   contactBtn?.addEventListener('click', async () => {
+    if (isFinished) return;
     const currentUserId = auth.currentUser?.uid;
     const posterId = task?.createdBy?.uid || task?.creatorId;
     const taskImage = Array.isArray(task?.images)
@@ -191,29 +231,64 @@ saveTask.addEventListener('click', async ()=>{
     window.location.href = `./messagesChat.html?chatId=${encodeURIComponent(chatId)}`;
   });
 
-  const acceptBtn = document.getElementById("accept-btn");
-acceptBtn.addEventListener('click', async () => {
-  const currentUserId = auth.currentUser?.uid;
+const acceptBtn = document.getElementById("accept-btn");
+if (!acceptBtn) { console.log("No accept button to attach event listener to"); } else {
+  acceptBtn.addEventListener('click', async () => {
+    if (isFinished) return;
+    const currentUserId = auth.currentUser?.uid;
 
-  const taskId = task?.id;
-  const taskOwnerId = task?.createdBy?.uid || task?.creatorId;
-  console.log(taskOwnerId);
-  if (!currentUserId || !taskId) return;
+    const taskId = task?.id;
+    const taskOwnerId = task?.createdBy?.uid || task?.creatorId;
+    console.log(taskOwnerId);
+    if (!currentUserId || !taskId) return;
 
-  try {
-    await db.collection('tasks').doc(taskId).update({
-      'assignee.pendingRequest': firebase.firestore.FieldValue.arrayUnion(currentUserId)
-    });
-    console.log('Added user to assignee.pendingRequest');
-    addNotification(taskOwnerId, currentUserId, taskId, "request", false, "New Task Request", "You have a new task request!");
+    try {
+      await db.collection('tasks').doc(taskId).update({
+        'assignee.pendingRequest': firebase.firestore.FieldValue.arrayUnion(currentUserId)
+      });
+      console.log('Added user to assignee.pendingRequest');
+      addNotification(taskOwnerId, currentUserId, taskId, "request", false, "New Task Request", "You have a new task request!");
 
-    // Hent opp oppgave eier uid
-    // Lag en notifikasjon via newNotification.js modul som 
-  } catch (error) {
-    console.error('Could not append pending request:', error);
-  }
+      // Hent opp oppgave eier uid
+      // Lag en notifikasjon via newNotification.js modul som 
+    } catch (error) {
+      console.error('Could not append pending request:', error);
+    }
+  });
+}
 
-  
-});
+const taskDoneButton = document.getElementById("taskDone-btn");
+console.log("taskDoneButton:", taskDoneButton);
+if (!taskDoneButton) {
+  console.log("No task done button to attach event listener to");
+} else {
+  taskDoneButton.addEventListener('click', async () => {
+    if (isFinished) return;
+    console.log("click");
+    const taskId = task?.id;
+    const taskOwnerId = task?.createdBy?.uid || task?.creatorId;
+    const taskAssigneeId = task?.assignee?.uid;
+    const assigneeDisplayName = await findDisplayNameByUserId(taskAssigneeId, 'brukeren');
+    const taskOwnerDisplayName = await findDisplayNameByUserId(taskOwnerId, 'oppdragsgiver');
+
+    try {
+      await db.collection('tasks').doc(taskId).update({
+        status: 'finished'
+      });
+      await addNotification(taskOwnerId, taskAssigneeId, taskId, "review", false, "Hvordan var opplevelsen?", `Gi en vurdering til ${assigneeDisplayName}`);
+      await addNotification(taskAssigneeId, taskOwnerId, taskId, "review", false, "Hvordan var opplevelsen?", `Gi en vurdering til ${taskOwnerDisplayName}`);
+
+      disableTaskInteractions();
+
+      // Browsers usually block close() unless window was opened by script; redirect is reliable fallback.
+      window.close();
+      setTimeout(() => {
+        window.location.href = '/pages/oppgaveliste.html';
+      }, 150);
+    } catch (error) {
+      console.error('Could not send rating notification:', error);
+    }
+  });
+}
   
 }
