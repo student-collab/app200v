@@ -59,10 +59,13 @@ body {
     justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid rgb(229, 229, 229);
+    color:#000;
+    text-decoration: none;
 }
 
 .subheader-content h2 {
     margin: 0 0 0 1rem;
+    
 }
 
 .subheader.is-back {
