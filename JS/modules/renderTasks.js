@@ -143,7 +143,8 @@ Hvert kort består av:
         const yWrap = document.createElement('a');
         yWrap.id = `task-${task.id}`;
         yWrap.className = 'task';
-        yWrap.href = edit ? `/pages/post-task.html?id=${task.id}`: `/pages/postedTaskDetail.html?id=${task.id}`;
+        // Lenke til oppdrag
+        yWrap.href = `/pages/postedTaskDetail.html?id=${task.id}`;
 
         
         const iWrap = document.createElement('div');
@@ -174,13 +175,13 @@ Hvert kort består av:
         let avoidAnchorWrap = false;
         if (task.own) {
             avoidAnchorWrap = document.createElement('div');
+            // Slett-knapp
             const button = document.createElement('button');
-            button.className = 'deleteTaskBtn hidden' 
-            const taskId = task.id; 
-            button.innerHTML = `<img src="https://unpkg.com/lucide-static@latest/icons/trash-2.svg" alt="Slett oppdraget"/>`
+            button.className = 'deleteTaskBtn hidden';
+            const taskId = task.id;
+            button.innerHTML = `<img src="https://unpkg.com/lucide-static@latest/icons/trash-2.svg" alt="Slett oppdraget"/>`;
             button.addEventListener('click', ()=>{
                 const isMarked = markedForRemoval.has(taskId);
-                
                 if (isMarked) {
                     markedForRemoval.delete(taskId);
                 } else {
@@ -189,13 +190,10 @@ Hvert kort består av:
                 document.getElementById('markedCount').textContent=markedForRemoval.size;
                 button.classList.toggle('chosen');
                 console.log('yes! Kill' + taskId);
-              
-
-
-
-            })
+            });
             avoidAnchorWrap.appendChild(button);
-                        
+
+           
         }
         // --- Overskrift ---
         const title = document.createElement('h2');
@@ -222,6 +220,16 @@ Hvert kort består av:
         const viewTask = document.createElement('span');
         viewTask.className = 'task__view-btn';
         viewTask.textContent = 'Vis oppdrag >';
+
+        //Endre-knapp for egne oppdrag
+        let editBtn = null;
+        if (task.own) {
+            editBtn = document.createElement('a');
+            editBtn.className = 'editTaskBtn';
+            editBtn.href = `/pages/post-task.html?id=${task.id}`;
+            editBtn.textContent = 'Endre';
+            editBtn.style.marginLeft = '12px';
+        }
  
        // --- Bilde/ikon: bruk opplastet bilde hvis tilgjengelig, ellers kategoriikon ---
         const firstImage = Array.isArray(task.images) ? task.images[0] : null;
@@ -252,7 +260,9 @@ Hvert kort består av:
         iWrap.appendChild(title);
         iWrap.appendChild(infWrap);
         iWrap.appendChild(viewTask);
+        if (editBtn) iWrap.appendChild(editBtn);
         yWrap.appendChild(iWrap);
+        
         if (iconUrgent) {
             yWrap.appendChild(iconUrgent);
         }   

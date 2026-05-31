@@ -63,6 +63,19 @@
   
 }
 
+.editTaskBtn {
+    display: inline-block;
+  margin-top: 0.75em;
+  padding: 0.4em 0.9em;
+  border: 1px solid #d8d8d8;
+  border-radius: 999px;
+  border-color: var(--button-main-color);
+  font-size: 0.9rem;
+  font-weight: 550;
+
+  background: #ffffff;
+}
+
 .task__img { 
     align-self:center;
 }
