@@ -53,7 +53,7 @@
   display: inline-block;
   margin-top: 0.75em;
   padding: 0.4em 0.9em;
-  border: 1px solid #d8d8d8;
+  border: 1px solid white;
   border-radius: 999px;
   font-size: 0.9rem;
   font-weight: 550;
@@ -61,6 +61,12 @@
   color: white;
   background: var(--button-main-color);
   
+}
+
+.task__view-btn:active {
+  background: var(--button-main-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
 }
 
 .editTaskBtn {
@@ -76,6 +82,14 @@
   color: black;
   background: #ffffff;
 }
+
+.editTaskBtn:active {
+  background: var(--button-white-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
+}
+
+
 
 .task__img { 
     align-self:center;

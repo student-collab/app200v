@@ -66,6 +66,8 @@ html{overflow-x: hidden;}
     --nav-active-color: #21836f; /*this is the color the symbols on the bottom nav bar turns into when active*/
     --background-color-dark:#88898E;
     --button-main-color: #21836f;
+    --button-main-active-color: #185f50;
+    --button-white-active-color: #cccccc;
     --button-font-color: #F7F7F7;
     --button-delete-red: #e0613a;
     
@@ -262,7 +264,7 @@ overflow-x: auto;
     right: 0;
 
     width: 100%;
-    background-color:var(--bg-color);
+    background-color: white;
     z-index: 10;
 
 }
@@ -284,10 +286,15 @@ overflow-x: auto;
 #footer-menu a.nav-item,
 #footer-menu a.nav-item:link,
 #footer-menu a.nav-item:visited,
-#footer-menu a.nav-item:hover,
-#footer-menu a.nav-item:active {
+#footer-menu a.nav-item:hover {
     text-decoration: none;
     color: #333;
+}
+
+.nav-item:active {
+  background: var(--button-white-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
 }
 
 .nav-item span {
@@ -309,6 +316,7 @@ overflow-x: auto;
 #footer-menu a.nav-item.active span {
     color: var(--nav-active-color);
 }
+
 
 /* Rad med bilde og animerte prikker */
 .centered-row-animation {

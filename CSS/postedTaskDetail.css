@@ -30,7 +30,7 @@ body {
   justify-content: space-between;
   gap: 10px;
   padding: 15px;
-  background: #fff;
+  /*background: #fff;*/
   border-bottom: 1px solid #ddd;
 }
 
@@ -52,18 +52,25 @@ body {
   font-size: 14px;
   font-weight: 700;
   white-space: nowrap;
-  cursor: pointer;
   font-family: inherit;
 }
 
-.save-top-btn:hover {
-  background: #f2faf7;
+.save-top-btn:active {
+  background: var(--button-white-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
 }
 
 .save-top-btn.is-saved {
   
   background: var(--button-main-color);
   color: #ffff;
+}
+
+.save-top-btn.is-saved:active {
+  background: var(--button-main-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
 }
 
 
@@ -203,6 +210,12 @@ body {
   font-family:inherit;
 }
 
+.contact-btn:active {
+  background: var(--button-white-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
+}
+
 
 .creator-row {
   margin-bottom: 15px;
@@ -227,6 +240,12 @@ body {
   font-weight: bold;
   cursor: pointer;
   font-family: inherit;
+}
+
+.accept-btn:active {
+  background: var(--button-main-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
 }
 
 /*small green svg icons before the label title*/

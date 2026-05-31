@@ -105,8 +105,10 @@ body {
     cursor: pointer; /* hand cursor when hovering */
     
 }
-.editProfileBtn:hover {
-    background-color: rgb(200, 200, 200); /* slightly darker on hover */
+.editProfileBtn:active {
+  background: var(--button-main-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
 
 }
 
@@ -124,6 +126,12 @@ body {
     font-weight: 500;
     cursor: pointer; /* hand cursor when hovering */
     margin-bottom: 5px; /*space between buttons */
+}
+
+.nav-knapper:active {
+  background: var(--button-white-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
 }
 
 .button-label {

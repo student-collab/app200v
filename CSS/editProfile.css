@@ -30,7 +30,12 @@
     cursor: pointer; /* hand cursor when hovering */
     
 }
- 
+
+.editInfoBtn:active {
+  background: var(--button-main-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
+}
 #profileInfoList {
     list-style: none;
     padding-left: 0;

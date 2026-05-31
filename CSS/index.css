@@ -17,10 +17,22 @@
   color: var(--bg-color);
 }
 
+.btn--primary:active {
+  background: var(--button-main-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
+}
+
 .btn--secondary {
   background-color: var(--button-main-color);
   color: white;
   border: 1px solid var(--bordercolor-form-fields);
+}
+
+.btn--secondary:active {
+  background: var(--button-main-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
 }
 
 .link-btn {

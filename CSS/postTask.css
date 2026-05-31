@@ -269,6 +269,12 @@
     font-size: 18px;
     margin-bottom: 2em;
 }
+
+#btn-post-task:active {
+  background: var(--button-main-active-color);
+  transform: scale(0.96);
+  transition: background 0.1s, transform 0.1s;
+}
 /* * * * * * * * * * * * *
  *    For redigering     *
  * * * * * * * * * * * * */
@@ -358,7 +364,6 @@
     align-items: center;
 	  gap: 0.6rem;
     border-bottom: 2px solid rgb(229, 229, 229);
-    background-color: white;
 }
 
 .subheader-content h2 {
