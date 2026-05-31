@@ -1,0 +1,70 @@
+/*for the subheader "Messages". Straight copied from userprofile.css*/
+.subheader {
+    width: 100%;
+	margin-bottom: 18px;
+	background-color: var(--subheader-color);
+}
+
+.subheader-content {
+    width: 100%;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+	justify-content: space-between;
+    align-items: center;
+	gap: 0.6rem;
+    border-bottom: 2px solid var(--subheader-border-bottom);
+
+}
+
+.subheader-content h2 {
+	margin: 0;
+}
+
+.subheader-back-text {
+	
+	font-size: 20px;
+	line-height: 1;
+	font-weight: 600;
+}
+
+.subheader.is-back {
+    cursor: pointer;
+}
+
+.subheader.is-back .subheader-content {
+    justify-content: flex-start;
+    gap: 0.6rem;
+}
+
+.subheader.is-back #subheaderIcon {
+    order: -1;
+    margin-left: 1rem;
+}
+
+.subheader.is-back #subheaderTitle {
+    margin-left: 0;
+}
+
+#myProfile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+#loginKnapp {
+    
+    background-color: var(--button-main-color);
+    color: white;
+    padding: 10px 25px;
+    border: none; /* no black border line */
+    border-radius: 12px; /* rounded corners */
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer; /* hand cursor when hovering */
+
+  
+}

@@ -1,4 +1,6 @@
-
+body {
+  display: none; /*blir satt til 'block' av authGuard når bruker er logget inn*/
+}
 
 
 /* * * * * * * * * * * * * * * *

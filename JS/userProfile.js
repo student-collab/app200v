@@ -1,6 +1,9 @@
 import { auth } from '../JS/modules/dbConfig.js';
 import { getUserTasks, getUsersSavedTasks, getActiveTasks } from '../JS/modules/FS_Requests.js';
 import {getMarked, renderTasks } from '../JS/modules/renderTasks.js';
+import { authGuard } from './authGuard.js';
+
+authGuard();
 
 
 const userInfo = document.getElementById('userInfo');

@@ -1,7 +1,9 @@
 //Author: Viktor Eliassen. SCRIPT FOR MESSAGES PAGE THAT SHOWS LIST OF CONVERSATIONS
 import { auth } from '../JS/modules/dbConfig.js';
 import { getChatsForUser, getUser } from '../JS/modules/FS_Requests.js';
+import { authGuard } from './authGuard.js';
 
+authGuard();
 
 
 // Runtime state: cached users and loaded chats.

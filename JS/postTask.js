@@ -3,6 +3,9 @@ import {auth} from './modules/dbConfig.js';
 import {getTask, getUser, setTask} from './modules/FS_Requests.js'; 
 import { getDroppedFiles, clearDroppedFiles } from './modules/postTask-fileDrop.js';
 import { insertMap, getPinnedLoacationData } from './modules/insertGoogleMaps.js';
+import { authGuard } from './authGuard.js';
+
+authGuard();
 
 let currentTaskId = null; // Ved redigering brukes id fra URL
 let survivingImages = []; // Eksisterende bilde-url brukeren kan redusere
