@@ -24,7 +24,7 @@
   margin-bottom: 24px;
 }
 
-h1 {
+.header-inline h1 {
   font-size: 24px;
   color: var(--text-main);
   font-weight: 700;
