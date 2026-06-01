@@ -1,6 +1,6 @@
 import {auth} from './modules/dbConfig.js';
 
-import {getTask, getUser, setTask} from './modules/FS_Requests.js'; 
+import {getTask, setTask} from './modules/FS_Requests.js'; 
 import { getDroppedFiles, clearDroppedFiles } from './modules/postTask-fileDrop.js';
 import { insertMap, getPinnedLoacationData } from './modules/insertGoogleMaps.js';
 import { authGuard } from './authGuard.js';
