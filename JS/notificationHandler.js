@@ -1,5 +1,8 @@
 import {getUserNotifications, deleteNotification, acceptTaskRequest, denyTaskRequest, getTask} from './modules/FS_Requests.js';
 import {auth, db} from './modules/dbConfig.js';
+import { authGuard } from './authGuard.js';
+
+authGuard();
 
 function escapeHtml(text = '') {
   return String(text)
