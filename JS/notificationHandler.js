@@ -1,4 +1,4 @@
-import {getUserNotifications, deleteNotification, acceptTaskRequest, denyTaskRequest, getTask} from './modules/FS_Requests.js';
+import {getUserNotifications, deleteNotification, acceptTaskRequest, denyTaskRequest, getTask, getAverageRatingForUser} from './modules/FS_Requests.js';
 import {auth, db} from './modules/dbConfig.js';
 import { authGuard } from './authGuard.js';
 
@@ -183,9 +183,141 @@ function getReviewModal() {
   return reviewModal;
 }
 
+function buildStarRating(rating = 0) {
+  const value = Math.max(0, Math.min(5, Number(rating) || 0));
+  return '★'.repeat(value) + '☆'.repeat(5 - value);
+}
+
+function getProfileModal() {
+  if (window.profileModal) return window.profileModal;
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'review-modal-overlay hidden';
+  wrapper.innerHTML = `
+    <div class="review-modal" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+      <button class="review-close-btn" type="button" aria-label="Lukk">✕</button>
+      <div class="profile-modal-header">
+        <div class="profile-photo-container">
+          <img id="profilePhotoModal" class="profile-photo-modal" alt="Profilbilde" src="" />
+        </div>
+        <div class="profile-header-text">
+          <h2 id="profileTitle">Profil</h2>
+          <p class="review-modal-subtitle">Se kandidatens gjennomsnittlige vurdering og tidligere anmeldelser.</p>
+        </div>
+      </div>
+      <div class="profile-summary">
+        <div class="profile-summary-row">
+          <span class="profile-label">Navn</span>
+          <span class="profile-value" id="profileName">Laster...</span>
+        </div>
+        <div class="profile-summary-row">
+          <span class="profile-label">Gjennomsnitt</span>
+          <span class="profile-value" id="profileAverageRating">-</span>
+        </div>
+      </div>
+      <div class="review-list" id="profileReviewsList">
+        <p class="review-info">Laster vurderinger...</p>
+      </div>
+      <div class="review-modal-actions">
+        <button type="button" class="review-cancel-btn">Lukk</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(wrapper);
+
+  const closeModal = () => {
+    wrapper.classList.add('hidden');
+    const nameEl = wrapper.querySelector('#profileName');
+    const averageEl = wrapper.querySelector('#profileAverageRating');
+    const reviewsList = wrapper.querySelector('#profileReviewsList');
+    if (nameEl) nameEl.textContent = 'Laster...';
+    if (averageEl) averageEl.textContent = '-';
+    if (reviewsList) reviewsList.innerHTML = '<p class="review-info">Laster vurderinger...</p>';
+  };
+
+  wrapper.addEventListener('click', (event) => {
+    if (event.target === wrapper) {
+      closeModal();
+      return;
+    }
+
+    const closeBtn = event.target.closest('.review-close-btn, .review-cancel-btn');
+    if (closeBtn) {
+      closeModal();
+      return;
+    }
+  });
+
+  window.profileModal = {
+    wrapper,
+    open: async ({ userId, displayName }) => {
+      wrapper.classList.remove('hidden');
+      const profileNameEl = wrapper.querySelector('#profileName');
+      const averageRatingEl = wrapper.querySelector('#profileAverageRating');
+      const reviewsList = wrapper.querySelector('#profileReviewsList');
+
+      if (profileNameEl) profileNameEl.textContent = 'Laster...';
+      if (averageRatingEl) averageRatingEl.textContent = '-';
+      if (reviewsList) reviewsList.innerHTML = '<p class="review-info">Laster vurderinger...</p>';
+
+      try {
+        let profileName = displayName || 'Bruker';
+        let userData = null;
+        const userSnap = await db.collection('users').doc(userId).get();
+        if (userSnap.exists) {
+          userData = userSnap.data();
+          profileName = userData?.name?.display || userData?.user?.name?.display || userData?.displayName || profileName;
+        }
+
+        if (profileNameEl) profileNameEl.textContent = profileName;
+
+        const profilePhotoEl = wrapper.querySelector('#profilePhotoModal');
+        const userPhotoUrl = userData?.photoURL || userData?.profilePhoto || userData?.photo || '';
+        if (profilePhotoEl) {
+          profilePhotoEl.src = userPhotoUrl || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="120" height="120" rx="28" fill="%23e8ede9"/><circle cx="60" cy="44" r="24" fill="%23c8d1c6"/><path d="M24 104c0-22 18-40 40-40s40 18 40 40" fill="%23c8d1c6"/></svg>';
+        }
+
+        const averageRating = await getAverageRatingForUser(userId);
+        if (averageRatingEl) averageRatingEl.textContent = averageRating == null ? '-' : Number(averageRating).toFixed(1);
+
+        const reviewsSnap = await db.collection('users').doc(userId).collection('reviews').where('isVisible', '==', true).get();
+        if (!reviewsSnap.empty) {
+          reviewsList.innerHTML = '';
+          const sortedDocs = [...reviewsSnap.docs].sort((a, b) => {
+            const aMs = a.data()?.createdAt?.toMillis ? a.data().createdAt.toMillis() : 0;
+            const bMs = b.data()?.createdAt?.toMillis ? b.data().createdAt.toMillis() : 0;
+            return bMs - aMs;
+          });
+
+          sortedDocs.forEach((doc) => {
+            const review = doc.data();
+            const reviewCard = document.createElement('article');
+            reviewCard.className = 'profile-review-card';
+            reviewCard.innerHTML = `
+              <div class="review-card-heading">
+                <span class="review-stars">${buildStarRating(review.rating)}</span>
+                <span class="review-date">${formatTimestamp(review.createdAt)}</span>
+              </div>
+              <p class="review-text">${escapeHtml(review.text || 'Ingen tekst i vurderingen.')}</p>
+            `;
+            reviewsList.appendChild(reviewCard);
+          });
+        } else {
+          reviewsList.innerHTML = '<p class="review-info">Ingen synlige vurderinger enda.</p>';
+        }
+      } catch (error) {
+        console.error('Could not load profile details:', error);
+        if (reviewsList) reviewsList.innerHTML = '<p class="review-info">Kunne ikke hente profil.</p>';
+      }
+    }
+  };
+
+  return window.profileModal;
+}
+
 async function loadNotifications() {  
   const currentUserId = auth.currentUser?.uid;
-  if (!currentUserId) return;
 
   let notifications = [];
   try {
@@ -271,6 +403,7 @@ async function loadNotifications() {
       ? `<div class="request-controls">
           <button class="accept-btn" aria-label="Aksepter request">Aksepter</button>
           <button class="reject-btn" aria-label="Avvis request">Avvis</button>
+          <button class="profile-btn" aria-label="Se profil">Se profil</button>
         </div>`
       : '';
     
@@ -361,6 +494,21 @@ async function loadNotifications() {
       } catch (error) {
         console.error('Failed to reject request:', error);
       }
+      return;
+    }
+
+    const profileBtn = event.target.closest('.profile-btn');
+    if (profileBtn) {
+      const notificationCard = profileBtn.closest('.notification-card');
+      const assigneeId = notificationCard?.dataset.assigneeId;
+      const assigneeName = notificationCard?.querySelector('.assignee-name')?.textContent?.replace(/^Fra:\s*/,'') || '';
+      if (!assigneeId) {
+        console.error('Missing assigneeId for profile action');
+        return;
+      }
+
+      const modal = getProfileModal();
+      modal.open({ userId: assigneeId, displayName: assigneeName });
       return;
     }
 

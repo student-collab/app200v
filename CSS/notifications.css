@@ -124,15 +124,50 @@ h1 {
   margin-top: 12px;
 }
 
-.review-btn {
+.review-btn,
+.profile-btn {
   border: none;
   border-radius: 10px;
   padding: 8px 14px;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  background-color: #2f6bce;
   color: #fff;
+}
+
+.review-btn {
+  background-color: #2f6bce;
+}
+
+.profile-btn {
+  background-color: #4d88d9;
+}
+
+.profile-summary {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 18px;
+  padding: 16px;
+  background: #f7faf8;
+  border-radius: 16px;
+  border: 1px solid #e3e9e4;
+}
+
+.profile-summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.profile-label {
+  color: #6f746b;
+  font-size: 14px;
+}
+
+.profile-value {
+  color: #23302f;
+  font-weight: 700;
 }
 
 .review-modal-overlay {
@@ -175,13 +210,61 @@ h1 {
 }
 
 .review-modal h2 {
-  margin: 0 0 10px;
+  margin: 0;
   font-size: 22px;
   color: var(--text-main);
 }
 
+.profile-modal-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.profile-photo-container {
+  width: 76px;
+  height: 76px;
+  border-radius: 22px;
+  background: #f1f5ec;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.profile-photo-modal {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  object-fit: cover;
+  display: block;
+  background: #e8ede9;
+}
+
+.profile-header-text {
+  flex: 1;
+}
+
+.profile-review-card {
+  background: #fff;
+  border: 1px solid #e2e5e0;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 8px 20px rgba(16, 26, 22, 0.06);
+}
+
+.profile-review-card:last-child {
+  margin-bottom: 0;
+}
+
+.profile-review-card .review-card-heading {
+  justify-content: space-between;
+  gap: 16px;
+}
+
 .review-modal-subtitle {
-  margin: 0 0 18px;
+  margin: 6px 0 0;
   color: var(--text-muted);
   font-size: 15px;
 }
