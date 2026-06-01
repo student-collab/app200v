@@ -120,6 +120,21 @@ h1 {
   flex-wrap: wrap;
 }
 
+.review-controls {
+  margin-top: 12px;
+}
+
+.review-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  background-color: #2f6bce;
+  color: #fff;
+}
+
 .accept-btn,
 .reject-btn {
   border: none;

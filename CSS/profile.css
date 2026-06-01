@@ -161,6 +161,47 @@ body {
     color: #21836f;
 }
 
+.review-list {
+    margin-top: 14px;
+    display: grid;
+    gap: 10px;
+}
 
+.review-card {
+    text-align: left;
+    background: #fff;
+    border: 1px solid #e2e5e0;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.review-card-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.review-stars {
+    color: #f2b632;
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+.review-date {
+    color: #6f746b;
+    font-size: 12px;
+}
+
+.review-text {
+    margin: 8px 0 0;
+    color: #2d312c;
+    line-height: 1.35;
+}
+
+.review-info {
+    text-align: left;
+    color: #6f746b;
+}
 
 

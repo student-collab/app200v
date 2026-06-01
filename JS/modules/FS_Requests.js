@@ -401,6 +401,14 @@ endAt(value)                // end at value
 
 */
 
+async function getAverageRatingForUser(userId) {
+  const reviewsSnap = await db.collection('users').doc(userId).collection('reviews').get();
+  const reviews = reviewsSnap.docs.map(doc => doc.data());
+  if (reviews.length === 0) return null;
+
+  const totalRating = reviews.reduce((sum, review) => sum + (review.rating || 0), 0);
+  return totalRating / reviews.length;
+}
 
 /* Notifications
 
@@ -482,6 +490,16 @@ async function acceptTaskRequest(taskId, assigneeId, ownerId) {
   });
 
   await deleteNotificationsByTask(ownerId, taskId);
+
+  await addNotification(
+    assigneeId,
+    ownerId,
+    taskId,
+    'acceptedNotification',
+    false,
+    'Tilbud akseptert',
+    'Forespørselen din ble akseptert.'
+  );
 
   await Promise.all(otherAssignees.map(async (otherAssigneeId) => {
     await addNotification(
@@ -565,4 +583,4 @@ async function getNotificationDetails(notificationId) {
   };
 };
 
-export {addNotification, deleteNotification, acceptTaskRequest, denyTaskRequest, NotificationRead, getUserNotifications, getNotificationDetails};
+export {addNotification, deleteNotification, acceptTaskRequest, denyTaskRequest, NotificationRead, getUserNotifications, getNotificationDetails, getAverageRatingForUser};
