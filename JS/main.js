@@ -24,7 +24,7 @@ document.addEventListener('readystatechange', async (e) => {
     /* * * * * * * * * * * * *
     *    Setter inn devInfo *
     * * * * * * * * * * * * */
-    await injecDevOptions();
+    //await injecDevOptions();
     /* * * * * * * * * * * * * * * * * * * * * * *
     *    Navbar og login får eventlistnere som   *
     *    knytter funksjoner til klikk            *
