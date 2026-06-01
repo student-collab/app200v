@@ -193,6 +193,15 @@ async function loadNotifications() {
     return;
   }
 
+  // Allow getUserNotifications to return a string message (legacy behaviour).
+  // If a string is returned, render it and exit early instead of calling .map().
+  if (typeof notifications === 'string') {
+    const unreadCountElement = document.getElementById('unreadCount');
+    if (unreadCountElement) unreadCountElement.textContent = '0 uleste';
+    container.innerHTML = `<div class="notification-card read"><div class="notification-body"><p>${escapeHtml(notifications)}</p></div></div>`;
+    return;
+  }
+
   // Gather all unique taskIds and assigneeIds from notifications
   const taskIds = [...new Set(notifications.map(n => n.taskId).filter(Boolean))];
   const assigneeIds = [...new Set(notifications.map(n => n.assigneeId).filter(Boolean))];
@@ -231,8 +240,8 @@ async function loadNotifications() {
   const unreadCountElement = document.getElementById('unreadCount');
 
   if (!Array.isArray(notifications) || notifications.length === 0) {
-    if (unreadCountElement) unreadCountElement.textContent = '0 unread';
-    container.innerHTML = '<div class="notification-card read"><div class="notification-body"><p>No notifications yet</p></div></div>';
+    if (unreadCountElement) unreadCountElement.textContent = '0 uleste';
+    container.innerHTML = '<div class="notification-card read"><div class="notification-body"><p>Ingen varslinger ennå</p></div></div>';
     return;
   }
 
@@ -244,11 +253,11 @@ async function loadNotifications() {
 
   const unreadCount = sortedNotifications.filter((notification) => !notification.read).length;
   if (unreadCountElement) {
-    unreadCountElement.textContent = `${unreadCount} unread`;
+    unreadCountElement.textContent = `${unreadCount} uleste`;
   }
 
   container.innerHTML = sortedNotifications.map((notification) => {
-    const title = escapeHtml(notification.title || 'Notification');
+    const title = escapeHtml(notification.title || 'Varsel');
     const description = escapeHtml(notification.description || '');
     const timeText = formatTimestamp(notification.createdAt);
     const taskTitle = notification.taskId ? escapeHtml(taskTitleMap[notification.taskId] || '') : '';
@@ -276,7 +285,7 @@ async function loadNotifications() {
             <h3>${title}${taskTitle ? ` <span class='task-title'>(${taskTitle})</span>` : ''}</h3>
             ${assigneeName ? `<div class='assignee-name'>Fra: ${assigneeName}</div>` : ''}
             <span class="time">${timeText}</span>
-            <button class="delete-btn" aria-label="Delete notification">X</button>
+            <button class="delete-btn" aria-label="Slett varsel">X</button>
           </div>
           <p class="notification-desc">${description}</p>
           ${requestControls}

@@ -1,6 +1,6 @@
 /* Globale stiler og fargevariabler */
 :root {
-  --bg-color: #fafdf7;
+  --bg-color: #f4f6f5;
   --card-bg: #ffffff;
   --text-main: #2d312c;
   --text-muted: #727970;
@@ -191,3 +191,9 @@ h1 {
     gap: 2px;
   }
 }
+
+/* Page-specific body background to match main task list look */
+body {
+  background-color: var(--bg-color);
+}
+

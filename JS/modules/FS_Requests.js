@@ -548,7 +548,7 @@ async function getUserNotifications(userId) {
     .get();
 
   if (notificationCollection.empty) {
-    return "No notifications";
+    return "Ingen varslinger";
   }
 
   return notificationCollection.docs.map(doc => ({ 
@@ -567,7 +567,7 @@ async function getUserNotifications(userId) {
 async function getNotificationDetails(notificationId) {
   const notificationDoc = await db.collection('notifications').doc(notificationId).get();
   if (!notificationDoc.exists) {
-    return "Notification not found";
+    return "Ingen varslinger";
   }
 
   return {
