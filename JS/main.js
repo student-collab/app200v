@@ -1,7 +1,6 @@
 
 import { initMenu } from './modules/initMenu.js';
 import { auth, loginAnonymously} from './modules/dbConfig.js';
-import { initDevPanel } from '/JS/modules/dev-panel.js';
 //export const headerReady = injectHeader();
 
 document.addEventListener('readystatechange', async (e) => {
@@ -21,10 +20,6 @@ document.addEventListener('readystatechange', async (e) => {
     * * * * * * * * * * * * */
   //  await injectNav();
    
-    /* * * * * * * * * * * * *
-    *    Setter inn devInfo *
-    * * * * * * * * * * * * */
-    //await injecDevOptions();
     /* * * * * * * * * * * * * * * * * * * * * * *
     *    Navbar og login får eventlistnere som   *
     *    knytter funksjoner til klikk            *
@@ -137,80 +132,7 @@ function markCurrentNavItem() {
   });
 }
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *                                                                                 *
- *          devInfoEL er til bruk for oss under byggeprosessen                     *
- *          Den er finner elementet id = devinfo som injisjeres av main.js         *
- *          Elementet er i html-fragments header.xml                               *
- *                                                                                 *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-async function injecDevOptions() {
-          
-const devInfoEl = document.getElementById('devinfo');
-if (devInfoEl) { initDevPanel(devInfoEl); }
 
-// Inject toggle styles
-const style = document.createElement('style');
-style.textContent = `
-  #devinfo-toggle {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: inherit;
-    font: inherit;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    width:100%;
-  }
-  .toggle-track {
-    display: block;
-    width: 32px;
-    height: 18px;
-    background: #ccc;
-    border-radius: 9px;
-    position: relative;
-    transition: background 0.2s;
-  }
-  #devinfo-toggle[aria-pressed="true"] .toggle-track {
-    background: #4caf50;
-  }
-  .toggle-thumb {
-    display: block;
-    width: 14px;
-    height: 14px;
-    background: #fff;
-    border-radius: 50%;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: transform 0.2s;
-  }
-  #devinfo-toggle[aria-pressed="true"] .toggle-thumb {
-    transform: translateX(14px);
-  }
-`;
-document.head.appendChild(style);
-
-// Wire up toggle button
-const toggleBtn = document.getElementById('devinfo-toggle');
-  if (toggleBtn && devInfoEl) {
-    devInfoEl.hidden = true; // start hidden
-    toggleBtn.addEventListener('click', () => {
-      const isOn = toggleBtn.getAttribute('aria-pressed') === 'true';
-      toggleBtn.setAttribute('aria-pressed', String(!isOn));
-      devInfoEl.hidden = isOn;
-    });
-  }
-}
- /* * * * * * * * * * * * ^^^^^^^^^^^^^^^^ * * * * * * * * * * * * * * * * * * * * *
- *                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                            *
- *                   devInfoEL slutt 
- *          Slett også JS/modules/devpanel.js                  *
- *                                                                                 *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /* * * * * * * * * * * * * * * * * * * *
  *    Viser og skjuler login-skjerm    *
  * * * * * * * * * * * * * * * * * * * */
