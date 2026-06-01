@@ -1,7 +1,9 @@
 // Author: Viktor Eliassen. SCRIPT FOR THE MESSAGESCHAT PAGE THAT IS GENERATED WHEN CLICKING A CHAT
 import { auth } from './modules/dbConfig.js';
 import { getChatsForUser, getUser, listenForMessages, sendMessage } from './modules/FS_Requests.js';
+import { authGuard } from './authGuard.js';
 
+authGuard();
 
 
 const subheaderTitle = document.getElementById('subheaderTitle');
