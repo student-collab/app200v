@@ -135,6 +135,132 @@ h1 {
   color: #fff;
 }
 
+.review-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(33, 41, 46, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.review-modal-overlay.hidden {
+  display: none;
+}
+
+.review-modal {
+  width: min(480px, 100%);
+  background: #fff;
+  border-radius: 24px;
+  padding: 28px 24px 22px;
+  box-shadow: 0 24px 60px rgba(18, 35, 46, 0.14);
+  position: relative;
+  border: 1px solid rgba(67, 105, 61, 0.12);
+}
+
+.review-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #f5f7f6;
+  color: #475057;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.review-modal h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  color: var(--text-main);
+}
+
+.review-modal-subtitle {
+  margin: 0 0 18px;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.review-textarea {
+  width: 100%;
+  min-height: 130px;
+  resize: vertical;
+  border: 1px solid #d7dcd7;
+  border-radius: 16px;
+  padding: 14px 16px;
+  font-size: 15px;
+  color: var(--text-main);
+  background: #fbfdf8;
+  line-height: 1.5;
+  margin-bottom: 18px;
+  font-family: inherit;
+}
+
+.review-textarea:focus {
+  outline: none;
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 4px rgba(76, 166, 76, 0.12);
+}
+
+.review-stars {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.star-btn {
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  color: #c8c8c8;
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.star-btn:hover,
+.star-btn.active {
+  color: #f1b500;
+  transform: scale(1.05);
+}
+
+.review-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.review-cancel-btn,
+.review-submit-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.review-cancel-btn {
+  background: #f3f5f4;
+  color: #4a544d;
+}
+
+.review-submit-btn {
+  background: var(--accent-green);
+  color: #fff;
+}
+
+.review-submit-btn:active,
+.review-cancel-btn:active {
+  transform: scale(0.98);
+}
+
 .accept-btn,
 .reject-btn {
   border: none;
