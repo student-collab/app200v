@@ -1,9 +1,16 @@
+//notifications.js håndterer hele varslingssystemet i applikasjonen. 
+// Filen henter varsler fra Firestore, viser dem i brukergrensesnittet, lar brukeren akseptere eller avslå forespørsler, skrive anmeldelser etter fullførte oppdrag, og vise profiler med tidligere vurderinger. 
+// Den benytter Firebase Authentication for å identifisere brukeren og Firestore for lagring og henting av data.
+
+
+//Importerer funksjoner for håndtering av varsler, oppgaver og vurderinger, samt Firebase-konfigurasjon og sjekker om brukeren er autentisert før siden laster.
 import {getUserNotifications, deleteNotification, acceptTaskRequest, denyTaskRequest, getTask, getAverageRatingForUser} from './modules/FS_Requests.js';
 import {auth, db} from './modules/dbConfig.js';
 import { authGuard } from './authGuard.js';
 
 authGuard();
 
+// Hindrer HTML-injeksjon/XSS ved å erstatte spesialtegn
 function escapeHtml(text = '') {
   return String(text)
     .replace(/&/g, '&amp;')
@@ -13,13 +20,16 @@ function escapeHtml(text = '') {
     .replace(/'/g, '&#39;');
 }
 
+// Konverterer Firebase-tidsstempel til lesbart datoformateller viser "Just now" hvis tidsstempel mangler eller er ugyldig.
 function formatTimestamp(createdAt) {
   return createdAt?.toDate
     ? createdAt.toDate().toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })
     : 'Just now';
 }
 
+//Referanse til området der varsler skal vises
 let container = document.getElementById('notificationsList');
+//Variabler som brukes til å håndtere visning og tilstand for vurderingsmodalen. reviewModal holder referansen til modal-elementet, mens reviewState sporer hvilken bruker og oppgave som vurderes, samt den valgte stjernerangeringen.
 let reviewModal = null;
 let reviewState = {
   targetUserId: '',
@@ -28,9 +38,12 @@ let reviewState = {
   rating: 0
 };
 
+//Oppretter og returnerer modalvinduet som brukes til å gi vurderinger.
 function getReviewModal() {
+  //Hvis modalen allerede finnes, returneres den.
   if (reviewModal) return reviewModal;
 
+  //Oppretter modalens HTML-struktur dynamisk
   const wrapper = document.createElement('div');
   wrapper.className = 'review-modal-overlay hidden';
   wrapper.innerHTML = `
@@ -55,6 +68,7 @@ function getReviewModal() {
 
   document.body.appendChild(wrapper);
 
+  //funksjon for å lukke modalvinduet og tilbakestille tilstanden
   const closeModal = () => {
     wrapper.classList.add('hidden');
     reviewState = { targetUserId: '', taskId: '', notificationId: '', rating: 0 };
@@ -62,6 +76,7 @@ function getReviewModal() {
     updateStarUi(0);
   };
 
+  //oppdaterer visning av stjerner basert på valgt vurdering
   const updateStarUi = (rating) => {
     const stars = wrapper.querySelectorAll('.star-btn');
     stars.forEach((star) => {
@@ -70,6 +85,7 @@ function getReviewModal() {
     });
   };
 
+  //håndterer alle klikk inne i modalvinduet, inkludert lukking, stjernevalg og innsending av vurdering
   wrapper.addEventListener('click', async (event) => {
     if (event.target === wrapper) {
       closeModal();
@@ -165,6 +181,7 @@ function getReviewModal() {
     }
   });
 
+  //Returnerer funksjon som åpner modalen med nødvendig kontekst (hvilken bruker og oppgave som vurderes)
   reviewModal = {
     wrapper,
     open: ({ targetUserId, taskId, notificationId }) => {
@@ -183,12 +200,15 @@ function getReviewModal() {
   return reviewModal;
 }
 
+//Lager en tekstbasert stjernerangering basert på numerisk vurdering (0-5). For eksempel, en vurdering på 3 vil returnere "★★★☆☆".
 function buildStarRating(rating = 0) {
   const value = Math.max(0, Math.min(5, Number(rating) || 0));
   return '★'.repeat(value) + '☆'.repeat(5 - value);
 }
 
+//Oppretter modalvindu for visning av brukerprofil og anmeldelser
 function getProfileModal() {
+  //Returnerer eksisterende modal hvis den allerede finnes for å unngå duplisering
   if (window.profileModal) return window.profileModal;
 
   const wrapper = document.createElement('div');
@@ -226,6 +246,7 @@ function getProfileModal() {
 
   document.body.appendChild(wrapper);
 
+  //Lukker profilmodal og nullstiller innholdet
   const closeModal = () => {
     wrapper.classList.add('hidden');
     const nameEl = wrapper.querySelector('#profileName');
@@ -249,6 +270,7 @@ function getProfileModal() {
     }
   });
 
+  //åpner profilmodalen og laster brukerdata fra firestore for å vise navn, profilbilde, gjennomsnittlig vurdering og individuelle anmeldelser. Håndterer også feil ved innlastning av data.
   window.profileModal = {
     wrapper,
     open: async ({ userId, displayName }) => {
@@ -316,9 +338,12 @@ function getProfileModal() {
   return window.profileModal;
 }
 
+//henter og viser alle varsler for den innloggede brukeren
 async function loadNotifications() {  
+  //henter brukerid til innlogget bruker.
   const currentUserId = auth.currentUser?.uid;
 
+  //henter varsler fra databasen
   let notifications = [];
   try {
     notifications = await getUserNotifications(currentUserId);
@@ -362,12 +387,12 @@ async function loadNotifications() {
     }
   }));
 
-  // Build a map: taskId -> taskTitle
+  // lager oppslagstabell for oppgavetitler: taskId -> taskTitle
   const taskTitleMap = {};
   taskResults.forEach(task => {
     if (task && task.id) taskTitleMap[task.id] = task.title || '';
   });
-  // Build a map: assigneeId -> displayName
+  // lager oppslagstabell for brukernavn: assigneeId -> displayName
   const assigneeNameMap = {};
   userResults.forEach(user => {
     if (user && user.id) assigneeNameMap[user.id] = user.display;
@@ -380,17 +405,20 @@ async function loadNotifications() {
     return;
   }
 
+  //sorterer varslene etter opprettelsestidspunkt, med de nyeste først
   const sortedNotifications = [...notifications].sort((a, b) => {
     const aMs = a?.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
     const bMs = b?.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
     return bMs - aMs;
   });
 
+  //teller antall uleste varsler og oppdaterer visningen av dette
   const unreadCount = sortedNotifications.filter((notification) => !notification.read).length;
   if (unreadCountElement) {
     unreadCountElement.textContent = `${unreadCount} uleste`;
   }
 
+  //genererer HTML for hvert varselkort
   container.innerHTML = sortedNotifications.map((notification) => {
     const title = escapeHtml(notification.title || 'Varsel');
     const description = escapeHtml(notification.description || '');
@@ -399,6 +427,8 @@ async function loadNotifications() {
     const assigneeName = notification.assigneeId ? escapeHtml(assigneeNameMap[notification.assigneeId] || '') : '';
     const readClass = notification.read ? ' read' : '';
     const unreadDot = notification.read ? '' : '<span class="unread-dot" aria-hidden="true"></span>';
+
+    //Lager kontrollknapper for request-type varsler (aksepter, avvis, se profil)
     const requestControls = notification.type === 'request'
       ? `<div class="request-controls">
           <button class="accept-btn" aria-label="Aksepter request">Aksepter</button>
@@ -407,7 +437,9 @@ async function loadNotifications() {
         </div>`
       : '';
     
-    const reviewControls = notification.type === 'review'
+    
+      //Lager kontrollknapper for review-type varsler (gi vurdering) 
+      const reviewControls = notification.type === 'review'
       ? `<div class="review-controls">
           <button class="review-btn" aria-label="Gi vurdering">Gi vurdering</button>
         </div>`
@@ -432,9 +464,10 @@ async function loadNotifications() {
     `;
   }).join('');
 
-  // Add event listener for delete buttons
+  // Håndterer alle klikk inne i varslingscontaineren
   container.addEventListener('click', async (event) => {
     const deleteBtn = event.target.closest('.delete-btn');
+    //Hvis slett-knappen er klikket, finner vi det tilhørende varselkortet og sletter det både fra databasen og UI.
     if (deleteBtn) {
       const notificationCard = deleteBtn.closest('.notification-card');
       const notificationId = notificationCard?.dataset.id;
@@ -450,6 +483,8 @@ async function loadNotifications() {
     }
 
     const acceptBtn = event.target.closest('.accept-btn');
+    // Hvis aksepter-knappen er klikket, henter vi nødvendig informasjon fra data-attributter, 
+    // utfører aksepteringslogikken og oppdaterer UI for å reflektere at forespørselen er akseptert.
     if (acceptBtn) {
       const notificationCard = acceptBtn.closest('.notification-card');
       const notificationId = notificationCard?.dataset.id;
@@ -474,6 +509,7 @@ async function loadNotifications() {
     }
 
     const rejectBtn = event.target.closest('.reject-btn');
+    //Avviser forespørselen om oppdrag på samme måte som aksepter, men med annen tekst og styling.
     if (rejectBtn) {
       const notificationCard = rejectBtn.closest('.notification-card');
       const notificationId = notificationCard?.dataset.id;
@@ -498,6 +534,8 @@ async function loadNotifications() {
     }
 
     const profileBtn = event.target.closest('.profile-btn');
+    //Åpner profilmodalen for brukeren som sendte forspørselen, 
+    // ved å hente nødvendig informasjon fra data-attributter og sende det til modalens åpne-funksjon.
     if (profileBtn) {
       const notificationCard = profileBtn.closest('.notification-card');
       const assigneeId = notificationCard?.dataset.assigneeId;
@@ -513,6 +551,8 @@ async function loadNotifications() {
     }
 
     const reviewBtn = event.target.closest('.review-btn');
+    //Åpner vurderingsmodalen for å gi vurdering til brukeren som var involvert i oppgaven, 
+    // ved å hente nødvendig informasjon fra data-attributter og sende det til modalens åpne-funksjon.
     if (reviewBtn) {
       const notificationCard = reviewBtn.closest('.notification-card');
       const notificationId = notificationCard?.dataset.id;
@@ -535,6 +575,8 @@ async function loadNotifications() {
 
 }
 
+//Når brukeren logger inn, lastes varsler automatisk ved å kalle loadNotifications-funksjonen. 
+// Hvis ingen bruker er logget inn, vil funksjonen ikke gjøre noe.
 auth.onAuthStateChanged((user) => {
   if (!user) return;
   loadNotifications();
