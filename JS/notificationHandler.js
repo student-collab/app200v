@@ -29,7 +29,8 @@ function formatTimestamp(createdAt) {
 
 //Referanse til området der varsler skal vises
 let container = document.getElementById('notificationsList');
-//Variabler som brukes til å håndtere visning og tilstand for vurderingsmodalen. reviewModal holder referansen til modal-elementet, mens reviewState sporer hvilken bruker og oppgave som vurderes, samt den valgte stjernerangeringen.
+//Variabler som brukes til å håndtere visning og tilstand for vurderingsmodalen. 
+//reviewModal holder referansen til modal-elementet, mens reviewState sporer hvilken bruker og oppgave som vurderes, samt den valgte stjernerangeringen.
 let reviewModal = null;
 let reviewState = {
   targetUserId: '',
