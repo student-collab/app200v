@@ -13,8 +13,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
   <meta name="description" content="" />
+  <!-- Globale og sidespesifikke stiler for toppmeny og meldingsvisning -->
   <link rel="stylesheet" href="../CSS/main.css">
   <link rel="stylesheet" href="../CSS/messages.css">
+  <!-- Hovedlogikk for meny og lasting av samtaler på denne siden -->
   <script src="../JS/main.js" type = "module" defer></script>
   <script src="../JS/messages.js" type = "module" defer></script>
   <link rel="icon" href="../img/favicon.png">
@@ -24,6 +26,7 @@
 </head>
 
 <body>
+  <!-- Felles header med logo, innlogging og brukerstatus -->
   <header id = "inserted-header">
   <a href="/index.html" id="logo-header" alt="Tilbake til forsiden">
 
@@ -49,6 +52,7 @@
         </svg>
       </div>
       <span id = "usr-status">Logg inn</span>
+      <!-- Innloggingspanel som vises/skjules via JavaScript -->
       <div id="login-screen" class="hidden" data-role="login-panel">
       <div id="loading-animation">
       <span class="dot1">Loading</span>
@@ -93,6 +97,7 @@
 
 
 
+  <!-- Seksjonstittel for siden -->
   <div class="subheader" id="profileSubheader">
         <div class="subheader-content">
             <h2 id="subheaderTitle">Meldinger</h2>
@@ -103,6 +108,7 @@
   
   <div class="container">
 
+    <!-- Vises mens aktive samtaler lastes inn -->
     <div id="loadingChatsState">
        <!-- Animated loading screen -->
      <div class="centered-row-animation">
@@ -115,6 +121,7 @@
      </div>
     </div>
 
+    <!-- Tomtilstand når brukeren ikke har noen samtaler -->
     <div id="noChatsActiveState" class ="hidden">
       <svg id="icon-messagesOnSite" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -124,6 +131,7 @@
    
     </div>
     
+    <!-- Hovedvisning for listen over aktive samtaler -->
     <div id="hasActiveChatsState" class="hidden">
       <div id="chatListView">
         <h3>Aktive samtaler</h3>
@@ -135,6 +143,7 @@
 
     
   </div>
+  <!-- SVG-symboler gjenbrukes av bunnmenyen -->
   <svg xmlns="http://www.w3.org/2000/svg" hidden style = "height:0;">
   <defs>
     <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -163,6 +172,7 @@
     
   </defs>
 </svg>
+<!-- Fast bunnmeny for navigasjon mellom hovedsidene -->
 <nav id="footer-menu" aria-label="Main navigation">
   <a class="nav-item" href="/pages/oppgaveliste.html">
     <svg aria-hidden="true" width="2em" height="2em"><use href="#icon-home"/></svg>
@@ -189,6 +199,7 @@
 </nav>
         
   
+  <!-- Firebase SDK-er lastes inn for autentisering, database og lagring -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>

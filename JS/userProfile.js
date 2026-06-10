@@ -37,6 +37,7 @@ sectionWrap.addEventListener('click', (e) => {
 
 profileSubheader.addEventListener('click', onSubheaderClick);
 
+// Skjuler resten av profilen og viser den valgte undersiden.
 function showSection(section, title) {
   buttons.forEach((btn) => {
     btn.style.display = 'none';
@@ -46,6 +47,7 @@ function showSection(section, title) {
   setSubheaderAsBackButton(title);
 }
 
+// Går tilbake til standardprofilen med knapper og oversikt synlig.
 function showProfile() {
   sections.forEach((view) => {
     view.style.display = 'none';
@@ -69,12 +71,14 @@ function onSubheaderClick() {
   }
 }
 
+// Gjør subheaderen om til en tilbakeknapp med riktig tittel.
 function setSubheaderAsBackButton(title) {
   subheaderTitle.textContent = title;
   subheaderIcon.textContent = '<-';
   profileSubheader.classList.add('is-back');
 }
 
+// Når innlogget bruker er klar, last inn alle delene av profilen.
 auth.onAuthStateChanged((user) => {
   const activeUser = user && !user.isAnonymous ? user : null;
 
@@ -97,6 +101,7 @@ auth.onAuthStateChanged((user) => {
   });
 });
 
+// Fyller inn navn og profilbilde i profilen.
 function initUserData(user) {
   const welcomeElement = document.getElementById('loadUsername');
   const profilePhoto = document.getElementById('profile-photo');
@@ -112,6 +117,7 @@ function initUserData(user) {
   profilePhoto.src = user.photoURL ? user.photoURL : placeholderPhoto;
 }
 
+// Tilpasser rå task-data til formatet renderTasks forventer.
 function filterData(taskData) {
   const dataSelect = [];
   taskData.forEach((task) => {
@@ -130,6 +136,7 @@ function filterData(taskData) {
   return dataSelect;
 }
 
+// Henter og tegner brukerens egne oppdrag.
 async function initUserTaskData(userUid) {
   const taskData = await getUserTasks(userUid);
   const dataSelect = filterData(taskData);
@@ -152,6 +159,7 @@ async function initUserTaskData(userUid) {
   });
 }
 
+// Henter aktive oppdrag og markerer hvilke som eies av innlogget bruker.
 async function usersActiveTasks(userUid) {
   const taskData = await getActiveTasks(userUid);
   taskData.forEach((task) => {
@@ -175,6 +183,7 @@ async function usersActiveTasks(userUid) {
   }
 }
 
+// Henter og viser oppdrag brukeren har lagret.
 async function usersSaved(userUid) {
   const taskData = await getUsersSavedTasks(userUid);
   const dataSelect = filterData(taskData);
@@ -184,6 +193,7 @@ async function usersSaved(userUid) {
   lucide.createIcons();
 }
 
+// Tømmer profilerelatert innhold når ingen gyldig bruker er innlogget.
 function clearTaskContainers() {
   document.getElementById('own-tasks')?.replaceChildren();
   document.getElementById('saved-tasks')?.replaceChildren();
@@ -200,6 +210,7 @@ function clearTaskContainers() {
   }
 }
 
+
 async function initAverageRating(userUid) {
   const averageRatingElement = document.getElementById('averageRating');
   if (!averageRatingElement || !userUid) return;
@@ -214,6 +225,7 @@ async function initAverageRating(userUid) {
     averageRatingElement.textContent = 'Vurdering -';
   }
 }
+
 
 function formatReviewDate(createdAt) {
   return createdAt?.toDate
@@ -294,6 +306,7 @@ async function initUserReviews(userUid) {
   }
 }
 
+// Sender brukeren videre til siden for redigering av profil.
 const editProfileButton = document.querySelector('.editProfileBtn');
 editProfileButton?.addEventListener('click', () => {
   window.location.href = 'editProfile.html';

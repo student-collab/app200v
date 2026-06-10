@@ -208,7 +208,7 @@ function formatMessageTime(createdAt) {
   return createdAt?.toDate ? createdAt.toDate().toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : 'Sending..'; //datestyle short to avoid displaying seconds
 }
 
-// Replacing these symbols with text ensures that users can't run code (HTML/JS injection) using the chatbox input. This is a huge security risk so that's why we're doing this:
+// XSS: Cross site scripting protection. Replacing these symbols with text ensures that users can't run code (HTML/JS injection) using the chatbox input. This is a huge security risk so that's why we're doing this:
 function escapeHtml(text = '') {
   return String(text)
     .replace(/&/g, '&amp;')

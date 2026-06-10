@@ -1,4 +1,4 @@
-// Author: Viktor Eliassen. SCRIPT FOR THE MESSAGESCHAT PAGE THAT IS GENERATED WHEN CLICKING A CHAT
+// Author: Viktor Eliassen. Skript for messagechat-siden som åpnes når brukeren klikker på en samtale.
 import { auth } from './modules/dbConfig.js';
 import { getChatsForUser, getUser, listenForMessages, sendMessage } from './modules/FS_Requests.js';
 import { authGuard } from './authGuard.js';
@@ -20,14 +20,14 @@ const currentChatId = params.get('chatId');
 
 let stopListeningToMessages = null;
 
-// Returns the other user's uid in a 1-to-1 chat.
-// Used to decide who the conversation is with when showing UI labels.
+// Returnerer uid-en til den andre brukeren i samtalen
+// Brukes for å finne ut hvem samtalen er med når grensesnittet skal oppdateres.
 function getOtherParticipantId(chat) {
   return (chat?.participants || []).find((uid) => uid !== auth.currentUser?.uid) || null;
 }
 
-// Resolves the chat title name shown in the header.
-// It fetches users so the UI can show a readable display name instead of a uid.
+// Finner navnet som skal vises i subheaderen for samtalen.
+// Henter brukere slik at UI grensesnittet kan vise et lesbart navn i stedet for en uid.
 async function getChatDisplayName(chat) {
   const otherUid = getOtherParticipantId(chat);
   if (!otherUid) return chat?.id || 'Unknown';
@@ -38,13 +38,14 @@ async function getChatDisplayName(chat) {
 }
 
 
+//Finner task bildet som vises i task overviewen over chat vinduet
 function getTaskImageUrl(chat) {
   if (typeof chat?.taskImage === 'string' && chat.taskImage.trim()) return chat.taskImage;
   return null;
 }
 
-// Puts the page in a disabled/error state when chat cannot be used.
-// Used for missing URL params, unauthorized access, or signed-out users.
+// Setter siden i en deaktivert/feiltilstand når samtalen ikke kan brukes.
+// Brukes ved manglende URL-parametere, manglende tilgang eller utlogget bruker.
 function setUnavailableState(text) {
   if (chatStatus) {
     chatStatus.textContent = text;
@@ -61,7 +62,7 @@ function setUnavailableState(text) {
   chatTaskLinkBox?.classList.add('hidden');
 }
 
-//setter link til task det gjelder over chatten
+// Setter link til oppdraget samtalen gjelder over chatten.
 function setTaskLink(chat) {
   const taskId = chat?.taskId;
   if (!taskId || !chatTaskLinkBox) {
@@ -92,8 +93,8 @@ function setTaskLink(chat) {
   chatTaskLinkBox.classList.remove('hidden');
 }
 
-// Keeps the message textarea compact while still allowing multi-line messages.
-// Used after typing and after sending to keep input height predictable.
+// Holder tekstfeltet kompakt, samtidig som det støtter meldinger over flere linjer.
+// Brukes etter skriving og sending for å holde høyden forutsigbar.
 function autoResizeMessageInput() {
   if (!messageInput) return;
 
@@ -105,8 +106,8 @@ function autoResizeMessageInput() {
   messageInput.style.overflowY = messageInput.scrollHeight > maxHeight ? 'auto' : 'hidden';
 }
 
-// Sends the current input value to Firestore for the active chat.
-// Used by both the Send button and Enter-key shortcut.
+// Sender innholdet i tekstfeltet til Firestore for den aktive samtalen.
+// Brukes både av sendeknappen og Enter-snarveien.
 async function sendCurrentMessage() {
   if (!currentChatId || !auth.currentUser || !messageInput?.value.trim()) return;
 
@@ -120,8 +121,8 @@ async function sendCurrentMessage() {
   autoResizeMessageInput();
 }
 
-// Boots the chat page once auth is known.
-// Validates chat access, sets the header title, then starts realtime message listening.
+// Initialiserer chatsiden når autentisering er kjent.
+// Validerer tilgang til samtalen, setter topptekst og starter sanntidslytting på meldinger.
 async function initializeChatPage(user) {
   if (!currentChatId) {
     setUnavailableState('Missing chatId in URL. Open a chat from the messages list.');
@@ -145,7 +146,7 @@ async function initializeChatPage(user) {
   stopListeningToMessages = listenForMessages(currentChatId);
 }
 
-// Entry point for page load: waits for Firebase auth and then initializes chat.
+// Startpunkt ved sidelasting: venter på Firebase-autentisering og initialiserer deretter chatten.
 auth.onAuthStateChanged(async (user) => {
   if (!user) {
     setUnavailableState('You must be signed in to view this conversation.');
@@ -155,23 +156,23 @@ auth.onAuthStateChanged(async (user) => {
   await initializeChatPage(user);
 });
 
-// Click handler for sending a message.
+// Klikkhåndtering for sending av melding.
 sendBtn?.addEventListener('click', async () => {
   await sendCurrentMessage();
 });
 
-// Keyboard shortcut: Enter sends, Shift+Enter inserts a newline.
+// Tastatursnarvei: Enter sender meldinger, Shift+Enter setter lager ny linje i chat input
 messageInput?.addEventListener('keydown', async (event) => {
   if (event.key !== 'Enter' || event.shiftKey) return;
   event.preventDefault();
   await sendCurrentMessage();
 });
 
-// Auto-grow textarea as user types.
+// Utvider tekstfeltet automatisk mens brukeren skriver.
 messageInput?.addEventListener('input', autoResizeMessageInput);
 autoResizeMessageInput();
 
-// Header tap/click acts as back navigation to conversation list.
+// Trykk eller klikk på toppfeltet fungerer som tilbakeknapp til samtalelisten, aka messages.html.
 profileSubheader?.addEventListener('click', () => {
   window.location.href = './messages.html';
 });
@@ -184,5 +185,5 @@ window.addEventListener('beforeunload', () => {
   }
 });
 
-// Ensure the back arrow is visible on this page.
+// Sørger for at tilbakepilen vises på denne siden.
 if (subheaderBackText) subheaderBackText.classList.remove('hidden');

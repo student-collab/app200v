@@ -1,4 +1,4 @@
-//Author: Viktor Eliassen. SCRIPT FOR MESSAGES PAGE THAT SHOWS LIST OF CONVERSATIONS
+// Forfatter: Viktor Eliassen. Skript for meldingssiden som viser en liste over samtaler.
 import { auth } from '../JS/modules/dbConfig.js';
 import { getChatsForUser, getUser } from '../JS/modules/FS_Requests.js';
 import { authGuard } from './authGuard.js';
@@ -6,11 +6,11 @@ import { authGuard } from './authGuard.js';
 authGuard();
 
 
-// Runtime state: cached users and loaded chats.
+// Kjøretidstilstand: mellomlagrede brukere og innlastede samtaler.
 let usersById = {};
 let currentChats = [];
 
-// Cache DOM elements once so we do not query repeatedly.
+// Lagrer DOM-elementer én gang, så vi slipper gjentatte oppslag.
 const chatList = document.getElementById('chatList');
 const profileSubheader = document.getElementById('profileSubheader');
 const subheaderTitle = document.getElementById('subheaderTitle');
@@ -21,13 +21,13 @@ const hasActiveChatsState = document.getElementById('hasActiveChatsState');
 
 
 
-// Converts a uid to a readable name for UI labels.
+// Gjør om en uid til et lesbart navn for visning i grensesnittet.
 function getUserDisplayName(uid) {
   if (uid === auth.currentUser?.uid) return 'You';
   return usersById[uid]?.name?.display || uid;
 }
 
-//builds task title and participant label so each part can be styled separately.
+// Bygger opp oppdragstittel og deltakeretikett slik at delene kan styles hver for seg.
 function getChatMeta(chat) {
   const otherUid = (chat.participants || []).find(uid => uid !== auth.currentUser?.uid);
   const taskTitle = chat?.taskTitle?.trim();
@@ -44,7 +44,7 @@ function getTaskImageUrl(chat) {
   return null;
 }
 
-//loads users once and caches them by uid for display names.
+// Laster inn brukere én gang og mellomlagrer dem på uid for visningsnavn.
 async function loadUsers() {
   if (!auth.currentUser) return;
 
@@ -52,13 +52,13 @@ async function loadUsers() {
     const users = await getUser();
     usersById = Object.fromEntries(users.map(user => [user.id, user]));
   } catch (error) {
-    // If Firestore rules deny broad users reads, keep UI functional with UID fallback.
+    // Hvis Firestore-reglene nekter bred lesing av brukere, behold funksjonalitet med uid som reserve.
     console.warn('Could not load users collection (permissions):', error);
     usersById = {};
   }
 }
 
-//draws active chat links. Each link opens a dedicated chat page.
+// Tegner lenker til aktive samtaler. Hver lenke åpner en egen chatside.
 function renderChatList(chats) {
   if (!chatList) return;
 
@@ -98,28 +98,28 @@ function renderChatList(chats) {
   });
 }
 
-//updates which UI state is visible depending on whether the user is part of a chat.
+// Oppdaterer hvilken UI-tilstand som skal vises, avhengig av om brukeren har en samtale.
 function updateChatStates(hasChats) {
   
-  //always hide the loading state once chat data has finished loading. ? means only continue if this value exists
+  // Skjul alltid lastetilstanden når samtaledata er ferdig lastet. ?. betyr at vi bare fortsetter hvis verdien finnes.
   loadingChatsState?.classList.add('hidden');
 
-  //if user has atleast one chat
+  // Hvis brukeren har minst én samtale
   if (hasChats) {
-    //show active chats selection
+    // Vis seksjonen med aktive samtaler
     hasActiveChatsState?.classList.remove('hidden');
-    //hide "no chats" empty state section
+    // Skjul tomtilstanden for ingen samtaler
     noChatsActiveState?.classList.add('hidden');
   } else {
-    //hide active chats section because there are no active chats
+    // Skjul seksjonen for aktive samtaler fordi det ikke finnes noen samtaler
     hasActiveChatsState?.classList.add('hidden');
 
-    //show the empty state message for users without chats
+    // Vis tomtilstanden for brukere uten samtaler
     noChatsActiveState?.classList.remove('hidden');
   }
 }
 
-// Main page refresh: load users, load chats, select default chat, render UI, start listener.
+// Oppdaterer siden: laster brukere og samtaler, og tegner deretter grensesnittet.
 async function refreshMessagesPage() {
   if (!auth.currentUser) return;
 
@@ -131,13 +131,13 @@ async function refreshMessagesPage() {
   const chats = await getChatsForUser(auth.currentUser.uid);
   currentChats = chats;
 
-  //if there is more than 0 chats then return hasChats TRUE
+  // Hvis det finnes mer enn 0 samtaler, send inn true til tilstandshåndteringen
   updateChatStates(chats.length > 0);
 
   renderChatList(chats);
 }
 
-// Initialize the page only when auth state is ready.
+// Initialiser siden først når autentiseringstilstanden er klar.
 auth.onAuthStateChanged((user) => {
   if (!user) return;
   refreshMessagesPage();
