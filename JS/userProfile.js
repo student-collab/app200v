@@ -13,10 +13,25 @@ const sections = sectionWrap.querySelectorAll('.section');
 const buttons = sectionWrap.querySelectorAll('.nav-knapper');
 const profileSubheader = document.getElementById('profileSubheader');
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    The element wich contains all the clickable elements                 *
+ *    gets an eventlistener. One to caputure them all (event delegation).  *
+ *    This listener uses .closest whic propagates from                     *
+ *    the clicked element and upwards in the familiy tree,                 *
+ *    until it finds an element which has data-selection - a button        *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 sectionWrap.addEventListener('click', (e) => {
   const btn = e.target.closest('[data-section]');
   if (!btn) return;
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+   *    The btn.dataset.section is hardcoded in the HTML and contains      *
+   *    the id of the element which the button controls - shows            *
+   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
   const section = document.getElementById(btn.dataset.section);
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+   *    btn.dataset.title - hardcoded in the HTML, contains the title      *
+   *    to display for the content in the element that will be shown       *
+   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
   showSection(section, btn.dataset.title);
 });
 
@@ -45,6 +60,10 @@ function showProfile() {
 }
 
 function onSubheaderClick() {
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+   *    Title, subheader is always visble but only acts        *
+   *    like a back-button when it has the class 'is-back'     *
+   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
   if (profileSubheader.classList.contains('is-back')) {
     showProfile();
   }
