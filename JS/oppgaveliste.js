@@ -56,7 +56,7 @@ let nearbyTasks = 0;
         Hjelpefunksjon lager array med nye objekter som kun inneholder
         informasjon som skal vises på skjermen
 */
-function prepRender (task) {
+function prepRender (task) { // Skulle egentlig ikke ha avstandsbergengingen her .. prpRender er felles
  let distanceFloat = task.distance ?? haversine(userLat, userLng, task.location.latitude, task.location.longitude) 
   let distanceRounded = Math.floor(distanceFloat * 10)/10;
   let infoTask = {
