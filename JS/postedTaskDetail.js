@@ -231,27 +231,34 @@ saveTask.addEventListener('click', async ()=>{
     window.location.href = `./messagesChat.html?chatId=${encodeURIComponent(chatId)}`;
   });
 
+//check if acceptbutton exist before attaching an eventlistener
 const acceptBtn = document.getElementById("accept-btn");
 if (!acceptBtn) { console.log("No accept button to attach event listener to"); } else {
+  // Add click event listener to the accept button
   acceptBtn.addEventListener('click', async () => {
+    //Prevent interaction if task is already finished
     if (isFinished) return;
     const currentUserId = auth.currentUser?.uid;
 
     const taskId = task?.id;
     const taskOwnerId = task?.createdBy?.uid || task?.creatorId;
     console.log(taskOwnerId);
+    //stop execution if data is missing
     if (!currentUserId || !taskId) return;
 
     try {
+      // Add the user's ID to the task's pending request list
       await db.collection('tasks').doc(taskId).update({
         'assignee.pendingRequest': firebase.firestore.FieldValue.arrayUnion(currentUserId)
       });
       console.log('Added user to assignee.pendingRequest');
+      // Send a notification to the task owner about the new request
       addNotification(taskOwnerId, currentUserId, taskId, "request", false, "New Task Request", "You have a new task request!");
 
       // Hent opp oppgave eier uid
       // Lag en notifikasjon via newNotification.js modul som 
     } catch (error) {
+      // Log any errors that occur during the update process
       console.error('Could not append pending request:', error);
     }
   });
@@ -268,13 +275,16 @@ if (!taskDoneButton) {
     const taskId = task?.id;
     const taskOwnerId = task?.createdBy?.uid || task?.creatorId;
     const taskAssigneeId = task?.assignee?.uid;
+     // Fetch display names for review notifications
     const assigneeDisplayName = await findDisplayNameByUserId(taskAssigneeId, 'brukeren');
     const taskOwnerDisplayName = await findDisplayNameByUserId(taskOwnerId, 'oppdragsgiver');
 
     try {
+      // Update task status to finished in Firestore
       await db.collection('tasks').doc(taskId).update({
         status: 'finished'
       });
+      // Send review notification to the task owner and task assignee
       await addNotification(taskOwnerId, taskAssigneeId, taskId, "review", false, "Hvordan var opplevelsen?", `Gi en vurdering til ${assigneeDisplayName}`);
       await addNotification(taskAssigneeId, taskOwnerId, taskId, "review", false, "Hvordan var opplevelsen?", `Gi en vurdering til ${taskOwnerDisplayName}`);
 
