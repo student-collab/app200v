@@ -1,4 +1,4 @@
-//notifications.js håndterer hele varslingssystemet i applikasjonen. 
+//notificationhandler.js håndterer hele varslingssystemet i applikasjonen. 
 // Filen henter varsler fra Firestore, viser dem i brukergrensesnittet, lar brukeren akseptere eller avslå forespørsler, skrive anmeldelser etter fullførte oppdrag, og vise profiler med tidligere vurderinger. 
 // Den benytter Firebase Authentication for å identifisere brukeren og Firestore for lagring og henting av data.
 
@@ -271,7 +271,8 @@ function getProfileModal() {
     }
   });
 
-  //åpner profilmodalen og laster brukerdata fra firestore for å vise navn, profilbilde, gjennomsnittlig vurdering og individuelle anmeldelser. Håndterer også feil ved innlastning av data.
+  //åpner profilmodalen og laster brukerdata fra firestore for å vise navn, profilbilde, 
+  // gjennomsnittlig vurdering og individuelle anmeldelser. Håndterer også feil ved innlastning av data.
   window.profileModal = {
     wrapper,
     open: async ({ userId, displayName }) => {
