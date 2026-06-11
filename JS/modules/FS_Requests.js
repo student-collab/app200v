@@ -400,9 +400,10 @@ endAt(value)                // end at value
 
 
 */
-
+//calculates average rating
 async function getAverageRatingForUser(userId) {
   const reviewsSnap = await db.collection('users').doc(userId).collection('reviews').get();
+  // Convert the review documents into an array of review objects
   const reviews = reviewsSnap.docs.map(doc => doc.data());
   if (reviews.length === 0) return null;
 
@@ -418,6 +419,7 @@ Notification types:
 
 */
 
+//creates a new notification for user
 async function addNotification(userId, assigneeId, taskId, type, read, title, description) {
   if (!userId) {
     throw new Error('addNotification requires a valid userId');
@@ -436,7 +438,9 @@ async function addNotification(userId, assigneeId, taskId, type, read, title, de
   });
 }
 
+// Deletes a specific notification from a user's notification collection
 async function deleteNotification(notificationId, userId = auth.currentUser?.uid) {
+  // Validate that a notification ID and user ID was provided
   if (!notificationId) {
     throw new Error('deletion requires a valid notificationId');
   }
@@ -444,11 +448,12 @@ async function deleteNotification(notificationId, userId = auth.currentUser?.uid
   if (!userId) {
     throw new Error('deletion requires a valid userId');
   }
-
+  //deletes from firebase
   await db.collection('users').doc(userId).collection('notifications').doc(notificationId).delete();
   console.log('Deleted notification with ID:', notificationId);
 }
 
+// Deletes all notifications related to a specific task
 async function deleteNotificationsByTask(userId, taskId) {
   if (!userId || !taskId) return;
 
@@ -461,11 +466,13 @@ async function deleteNotificationsByTask(userId, taskId) {
 
   if (snapshot.empty) return;
 
+  // Use a batch operation to delete all matching notifications
   const batch = db.batch();
   snapshot.docs.forEach(doc => batch.delete(doc.ref));
   await batch.commit();
 }
 
+// Accepts a task request and assigns the task to a selected user
 async function acceptTaskRequest(taskId, assigneeId, ownerId) {
   if (!taskId || !assigneeId || !ownerId) {
     throw new Error('acceptTaskRequest requires taskId, assigneeId and ownerId');
@@ -477,11 +484,14 @@ async function acceptTaskRequest(taskId, assigneeId, ownerId) {
   }
 
   const taskData = taskDoc.data();
+  // Get all pending requests for the task
   const pendingRequests = taskData?.assignee?.pendingRequest ?? taskData?.pendingRequests ?? [];
+  // Create a list of users who were not selected
   const otherAssignees = Array.isArray(pendingRequests)
     ? pendingRequests.filter(uid => uid && uid !== assigneeId)
     : [];
 
+  // Assign the task and remove all pending request data
   await db.collection('tasks').doc(taskId).update({
     'assignee.uid': assigneeId,
     status: 'accepted',
@@ -491,6 +501,7 @@ async function acceptTaskRequest(taskId, assigneeId, ownerId) {
 
   await deleteNotificationsByTask(ownerId, taskId);
 
+  // Notify the accepted assignee
   await addNotification(
     assigneeId,
     ownerId,
@@ -501,6 +512,7 @@ async function acceptTaskRequest(taskId, assigneeId, ownerId) {
     'Forespørselen din ble akseptert.'
   );
 
+  // Notify all rejected applicants
   await Promise.all(otherAssignees.map(async (otherAssigneeId) => {
     await addNotification(
       otherAssigneeId,
@@ -551,6 +563,7 @@ async function getUserNotifications(userId) {
     return "Ingen varslinger";
   }
 
+  // Convert Firestore documents into notification objects
   return notificationCollection.docs.map(doc => ({ 
     id: doc.id,
     userId: doc.data().userId,
@@ -564,12 +577,14 @@ async function getUserNotifications(userId) {
    }));
 }
 
+// Retrieves detailed information about a single notification
 async function getNotificationDetails(notificationId) {
   const notificationDoc = await db.collection('notifications').doc(notificationId).get();
   if (!notificationDoc.exists) {
     return "Ingen varslinger";
   }
 
+  // Return the notification data as an object
   return {
     id: notificationDoc.id,
     userId: notificationDoc.data().userId,
@@ -583,4 +598,5 @@ async function getNotificationDetails(notificationId) {
   };
 };
 
+// Export functions so they can be used in other files
 export {addNotification, deleteNotification, acceptTaskRequest, denyTaskRequest, NotificationRead, getUserNotifications, getNotificationDetails, getAverageRatingForUser};
